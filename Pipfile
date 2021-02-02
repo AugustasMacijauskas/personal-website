@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+numpy = "*"
+jupyterlab = "*"
+pandas = "*"
+matplotlib = "*"
+sklearn = "*"
+seaborn = "*"
+tqdm = "*"
+graphviz = "*"
+
+[dev-packages]
+isort = "*"
+black = "*"
+ipython = "*"
+ipywidgets = "*"
+
+[requires]
+python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true
