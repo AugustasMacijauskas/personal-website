@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Elegant implementation of Naive Bayes | Augustas Macijauskas</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Elegant implementation of Naive Bayes" />
+<meta name="author" content="Augustas Macijauskas" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A tutorial on how to implement a Naive Bayes model in just a few lines of code." />
+<meta property="og:description" content="A tutorial on how to implement a Naive Bayes model in just a few lines of code." />
+<link rel="canonical" href="https://augustasmacijauskas.github.io/personal-website/machine-learning/naive-bayes/nlp/spam-filter/2021/02/01/elegant-naive-bayes.html" />
+<meta property="og:url" content="https://augustasmacijauskas.github.io/personal-website/machine-learning/naive-bayes/nlp/spam-filter/2021/02/01/elegant-naive-bayes.html" />
+<meta property="og:site_name" content="Augustas Macijauskas" />
+<meta property="og:image" content="https://augustasmacijauskas.github.io/personal-website/images/bayes-formula.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-02-01T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://augustasmacijauskas.github.io/personal-website/machine-learning/naive-bayes/nlp/spam-filter/2021/02/01/elegant-naive-bayes.html","@type":"BlogPosting","headline":"Elegant implementation of Naive Bayes","dateModified":"2021-02-01T00:00:00-06:00","datePublished":"2021-02-01T00:00:00-06:00","image":"https://augustasmacijauskas.github.io/personal-website/images/bayes-formula.jpg","author":{"@type":"Person","name":"Augustas Macijauskas"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://augustasmacijauskas.github.io/personal-website/machine-learning/naive-bayes/nlp/spam-filter/2021/02/01/elegant-naive-bayes.html"},"description":"A tutorial on how to implement a Naive Bayes model in just a few lines of code.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/personal-website/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://augustasmacijauskas.github.io/personal-website/feed.xml" title="Augustas Macijauskas" /><link rel="shortcut icon" type="image/x-icon" href="/personal-website/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/personal-website/">Augustas Macijauskas</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/personal-website/about/">About Me</a><a class="page-link" href="/personal-website/search/">Search</a><a class="page-link" href="/personal-website/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Elegant implementation of Naive Bayes</h1><p class="page-description">A tutorial on how to implement a Naive Bayes model in just a few lines of code.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-02-01T00:00:00-06:00" itemprop="datePublished">
+        Feb 1, 2021
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Augustas Macijauskas</span></span>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      12 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/personal-website/categories/#machine-learning">machine-learning</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/personal-website/categories/#naive-bayes">naive-bayes</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/personal-website/categories/#nlp">nlp</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/personal-website/categories/#spam-filter">spam-filter</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/AugustasMacijauskas/personal-website/tree/master/_notebooks/2021-02-01-elegant-naive-bayes.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/personal-website/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/AugustasMacijauskas/personal-website/blob/master/_notebooks/2021-02-01-elegant-naive-bayes.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/personal-website/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#TLDR">TLDR </a></li>
+<li class="toc-entry toc-h1"><a href="#Imports">Imports </a></li>
+<li class="toc-entry toc-h1"><a href="#Data">Data </a></li>
+<li class="toc-entry toc-h1"><a href="#Building-the-model">Building the model </a></li>
+<li class="toc-entry toc-h1"><a href="#What-just-happened?!?">What just happened?!? </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#1.-The-CountVectorizer">1. The CountVectorizer </a></li>
+<li class="toc-entry toc-h2"><a href="#2-Bayes'-theorem">2 Bayes&#39; theorem </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#How-could-I-use-this?">How could I use this? </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Try-n-grams">Try n-grams </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-02-01-elegant-naive-bayes.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="TLDR">
+<a class="anchor" href="#TLDR" aria-hidden="true"><span class="octicon octicon-link"></span></a>TLDR<a class="anchor-link" href="#TLDR"> </a>
+</h1>
+<p>This article is adapted from <a href="https://www.fast.ai/">fast.ai</a>'s <em>Machine Learning for Coders</em> course, specifically, <a href="https://course18.fast.ai/lessonsml1/lesson10.html">lesson 10</a>.</p>
+<p>We will be building a naive Bayes classifier in just <strong>10 lines</strong> of code that will get over <strong>98%</strong> accuracy on a spam message filtering task.</p>
+<p>We will do this in the top-bottom approach, were we will first build the model and then dig deeper into how the theory behind it works.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Imports">
+<a class="anchor" href="#Imports" aria-hidden="true"><span class="octicon octicon-link"></span></a>Imports<a class="anchor-link" href="#Imports"> </a>
+</h1>
+<p>Toggle cells below if you want to see what imports are being made.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">reload_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+<span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">CountVectorizer</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Data">
+<a class="anchor" href="#Data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data<a class="anchor-link" href="#Data"> </a>
+</h1>
+<p>We are going to use a dataset with 5572 messages in it. Unfortunately, I am unable to provide full access to this dataset, so you'll have to take my word for what the contents of the dataset are.</p>
+<p>Label of <code>0</code> means the message is not spam, and <code>1</code> means it is spam.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>message</th>
+      <th>label</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Go until jurong point, crazy.. Available only ...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Ok lar... Joking wif u oni...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Free entry in 2 a wkly comp to win FA Cup fina...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>U dun say so early hor... U c already then say...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Nah I don't think he goes to usf, he lives aro...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>5567</th>
+      <td>This is the 2nd time we have tried 2 contact u...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5568</th>
+      <td>Will Ì_ b going to esplanade fr home?</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5569</th>
+      <td>Pity, * was in mood for that. So...any other s...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5570</th>
+      <td>The guy did some bitching but I acted like i'd...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5571</th>
+      <td>Rofl. Its true to its name</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5572 rows × 2 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The numbers of non-spam and spam messages are respectively:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(4825, 747)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Example spam message is:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>"Free entry in 2 a wkly comp to win FA Cup final tkts 21st May 2005. Text FA to 87121 to receive entry question(std txt rate)T&amp;C's apply 08452810075over18's"</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's split the data into train and test sets with 20% of data going into the test set:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_ratio</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">train_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">*</span> <span class="n">train_ratio</span><span class="p">)</span>
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"label"</span><span class="p">])[:</span><span class="n">train_length</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">y_train</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">][:</span><span class="n">train_length</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">X_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"label"</span><span class="p">])[</span><span class="n">train_length</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">y_val</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">][</span><span class="n">train_length</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Building-the-model">
+<a class="anchor" href="#Building-the-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Building the model<a class="anchor-link" href="#Building-the-model"> </a>
+</h1>
+<p>Below I am going to provide the code for the model without too much explanation, and then in the next section I'll discuss what is happening under the hood.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vectorizer</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">max_df</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">train_term_doc</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">val_term_doc</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_val</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since we we'll be using Bayes' theorem, note that here <code>p</code> stands for <strong>probability of features given spam</strong>, <code>q</code> stands for <strong>probability of features given non-spam</strong>, and <code>b</code> encodes the <strong>probabilities that a document is of a certain class</strong> (or what Bayesians call <em>priors</em>).</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">train_term_doc</span><span class="p">[</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">train_term_doc</span><span class="p">[</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">p</span> <span class="o">/</span> <span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">q</span> <span class="o">/</span> <span class="n">q</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Our accuracy is:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pre_preds</span> <span class="o">=</span> <span class="n">val_term_doc</span> <span class="o">@</span> <span class="n">ratio</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">b</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">pre_preds</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">y_val</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.9856502242152466</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="What-just-happened?!?">
+<a class="anchor" href="#What-just-happened?!?" aria-hidden="true"><span class="octicon octicon-link"></span></a>What just happened?!?<a class="anchor-link" href="#What-just-happened?!?"> </a>
+</h1>
+<p>As you can see, our naive Bayes classifier got over 98% accuracy on this dataset in just 10 lines of code. But how does it actually work? Let's look at everything piece by piece.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.-The-CountVectorizer">
+<a class="anchor" href="#1.-The-CountVectorizer" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. The <code>CountVectorizer</code><a class="anchor-link" href="#1.-The-CountVectorizer"> </a>
+</h2>
+<p>Naive Bayes classifier uses what is called a <strong>bag of words</strong> approach. It simply means that we disregard any relationships between words and just look at how often they appear in the text that we want to classify.
+</p>
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
+    <strong>Note: </strong>I am not saying that <em>bag of words</em> is the best approach to do NLP, it is usually quite the opposite as nowadays we have tools like RNNs and Transformers that perform much better on NLP tasks. However, we use it here because it is a really simple approach that sometimes still gives reasonable results, as it did in this case!
+</div>
+This is exactly what a <code>CountVectorizer</code> does for us: produces a <strong>term document matrix</strong> with frequencies of each word for each message.
+<p>Let's look at an example of what <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html">sklearn's <code>CountVectorizer</code></a> is doing. Suppose that our messages are:</p>
+<table>
+<thead>
+<tr>
+<th>message</th>
+<th>label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>This is a good message</td>
+<td>0</td>
+</tr>
+<tr>
+<td>A good message</td>
+<td>0</td>
+</tr>
+<tr>
+<td>This message is bad</td>
+<td>1</td>
+</tr>
+<tr>
+<td>The message is bad</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>Then, what a <code>CountVectorizer</code> is going to do for us is produce the following matrix:</p>
+<table>
+<thead>
+<tr>
+<th>message</th>
+<th>label</th>
+<th>this</th>
+<th>is</th>
+<th>a</th>
+<th>good</th>
+<th>message</th>
+<th>the</th>
+<th>bad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>This is a good message</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>A good message</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>This message is bad</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>The message is bad</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<div class="flash flash-warn">
+    <svg class="octicon octicon-zap octicon octicon-zap" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10.561 1.5a.016.016 0 00-.01.004L3.286 8.571A.25.25 0 003.462 9H6.75a.75.75 0 01.694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0012.538 7H9.25a.75.75 0 01-.683-1.06l2.008-4.418.003-.006a.02.02 0 00-.004-.009.02.02 0 00-.006-.006L10.56 1.5zM9.504.43a1.516 1.516 0 012.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.25 1.25 0 01-.871.354h-.302a1.25 1.25 0 01-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429z"></path></svg>
+    <strong>Important: </strong><code>CountVectorizer</code> just finds the <em>vocabulary</em> (list of all the unique words in our data) and then counts how often each word from the vocabulary is found in each message.
+</div>
+Notice that for a larger dataset, our vocabulary might become very large which would mean that most of the cells in our term document matrix would be <code>0</code>. For this reason, the sklearn implementation actually produces a <strong>sparse matrix</strong> which, instead of storing all the entries, stores only the location and values of non-zero entries, and since there are only so many of them, saves huge amounts of memory. How neat!
+<p>You must have noticed that I used a <code>max_df=0.1</code> parameter for my <code>CountVectorizer</code>. This tells the vectorizer to <strong>ignore</strong> any words that appear in more than <code>10%</code> on the documents as we can safely say that they are <strong>too common</strong>. I came with this number by trying different values and looking at <code>vectorizer.stop_words_</code> to check how many and which words were ignored until I was satisfied. When you build your own model, make sure to play around with this and other parameters, such as <code>min_df</code> (opposite of <code>max_df</code>, used for very rare words), to find what works best for you! You can find more information on what parameters for <code>CountVectorizer</code> can be tinkered on the official docs.</p>
+<p>A trick that we want to do before moving on is to note that later we will want to calculate probabilities of each word appearing in spam or non-spam messages. But it might happen that certain words do not appear in a particular class at all and we might run into trouble because we will get feature probabilities of zero, and we don't want that. To counter that, we will add a row of ones, like so:</p>
+<table>
+<thead>
+<tr>
+<th>message</th>
+<th>label</th>
+<th>this</th>
+<th>is</th>
+<th>a</th>
+<th>good</th>
+<th>message</th>
+<th>the</th>
+<th>bad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>This is a good message</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>A good message</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>This message is bad</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>The message is bad</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>row of ones</em></td>
+<td></td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>If we think more about, adding a row of ones is not that counter-intuitive at all, since the messages that we have so far only carry information up to this point in time, but if a word has not appeared in any of the messages so far, it is not at all impossible that it will not appear in the future, so adding the extra one takes care of that for us.</p>
+<p>So that our feature probabilities will be:</p>
+<table>
+<thead>
+<tr>
+<th>message</th>
+<th>label</th>
+<th>this</th>
+<th>is</th>
+<th>a</th>
+<th>good</th>
+<th>message</th>
+<th>the</th>
+<th>bad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>This is a good message</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>A good message</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>This message is bad</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>The message is bad</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>row of ones</em></td>
+<td></td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>P(feature|0)</em></td>
+<td></td>
+<td>0.67</td>
+<td>0.67</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0.33</td>
+<td>0.33</td>
+</tr>
+<tr>
+<td><em>P(feature|1)</em></td>
+<td></td>
+<td>0.67</td>
+<td>1</td>
+<td>0.33</td>
+<td>0.33</td>
+<td>1</td>
+<td>0.67</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In code:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># words that appear in more than 10% of messages.</span>
+<span class="n">vectorizer</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">max_df</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="c1"># Use the fit_transform method of the vectorizer to get</span>
+<span class="c1"># the term document matrix for the training set.</span>
+<span class="n">train_term_doc</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+
+<span class="c1"># Use the transform method of the vectorizer to get</span>
+<span class="c1"># the term document matrix for the validation set.</span>
+<span class="c1"># We do it this way so that train and validation sets</span>
+<span class="c1"># are have the same vocabularies so that we could make predictions.</span>
+<span class="n">val_term_doc</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_val</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="2-Bayes'-theorem">
+<a class="anchor" href="#2-Bayes'-theorem" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 Bayes' theorem<a class="anchor-link" href="#2-Bayes'-theorem"> </a>
+</h2>
+<p>Now, we can get to the essence of the model which is to apply <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' theorem</a>. I am not going to give the usual form of the formula, but instead one that will illustrate how we will be using it. Our goal is, given a particular message, figure out whether it is spam or not. Hence, the formula for us is going to take the form:</p>
+<p>$P(spam \mid message) = \frac{P(message \mid spam) \cdot P(spam)}{P(message)}$</p>
+<p>But we can use a trick: instead of trying to predict whether it is spam or not, let's look at which class is a message more likely, i.e. $\frac{P(spam \mid message)}{P(non-spam \mid message)}$. In that case, the formula will become:</p>
+<p>$ratio = \frac{P(spam \mid message)}{P(non-spam \mid message)} = \frac{P(message \mid spam) \cdot P(spam)}{P(message \mid non-spam) \cdot P(non-spam)}$.</p>
+<p>Referring to our previous example, the ratios would then be:</p>
+<table>
+<thead>
+<tr>
+<th>message</th>
+<th>label</th>
+<th>this</th>
+<th>is</th>
+<th>a</th>
+<th>good</th>
+<th>message</th>
+<th>the</th>
+<th>bad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>This is a good message</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>A good message</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>This message is bad</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>The message is bad</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>row of ones</em></td>
+<td></td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>P(feature|0)</em></td>
+<td></td>
+<td>0.67</td>
+<td>0.67</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0.33</td>
+<td>0.33</td>
+</tr>
+<tr>
+<td><em>P(feature|1)</em></td>
+<td></td>
+<td>0.67</td>
+<td>1</td>
+<td>0.33</td>
+<td>0.33</td>
+<td>1</td>
+<td>0.67</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>ratio</em></td>
+<td></td>
+<td>1</td>
+<td>1.5</td>
+<td>0.33</td>
+<td>0.33</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<div class="flash flash-warn">
+    <svg class="octicon octicon-zap octicon octicon-zap octicon octicon-zap" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10.561 1.5a.016.016 0 00-.01.004L3.286 8.571A.25.25 0 003.462 9H6.75a.75.75 0 01.694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0012.538 7H9.25a.75.75 0 01-.683-1.06l2.008-4.418.003-.006a.02.02 0 00-.004-.009.02.02 0 00-.006-.006L10.56 1.5zM9.504.43a1.516 1.516 0 012.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.25 1.25 0 01-.871.354h-.302a1.25 1.25 0 01-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429z"></path></svg>
+    <strong>Important: </strong>As you can see, ratios are greater than 1 for features that are more likely to be in spam messages and lower than one otherwise.
+</div>
+Then, to further simplify things, we make the <strong>naive</strong> Bayes assumption, which says that probability of any word appearing in a message is independent of probabilities of other words appearing in that same message.
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
+    <strong>Note: </strong>Obviously, this is a <strong>very</strong> naive assumption and that is most certainly not the case, but it turns out to work quite well.
+</div>
+Under the naive assumption, the probability $P(message \mid spam)$ can be factorized into a product of probabilities of individual words appearing in a message, so that
+<p>$P(message \mid spam) = \prod_{i=1}^{n}P(w_i \mid spam)$</p>
+<p>and then:</p>
+<p>$ratio = \frac{P(spam \mid message)}{P(non-spam \mid message)} = \frac{\prod_{i=1}^{n}P(w_i \mid spam)}{\prod_{i=1}^{n}P(w_i \mid non-spam)} \frac{\cdot P(spam)}{P(non-spam)}$.</p>
+<p>We are almost done, we are now just going to apply a few tricks to make the calculations easier. First, notice that multiplying lots of probabilities together is going to result into a very small number and we might run out of floating point precision, so we can take the <strong>natural logarithm</strong> instead to handle this. Note that in this case we compare ratios not with <code>1</code>, but with <code>0</code> (because <code>ln(1)=0</code>) and that by the properties of logarithms all the products are going to turn into sums, which makes everything even simpler!</p>
+<p>Finally, we notice that to make predictions, we can just perform matrix multiplication on the <strong>validation term document matrix</strong> and our derived vector of ratios and add (remember, we are in log space!) the ratio of priors.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Putting it all together:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This plus ones are there to constitute the</span>
+<span class="c1"># row of ones discussed above</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">train_term_doc</span><span class="p">[</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">train_term_doc</span><span class="p">[</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="c1"># Calculate the ratios according to our derived formulae</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">p</span> <span class="o">/</span> <span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">q</span> <span class="o">/</span> <span class="n">q</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+
+<span class="c1"># Calculate the log of ratio of priors</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+<span class="c1"># Make some predictions on the validation set</span>
+<span class="n">pre_preds</span> <span class="o">=</span> <span class="n">val_term_doc</span> <span class="o">@</span> <span class="n">ratio</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">b</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">pre_preds</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="c1"># Greater than 0 because we are working in log space</span>
+<span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">y_val</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="c1"># Accuracy</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.9856502242152466</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="How-could-I-use-this?">
+<a class="anchor" href="#How-could-I-use-this?" aria-hidden="true"><span class="octicon octicon-link"></span></a>How could I use this?<a class="anchor-link" href="#How-could-I-use-this?"> </a>
+</h1>
+<p>With this newly acquired knowledge, you can go ahead and try using this model on your own NLP data! Though I have to warn you: the dataset used in this article was quite easy and naive Bayes classifier might not work as good for your data. But it is well-worth trying it out, especially when you can build one in just 10 lines of code!</p>
+<p>To better understand the materials of this article make sure to play around with anything that you want to dig deeper into, e.g. the different parameters and attributes of <code>CountVectorizer</code>. You can also check the full version of this on GitHub to see what cells I ran myself to better understand the inner working of this model.</p>
+<p>If you were to try and run your own model, a few suggestions for improving the models performance are presented below.</p>
+<h2 id="Try-n-grams">
+<a class="anchor" href="#Try-n-grams" aria-hidden="true"><span class="octicon octicon-link"></span></a>Try n-grams<a class="anchor-link" href="#Try-n-grams"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vectorizer</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">max_df</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">train_term_doc</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">val_term_doc</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_val</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">train_term_doc</span><span class="p">[</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">train_term_doc</span><span class="p">[</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">p</span> <span class="o">/</span> <span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">q</span> <span class="o">/</span> <span class="n">q</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pre_preds</span> <span class="o">=</span> <span class="n">val_term_doc</span> <span class="o">@</span> <span class="n">ratio</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">b</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">pre_preds</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">y_val</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.9874439461883409</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Turns out the model works even better with bigrams and trigrams included!</p>
+<p>You can also try the binarized version of the term document matrix (i.e. instead of frequencies we look at whether a word is present or not)</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pre_preds</span> <span class="o">=</span> <span class="n">val_term_doc</span><span class="o">.</span><span class="n">sign</span><span class="p">()</span> <span class="o">@</span> <span class="n">ratio</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">b</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">pre_preds</span><span class="o">.</span><span class="n">T</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">y_val</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.9874439461883409</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally, you might try <strong>learning</strong> the parameters with a logistic regression instead of using the theoretical ones. Check the parameters <code>C</code> for regularization and <code>dual=True</code> for when you term document matrix is <em>much</em> wider than it is tall.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1e1</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_term_doc</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">val_term_doc</span><span class="p">)</span>
+<span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">y_val</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.9811659192825112</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1e1</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_term_doc</span><span class="o">.</span><span class="n">sign</span><span class="p">(),</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">val_term_doc</span><span class="o">.</span><span class="n">sign</span><span class="p">())</span>
+<span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">y_val</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.9802690582959641</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="AugustasMacijauskas/personal-website"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/personal-website/machine-learning/naive-bayes/nlp/spam-filter/2021/02/01/elegant-naive-bayes.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/personal-website/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/personal-website/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/personal-website/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Augustas Macijauskas&#39;s personal website and blog.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/AugustasMacijauskas" title="AugustasMacijauskas"><svg class="svg-icon grey"><use xlink:href="/personal-website/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/augustasmac" title="augustasmac"><svg class="svg-icon grey"><use xlink:href="/personal-website/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
