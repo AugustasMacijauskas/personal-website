@@ -4,13 +4,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Elegant implementation of Naive Bayes | Augustas Macijauskas</title>
+<title>Elegant implementation of Naive Bayes in just 10 lines of code | Augustas Macijauskas</title>
 <meta name="generator" content="Jekyll v4.1.1" />
-<meta property="og:title" content="Elegant implementation of Naive Bayes" />
+<meta property="og:title" content="Elegant implementation of Naive Bayes in just 10 lines of code" />
 <meta name="author" content="Augustas Macijauskas" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="A tutorial on how to implement a Naive Bayes model in just a few lines of code." />
-<meta property="og:description" content="A tutorial on how to implement a Naive Bayes model in just a few lines of code." />
+<meta name="description" content="A tutorial on how to use a few tricks to implement a Naive Bayes model in just a few lines of code." />
+<meta property="og:description" content="A tutorial on how to use a few tricks to implement a Naive Bayes model in just a few lines of code." />
 <link rel="canonical" href="https://augustasmacijauskas.github.io/personal-website/machine-learning/naive-bayes/nlp/spam-filter/2021/02/01/elegant-naive-bayes.html" />
 <meta property="og:url" content="https://augustasmacijauskas.github.io/personal-website/machine-learning/naive-bayes/nlp/spam-filter/2021/02/01/elegant-naive-bayes.html" />
 <meta property="og:site_name" content="Augustas Macijauskas" />
@@ -18,7 +18,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-02-01T00:00:00-06:00" />
 <script type="application/ld+json">
-{"url":"https://augustasmacijauskas.github.io/personal-website/machine-learning/naive-bayes/nlp/spam-filter/2021/02/01/elegant-naive-bayes.html","@type":"BlogPosting","headline":"Elegant implementation of Naive Bayes","dateModified":"2021-02-01T00:00:00-06:00","datePublished":"2021-02-01T00:00:00-06:00","image":"https://augustasmacijauskas.github.io/personal-website/images/bayes-formula.jpg","author":{"@type":"Person","name":"Augustas Macijauskas"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://augustasmacijauskas.github.io/personal-website/machine-learning/naive-bayes/nlp/spam-filter/2021/02/01/elegant-naive-bayes.html"},"description":"A tutorial on how to implement a Naive Bayes model in just a few lines of code.","@context":"https://schema.org"}</script>
+{"url":"https://augustasmacijauskas.github.io/personal-website/machine-learning/naive-bayes/nlp/spam-filter/2021/02/01/elegant-naive-bayes.html","@type":"BlogPosting","headline":"Elegant implementation of Naive Bayes in just 10 lines of code","dateModified":"2021-02-01T00:00:00-06:00","datePublished":"2021-02-01T00:00:00-06:00","image":"https://augustasmacijauskas.github.io/personal-website/images/bayes-formula.jpg","author":{"@type":"Person","name":"Augustas Macijauskas"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://augustasmacijauskas.github.io/personal-website/machine-learning/naive-bayes/nlp/spam-filter/2021/02/01/elegant-naive-bayes.html"},"description":"A tutorial on how to use a few tricks to implement a Naive Bayes model in just a few lines of code.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/personal-website/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://augustasmacijauskas.github.io/personal-website/feed.xml" title="Augustas Macijauskas" /><link rel="shortcut icon" type="image/x-icon" href="/personal-website/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -89,7 +89,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Elegant implementation of Naive Bayes</h1><p class="page-description">A tutorial on how to implement a Naive Bayes model in just a few lines of code.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-02-01T00:00:00-06:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">Elegant implementation of Naive Bayes in just 10 lines of code</h1><p class="page-description">A tutorial on how to use a few tricks to implement a Naive Bayes model in just a few lines of code.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-02-01T00:00:00-06:00" itemprop="datePublished">
         Feb 1, 2021
       </time>• 
           <span itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -97,7 +97,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      12 min read
+      15 min read
     
 </span></p>
 
@@ -147,14 +147,18 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h1"><a href="#What-just-happened?!?">What just happened?!? </a>
 <ul>
 <li class="toc-entry toc-h2"><a href="#1.-The-CountVectorizer">1. The CountVectorizer </a></li>
-<li class="toc-entry toc-h2"><a href="#2-Bayes'-theorem">2 Bayes&#39; theorem </a></li>
+<li class="toc-entry toc-h2"><a href="#2.-Bayes'-theorem">2. Bayes&#39; theorem </a></li>
+<li class="toc-entry toc-h2"><a href="#3.-A-few-final-tricks">3. A few final tricks </a></li>
 </ul>
 </li>
 <li class="toc-entry toc-h1"><a href="#How-could-I-use-this?">How could I use this? </a>
 <ul>
 <li class="toc-entry toc-h2"><a href="#Try-n-grams">Try n-grams </a></li>
+<li class="toc-entry toc-h2"><a href="#Binarized-version">Binarized version </a></li>
+<li class="toc-entry toc-h2"><a href="#Learning-the-parameters-with-logistic-regression">Learning the parameters with logistic regression </a></li>
 </ul>
 </li>
+<li class="toc-entry toc-h1"><a href="#Conclusion">Conclusion </a></li>
 </ul><!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
@@ -170,9 +174,9 @@ window.onload = wrap_img;
 <h1 id="TLDR">
 <a class="anchor" href="#TLDR" aria-hidden="true"><span class="octicon octicon-link"></span></a>TLDR<a class="anchor-link" href="#TLDR"> </a>
 </h1>
-<p>This article is adapted from <a href="https://www.fast.ai/">fast.ai</a>'s <em>Machine Learning for Coders</em> course, specifically, <a href="https://course18.fast.ai/lessonsml1/lesson10.html">lesson 10</a>.</p>
+<p>This article is adapted from <a href="https://www.fast.ai/">fast.ai</a>'s <em>Machine Learning for Coders</em> course, specifically, <a href="https://course18.fast.ai/lessonsml1/lesson10.html">lesson 10</a>. I would highly recommend checking this and other courses from fast.ai, it has numerous tips on how to do practical machine learning and deep learning.</p>
 <p>We will be building a naive Bayes classifier in just <strong>10 lines</strong> of code that will get over <strong>98%</strong> accuracy on a spam message filtering task.</p>
-<p>We will do this in the top-bottom approach, were we will first build the model and then dig deeper into how the theory behind it works.</p>
+<p>We will do this in the top-bottom approach, where we will first build the model and then dig deeper into the theory of how it works.</p>
 
 </div>
 </div>
@@ -207,6 +211,7 @@ window.onload = wrap_img;
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">CountVectorizer</span>
 <span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span>
 </pre></div>
 
     </div>
@@ -457,6 +462,86 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's see what our example spam message got turned into:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>"Free entry in 2 a wkly comp to win FA Cup final tkts 21st May 2005. Text FA to 87121 to receive entry question(std txt rate)T&amp;C's apply 08452810075over18's"</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Will become:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'free entry wkly comp win fa cup final tkts 21st may 2005 text fa 87121 receive entry question std txt rate apply 08452810075over18'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As you can see, some words did not make it into the vocabulary because they were too common (e.g. the word "in"), and punctuation and apostrophes were also left out. This is <strong>not</strong> ideal and it would probably be a good idea to try a better tokenizer, and although we won't do that here, you can try finding one yourself. A good place to start would be <a href="https://docs.fast.ai/text.core.html">here</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>Since we we'll be using Bayes' theorem, note that here <code>p</code> stands for <strong>probability of features given spam</strong>, <code>q</code> stands for <strong>probability of features given non-spam</strong>, and <code>b</code> encodes the <strong>probabilities that a document is of a certain class</strong> (or what Bayesians call <em>priors</em>).</p>
 
 </div>
@@ -485,7 +570,7 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Our accuracy is:</p>
+<p>Let's check what the accuracy is:</p>
 
 </div>
 </div>
@@ -528,6 +613,70 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Great! We got over 98% accuracy, and even though this dataset is not particularly hard, I think it is cool that we managed to do it in just 10 lines of code. Let's check confusion matrices too:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[962,   8],
+       [  8, 137]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[0.99175258, 0.00824742],
+       [0.05517241, 0.94482759]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We see that the model is slightly less accurate on spam messages, just over 94%, which means that if we used this model in real life, it would let some spam messages slip through. Regardless, it's doing a great job overall. Let's now try to understand the inner workings of it.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="What-just-happened?!?">
 <a class="anchor" href="#What-just-happened?!?" aria-hidden="true"><span class="octicon octicon-link"></span></a>What just happened?!?<a class="anchor-link" href="#What-just-happened?!?"> </a>
 </h1>
@@ -548,7 +697,7 @@ window.onload = wrap_img;
     <svg class="octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
     <strong>Note: </strong>I am not saying that <em>bag of words</em> is the best approach to do NLP, it is usually quite the opposite as nowadays we have tools like RNNs and Transformers that perform much better on NLP tasks. However, we use it here because it is a really simple approach that sometimes still gives reasonable results, as it did in this case!
 </div>
-<p>This is exactly what a <code>CountVectorizer</code> does for us: produces a <strong>term document matrix</strong> with frequencies of each word for each message.</p>
+<p>This is exactly what we use a <code>CountVectorizer</code> for: it produces a <strong>term document matrix</strong> with frequencies of each word for each message.</p>
 <p>Let's look at an example of what <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html">sklearn's <code>CountVectorizer</code></a> is doing. Suppose that our messages are:</p>
 <table>
 <thead>
@@ -791,7 +940,7 @@ window.onload = wrap_img;
 <td>1</td>
 </tr>
 <tr>
-<td><em>P(feature|0)</em></td>
+<td><strong>P(feature|0)</strong></td>
 <td></td>
 <td>0.67</td>
 <td>0.67</td>
@@ -802,7 +951,7 @@ window.onload = wrap_img;
 <td>0.33</td>
 </tr>
 <tr>
-<td><em>P(feature|1)</em></td>
+<td><strong>P(feature|1)</strong></td>
 <td></td>
 <td>0.67</td>
 <td>1</td>
@@ -833,7 +982,8 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># words that appear in more than 10% of messages.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create a vectorizer object that will ignore any</span>
+<span class="c1"># words that appear in more than 10% of messages.</span>
 <span class="n">vectorizer</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">max_df</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 
 <span class="c1"># Use the fit_transform method of the vectorizer to get</span>
@@ -857,13 +1007,13 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="2-Bayes'-theorem">
-<a class="anchor" href="#2-Bayes'-theorem" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 Bayes' theorem<a class="anchor-link" href="#2-Bayes'-theorem"> </a>
+<h2 id="2.-Bayes'-theorem">
+<a class="anchor" href="#2.-Bayes'-theorem" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Bayes' theorem<a class="anchor-link" href="#2.-Bayes'-theorem"> </a>
 </h2>
 <p>Now, we can get to the essence of the model which is to apply <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' theorem</a>. I am not going to give the usual form of the formula, but instead one that will illustrate how we will be using it. Our goal is, given a particular message, figure out whether it is spam or not. Hence, the formula for us is going to take the form:</p>
-<p>$P(spam \mid message) = \frac{P(message \mid spam) \cdot P(spam)}{P(message)}$</p>
-<p>But we can use a trick: instead of trying to predict whether it is spam or not, let's look at which class is a message more likely, i.e. $\frac{P(spam \mid message)}{P(non-spam \mid message)}$. In that case, the formula will become:</p>
-<p>$ratio = \frac{P(spam \mid message)}{P(non-spam \mid message)} = \frac{P(message \mid spam) \cdot P(spam)}{P(message \mid non-spam) \cdot P(non-spam)}$.</p>
+<p>$P(\text{spam} \mid \text{message}) = \frac{P(\text{message} \mid \text{spam}) \cdot P(\text{spam})}{P(\text{message})}$</p>
+<p>But we can use a trick: instead of trying to predict whether it is spam or not, let's look at which class is a message more likely, i.e. $\frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})}$. In that case, the formula will become:</p>
+<p>$\text{ratio} = \frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})} = \frac{P(\text{message} \mid \text{spam}) \cdot P(\text{spam})}{P(\text{message} \mid \text{non-spam}) \cdot P(\text{non-spam})}$.</p>
 <p>Referring to our previous example, the ratios would then be:</p>
 <table>
 <thead>
@@ -936,7 +1086,7 @@ window.onload = wrap_img;
 <td>1</td>
 </tr>
 <tr>
-<td><em>P(feature|0)</em></td>
+<td><strong>P(feature|0)</strong></td>
 <td></td>
 <td>0.67</td>
 <td>0.67</td>
@@ -947,7 +1097,7 @@ window.onload = wrap_img;
 <td>0.33</td>
 </tr>
 <tr>
-<td><em>P(feature|1)</em></td>
+<td><strong>P(feature|1)</strong></td>
 <td></td>
 <td>0.67</td>
 <td>1</td>
@@ -958,7 +1108,7 @@ window.onload = wrap_img;
 <td>1</td>
 </tr>
 <tr>
-<td><em>ratio</em></td>
+<td><strong>ratio</strong></td>
 <td></td>
 <td>1</td>
 <td>1.5</td>
@@ -981,11 +1131,21 @@ window.onload = wrap_img;
     <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
     <strong>Note: </strong>Obviously, this is a <strong>very</strong> naive assumption and that is most certainly not the case, but it turns out to work quite well.
 </div>
-<p>Under the naive assumption, the probability $P(message \mid spam)$ can be factorized into a product of probabilities of individual words appearing in a message, so that</p>
-<p>$P(message \mid spam) = \prod_{i=1}^{n}P(w_i \mid spam)$</p>
-<p>and then:</p>
-<p>$ratio = \frac{P(spam \mid message)}{P(non-spam \mid message)} = \frac{\prod_{i=1}^{n}P(w_i \mid spam)}{\prod_{i=1}^{n}P(w_i \mid non-spam)} \frac{\cdot P(spam)}{P(non-spam)}$.</p>
-<p>We are almost done, we are now just going to apply a few tricks to make the calculations easier. First, notice that multiplying lots of probabilities together is going to result into a very small number and we might run out of floating point precision, so we can take the <strong>natural logarithm</strong> instead to handle this. Note that in this case we compare ratios not with <code>1</code>, but with <code>0</code> (because <code>ln(1)=0</code>) and that by the properties of logarithms all the products are going to turn into sums, which makes everything even simpler!</p>
+<p>Under the naive assumption, the probabilities like $P(\text{message} \mid \text{spam})$ can be factorized into a product of probabilities of individual features appearing in a message, so that</p>
+<p>$P(\text{message} \mid \text{spam}) = \prod_{i=1}^{n}P(\text{feature_i} \mid \text{spam})$</p>
+<p>and similarly for $P(\text{message} \mid \text{non-spam})$. Then, our big formula becomes:</p>
+<p>$\text{ratio} = \frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})} = \frac{\prod_{i=1}^{n}P(\text{feature_i} \mid \text{spam})}{\prod_{i=1}^{n}P(\text{feature_i} \mid \text{non-spam})} \cdot \frac{P(\text{spam})}{P(\text{non-spam})}$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.-A-few-final-tricks">
+<a class="anchor" href="#3.-A-few-final-tricks" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. A few final tricks<a class="anchor-link" href="#3.-A-few-final-tricks"> </a>
+</h2>
+<p>We are almost done, now we just want to apply a few tricks to make our calculations easier. First, notice that multiplying lots of probabilities together is going to result into a very small number and we might run out of floating point precision, so we can take the <strong>natural logarithm</strong> instead to handle this. Note that in this case we compare ratios not with <code>1</code>, but with <code>0</code> (because <code>log(1)=0</code>) and that by the properties of logarithms all the products are going to turn into sums, which makes everything even simpler!</p>
 <p>Finally, we notice that to make predictions, we can just perform matrix multiplication on the <strong>validation term document matrix</strong> and our derived vector of ratios and add (remember, we are in log space!) the ratio of priors.</p>
 
 </div>
@@ -1006,7 +1166,8 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This plus ones are there to constitute the</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Calculate P(feature|1) and P(feature|0).</span>
+<span class="c1"># This plus ones are there to constitute the</span>
 <span class="c1"># row of ones discussed above</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">train_term_doc</span><span class="p">[</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
 <span class="n">q</span> <span class="o">=</span> <span class="n">train_term_doc</span><span class="p">[</span><span class="n">y_train</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
@@ -1055,6 +1216,13 @@ window.onload = wrap_img;
 <p>With this newly acquired knowledge, you can go ahead and try using this model on your own NLP data! Though I have to warn you: the dataset used in this article was quite easy and naive Bayes classifier might not work as good for your data. But it is well-worth trying it out, especially when you can build one in just 10 lines of code!</p>
 <p>To better understand the materials of this article make sure to play around with anything that you want to dig deeper into, e.g. the different parameters and attributes of <code>CountVectorizer</code>. You can also check the full version of this on GitHub to see what cells I ran myself to better understand the inner working of this model.</p>
 <p>If you were to try and run your own model, a few suggestions for improving the models performance are presented below.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Try-n-grams">
 <a class="anchor" href="#Try-n-grams" aria-hidden="true"><span class="octicon octicon-link"></span></a>Try n-grams<a class="anchor-link" href="#Try-n-grams"> </a>
 </h2>
@@ -1138,7 +1306,85 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Turns out the model works even better with bigrams and trigrams included!</p>
+<p>Turns out the model gives even better accuracy with bigrams and trigrams included. But watch out! Checking the confusion matrices, we see that the model is now perfect on non-spam messages, but the error on spam messages has increased. This might not be what we want, so we have to be careful with interpreting our models!</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_val</span><span class="p">,</span> <span class="n">preds</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[968,   2],
+       [ 12, 133]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_val</span><span class="p">,</span> <span class="n">preds</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="s2">"true"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[0.99793814, 0.00206186],
+       [0.08275862, 0.91724138]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Binarized-version">
+<a class="anchor" href="#Binarized-version" aria-hidden="true"><span class="octicon octicon-link"></span></a>Binarized version<a class="anchor-link" href="#Binarized-version"> </a>
+</h2>
 <p>You can also try the binarized version of the term document matrix (i.e. instead of frequencies we look at whether a word is present or not)</p>
 
 </div>
@@ -1182,7 +1428,10 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Finally, you might try <strong>learning</strong> the parameters with a logistic regression instead of using the theoretical ones. Check the parameters <code>C</code> for regularization and <code>dual=True</code> for when you term document matrix is <em>much</em> wider than it is tall.</p>
+<h2 id="Learning-the-parameters-with-logistic-regression">
+<a class="anchor" href="#Learning-the-parameters-with-logistic-regression" aria-hidden="true"><span class="octicon octicon-link"></span></a>Learning the parameters with logistic regression<a class="anchor-link" href="#Learning-the-parameters-with-logistic-regression"> </a>
+</h2>
+<p>Finally, you might try taking it to the next level and <strong>learning</strong> the parameters with a logistic regression instead of using the theoretical ones. Check the parameters <code>C</code> for regularization and <code>dual=True</code> for when you term document matrix is <em>much</em> wider than it is tall.</p>
 
 </div>
 </div>
@@ -1230,7 +1479,8 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1e1</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Binarized version</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1e1</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">m</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_term_doc</span><span class="o">.</span><span class="n">sign</span><span class="p">(),</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="n">preds</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">val_term_doc</span><span class="o">.</span><span class="n">sign</span><span class="p">())</span>
 <span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">y_val</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -1259,6 +1509,24 @@ window.onload = wrap_img;
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We've managed to build a fast and considerably accurate naive Bayes model in just 10 lines of code. We've also discussed some ways for how it could be improved and adapted to your own problems, e.g. using n-grams, trying the binarized version or employing a logistic regression to learn the parameters.</p>
+<p>It turns out that the best linear model that we can build (i.e. not involving RNNs or transformer) is actually a combination of naive Bayes and logistic regression, but that that is something for another time, although you can check <a href="https://course18.fast.ai/lessonsml1/lesson11.html">this</a> lesson from fast.ai if you want to find out more yourself.</p>
+
+</div>
+</div>
+</div>
 </div>
 
 
