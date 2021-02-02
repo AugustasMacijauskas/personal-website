@@ -503,7 +503,7 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Will become:</p>
+<p>has become:</p>
 
 </div>
 </div>
@@ -1013,7 +1013,7 @@ window.onload = wrap_img;
 <p>Now, we can get to the essence of the model which is to apply <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' theorem</a>. I am not going to give the usual form of the formula, but instead one that will illustrate how we will be using it. Our goal is, given a particular message, figure out whether it is spam or not. Hence, the formula for us is going to take the form:</p>
 <p>$P(\text{spam} \mid \text{message}) = \frac{P(\text{message} \mid \text{spam}) \cdot P(\text{spam})}{P(\text{message})}$</p>
 <p>But we can use a trick: instead of trying to predict whether it is spam or not, let's look at which class is a message more likely, i.e. $\frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})}$. In that case, the formula will become:</p>
-<p>$\text{ratio} = \frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})} = \frac{P(\text{message} \mid \text{spam}) \cdot P(\text{spam})}{P(\text{message} \mid \text{non-spam}) \cdot P(\text{non-spam})}$.</p>
+<p>$\text{ratio} = \frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})} = \frac{P(\text{message} \mid \text{spam}) \cdot P(\text{spam})}{P(\text{message} \mid \text{non-spam}) \cdot P(\text{non-spam})}$</p>
 <p>Referring to our previous example, the ratios would then be:</p>
 <table>
 <thead>
@@ -1131,10 +1131,10 @@ window.onload = wrap_img;
     <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
     <strong>Note: </strong>Obviously, this is a <strong>very</strong> naive assumption and that is most certainly not the case, but it turns out to work quite well.
 </div>
-<p>Under the naive assumption, the probabilities like $P(\text{message} \mid \text{spam})$ can be factorized into a product of probabilities of individual features appearing in a message, so that</p>
-<p>$P(\text{message} \mid \text{spam}) = \prod_{i=1}^{n}P(\text{feature_i} \mid \text{spam})$</p>
+<p>Under the naive assumption, the probabilities like $P(\text{message} \mid \text{spam})$ can be factorized into a product of probabilities of individual features appearing in a message, so that:</p>
+<p>$P(\text{message} \mid \text{spam}) = \prod_{i=1}^{n}{P(\text{feature_i} \mid \text{spam})}$</p>
 <p>and similarly for $P(\text{message} \mid \text{non-spam})$. Then, our big formula becomes:</p>
-<p>$\text{ratio} = \frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})} = \frac{\prod_{i=1}^{n}P(\text{feature_i} \mid \text{spam})}{\prod_{i=1}^{n}P(\text{feature_i} \mid \text{non-spam})} \cdot \frac{P(\text{spam})}{P(\text{non-spam})}$</p>
+<p>$\text{ratio} = \frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})} = \frac{\prod_{i=1}^{n}{P(\text{feature_i} \mid \text{spam})}}{\prod_{i=1}^{n}{P(\text{feature_i} \mid \text{non-spam})}} \cdot \frac{P(\text{spam})}{P(\text{non-spam})}$</p>
 
 </div>
 </div>
