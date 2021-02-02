@@ -22,6 +22,22 @@
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/personal-website/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://augustasmacijauskas.github.io/personal-website/feed.xml" title="Augustas Macijauskas" /><link rel="shortcut icon" type="image/x-icon" href="/personal-website/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
 
 <script>
 function wrap_img(fn) {
@@ -532,7 +548,7 @@ window.onload = wrap_img;
     <svg class="octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
     <strong>Note: </strong>I am not saying that <em>bag of words</em> is the best approach to do NLP, it is usually quite the opposite as nowadays we have tools like RNNs and Transformers that perform much better on NLP tasks. However, we use it here because it is a really simple approach that sometimes still gives reasonable results, as it did in this case!
 </div>
-This is exactly what a <code>CountVectorizer</code> does for us: produces a <strong>term document matrix</strong> with frequencies of each word for each message.
+<p>This is exactly what a <code>CountVectorizer</code> does for us: produces a <strong>term document matrix</strong> with frequencies of each word for each message.</p>
 <p>Let's look at an example of what <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html">sklearn's <code>CountVectorizer</code></a> is doing. Suppose that our messages are:</p>
 <table>
 <thead>
@@ -627,7 +643,7 @@ This is exactly what a <code>CountVectorizer</code> does for us: produces a <str
     <svg class="octicon octicon-zap octicon octicon-zap" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10.561 1.5a.016.016 0 00-.01.004L3.286 8.571A.25.25 0 003.462 9H6.75a.75.75 0 01.694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0012.538 7H9.25a.75.75 0 01-.683-1.06l2.008-4.418.003-.006a.02.02 0 00-.004-.009.02.02 0 00-.006-.006L10.56 1.5zM9.504.43a1.516 1.516 0 012.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.25 1.25 0 01-.871.354h-.302a1.25 1.25 0 01-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429z"></path></svg>
     <strong>Important: </strong><code>CountVectorizer</code> just finds the <em>vocabulary</em> (list of all the unique words in our data) and then counts how often each word from the vocabulary is found in each message.
 </div>
-Notice that for a larger dataset, our vocabulary might become very large which would mean that most of the cells in our term document matrix would be <code>0</code>. For this reason, the sklearn implementation actually produces a <strong>sparse matrix</strong> which, instead of storing all the entries, stores only the location and values of non-zero entries, and since there are only so many of them, saves huge amounts of memory. How neat!
+<p>Notice that for a larger dataset, our vocabulary might become very large which would mean that most of the cells in our term document matrix would be <code>0</code>. For this reason, the sklearn implementation actually produces a <strong>sparse matrix</strong> which, instead of storing all the entries, stores only the location and values of non-zero entries, and since there are only so many of them, saves huge amounts of memory. How neat!</p>
 <p>You must have noticed that I used a <code>max_df=0.1</code> parameter for my <code>CountVectorizer</code>. This tells the vectorizer to <strong>ignore</strong> any words that appear in more than <code>10%</code> on the documents as we can safely say that they are <strong>too common</strong>. I came with this number by trying different values and looking at <code>vectorizer.stop_words_</code> to check how many and which words were ignored until I was satisfied. When you build your own model, make sure to play around with this and other parameters, such as <code>min_df</code> (opposite of <code>max_df</code>, used for very rare words), to find what works best for you! You can find more information on what parameters for <code>CountVectorizer</code> can be tinkered on the official docs.</p>
 <p>A trick that we want to do before moving on is to note that later we will want to calculate probabilities of each word appearing in spam or non-spam messages. But it might happen that certain words do not appear in a particular class at all and we might run into trouble because we will get feature probabilities of zero, and we don't want that. To counter that, we will add a row of ones, like so:</p>
 <table>
@@ -692,8 +708,6 @@ Notice that for a larger dataset, our vocabulary might become very large which w
 <tr>
 <td><em>row of ones</em></td>
 <td></td>
-<td>1</td>
-<td>1</td>
 <td>1</td>
 <td>1</td>
 <td>1</td>
@@ -768,8 +782,6 @@ Notice that for a larger dataset, our vocabulary might become very large which w
 <tr>
 <td><em>row of ones</em></td>
 <td></td>
-<td>1</td>
-<td>1</td>
 <td>1</td>
 <td>1</td>
 <td>1</td>
@@ -922,8 +934,6 @@ Notice that for a larger dataset, our vocabulary might become very large which w
 <td>1</td>
 <td>1</td>
 <td>1</td>
-<td>1</td>
-<td>1</td>
 </tr>
 <tr>
 <td><em>P(feature|0)</em></td>
@@ -965,12 +975,13 @@ Notice that for a larger dataset, our vocabulary might become very large which w
     <svg class="octicon octicon-zap octicon octicon-zap octicon octicon-zap" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10.561 1.5a.016.016 0 00-.01.004L3.286 8.571A.25.25 0 003.462 9H6.75a.75.75 0 01.694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0012.538 7H9.25a.75.75 0 01-.683-1.06l2.008-4.418.003-.006a.02.02 0 00-.004-.009.02.02 0 00-.006-.006L10.56 1.5zM9.504.43a1.516 1.516 0 012.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.25 1.25 0 01-.871.354h-.302a1.25 1.25 0 01-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429z"></path></svg>
     <strong>Important: </strong>As you can see, ratios are greater than 1 for features that are more likely to be in spam messages and lower than one otherwise.
 </div>
-Then, to further simplify things, we make the <strong>naive</strong> Bayes assumption, which says that probability of any word appearing in a message is independent of probabilities of other words appearing in that same message.
+<p>Then, to further simplify things, we make the <strong>naive</strong> Bayes assumption, which says that probability of any word appearing in a message is independent of probabilities of other words appearing in that same message.
+</p>
 <div class="flash">
     <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
     <strong>Note: </strong>Obviously, this is a <strong>very</strong> naive assumption and that is most certainly not the case, but it turns out to work quite well.
 </div>
-Under the naive assumption, the probability $P(message \mid spam)$ can be factorized into a product of probabilities of individual words appearing in a message, so that
+<p>Under the naive assumption, the probability $P(message \mid spam)$ can be factorized into a product of probabilities of individual words appearing in a message, so that</p>
 <p>$P(message \mid spam) = \prod_{i=1}^{n}P(w_i \mid spam)$</p>
 <p>and then:</p>
 <p>$ratio = \frac{P(spam \mid message)}{P(non-spam \mid message)} = \frac{\prod_{i=1}^{n}P(w_i \mid spam)}{\prod_{i=1}^{n}P(w_i \mid non-spam)} \frac{\cdot P(spam)}{P(non-spam)}$.</p>
