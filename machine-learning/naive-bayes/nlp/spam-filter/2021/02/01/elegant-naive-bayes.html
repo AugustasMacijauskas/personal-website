@@ -1132,10 +1132,9 @@ window.onload = wrap_img;
     <strong>Note: </strong>Obviously, this is a <strong>very</strong> naive assumption and that is most certainly not the case, but it turns out to work quite well.
 </div>
 <p>Under the naive assumption, the probabilities like $P(\text{message} \mid \text{spam})$ can be factorized into a product of probabilities of individual features appearing in a message, so that:</p>
-<p>$P(\text{message} \mid \text{spam}) = P(\text{feature_i} \mid \text{spam})$</p>
-<p>$P(\text{message} \mid \text{spam}) = \prod_{i=1}^{n}{P(\text{feature i} \mid \text{spam})}$</p>
+<p>$P(\text{message} \mid \text{spam}) = \prod_{i=1}^{n}{P(\text{features[i]} \mid \text{spam})}$</p>
 <p>and similarly for $P(\text{message} \mid \text{non-spam})$. Then, our big formula becomes:</p>
-<p>$\text{ratio} = \frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})} = \frac{\prod_{i=1}^{n}{P(\text{feature_i} \mid \text{spam})}}{\prod_{i=1}^{n}{P(\text{feature_i} \mid \text{non-spam})}} \cdot \frac{P(\text{spam})}{P(\text{non-spam})}$</p>
+<p>$\text{ratio} = \frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})} = \frac{\prod_{i=1}^{n}{P(\text{features[i]} \mid \text{spam})}}{\prod_{i=1}^{n}{P(\text{features[i]} \mid \text{non-spam})}} \cdot \frac{P(\text{spam})}{P(\text{non-spam})}$</p>
 
 </div>
 </div>
