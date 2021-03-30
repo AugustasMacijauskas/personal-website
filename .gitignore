@@ -15,4 +15,5 @@ __pycache__
 
 _notebooks/data/spam_email_data.csv
 
+assets/tmp
 images/tmp
