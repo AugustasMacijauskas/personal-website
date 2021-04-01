@@ -211,7 +211,7 @@ window.onload = wrap_img;
 <ol>
 <li>Create a data loader that would load in an image and a length four tensor that would represent the encoded symbol at each position in the captcha</li>
 <li>Create a multi-output model that would output a 128 length tensor and then reshape it to a 32x4 tensor<ul>
-<li>The output is 32x4 because there are 32 possible letters (the dataset that we used had no <code>0</code>, <code>1</code>, <code>O</code> or <code>I</code>) for each position, i.e. model has four outputs, each predicting one the 32 symbols for each position in the captcha</li>
+<li>The output is 32x4 because there are 32 possible letters (the dataset that we used had no <code>0</code>, <code>1</code>, <code>O</code> or <code>I</code>) for each position, i.e. model has four outputs, each predicting one of the 32 symbols for each position in the captcha</li>
 </ul>
 </li>
 <li>Use <code>CrossEntropyLoss</code> with <code>reduction="sum"</code> which will calculate the losses for each of the four outputs and sum them up. This way, we can easily build a model to predict multiple things at the same time</li>
@@ -767,7 +767,7 @@ window.onload = wrap_img;
 <li>
 <code>axis=1</code> tells the loss function that softmax and argmax should operate on dim=1, in our case this means that we go from shape [bs, num_classes=32, n_output=4] to shape [bs, n_output=4] after those activations are applied which is exactly what we want</li>
 </ul>
-<p>Finally, we override the <code>__call__</code> method because we noticed that the output gets weirdly transposed internally, so adding an additional transpose at the reverses it and makes things work the way they should be:</p>
+<p>Finally, we override the <code>__call__</code> method because we noticed that the output gets weirdly transposed internally, so adding an additional transpose here reverses it and makes things work the way they should be:</p>
 
 </div>
 </div>
@@ -1600,7 +1600,7 @@ window.onload = wrap_img;
         </p>
       </div>
       <div class="footer-col">
-        <p>Augustas Macijauskas&#39;s personal website and blog on machine learning journey.</p>
+        <p>Augustas Macijauskas&#39;s personal website and blog on machine learning.</p>
       </div>
     </div>
 
