@@ -1,0 +1,22 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Augustas Macijauskas"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/AugustasMacijauskas/
+        target: _blank
+      - icon: twitter
+        href: https://twitter.com/augustasmac
+        target: _blank
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+
+comments:
+  hypothesis: true

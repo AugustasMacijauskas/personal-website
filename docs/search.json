@@ -1,0 +1,142 @@
+[
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "posts/nb_template/template.html",
+    "href": "posts/nb_template/template.html",
+    "title": "Some title",
+    "section": "",
+    "text": "Things that could also go into front matter (seel also these docs):\n\nabstract: Some abstract\ncomments: false\nsearch: false\n\n\n\n\n\nUseful link for Quarto markdown.\n\n\n\nSee these docs.\n\n\n\nLink that opens in the same tab.\nA link that opens in new tab.\nFull url: https://quarto.org\n\n\n\nSimple image:\n\n\n\nfast.ai logo lol\n\n\nImage link: \nImage link new tab: .\nImage link with link and image titles (image title overrides link title): \nAlternative for alt text: \n\n\n\nhttps://quarto.org/docs/publishing/github-pages.html.\n\n\n\n\nThis content can be styled with a border\n\n\n\nHere is a warning.\n\nMore content.\n\nThis is some text\nUse Filter to adjust styles.\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\nTitles are possible\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\nTip with Title\n\n\n\nThis is a callout with a title.\n\n\n\n\n\n\n\n\nExpand To Learn About Collapse\n\n\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\n\nCaution\n\n\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\n\nImportant\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\nImportant\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(subplot_kw={'projection': 'polar'})\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n\n\n\n\nFigure 1: Polar axis plot\n\n\n\n\nSee Figure 1 for an example.\n\n\nThe radius of the circle is 10.\n\n\n\n\n\nSee these docs.\n\nprint('you can see the output but not the code!')\n\nyou can see the output but not the code!\n\n\n\n\nyou can see the output but not the code!\n\n\n\n# No output\n1 + 1\n\nprint(\"`hello fastai`\")\nhello fastai\nBelow is a cell with the following options:\n#|echo: false\n#|output: asis\nhello fastai\nCollapse code:\n\n\nCode\nprint('this is')\nprint('output')\nprint('that takes')\nprint('lots of vertical space')\n\n\nthis is\noutput\nthat takes\nlots of vertical space\n\n\n\n\nCode\nprint('this is')\nprint('output')\nprint('that takes')\nprint('lots of vertical space')\n\n\nthis is\noutput\nthat takes\nlots of vertical space\n\n\n\n\n\n\nRPython\n\n\nfizz_buzz &lt;- function(fbnums = 1:50) {\n  output &lt;- dplyr::case_when(\n    fbnums %% 15 == 0 ~ \"FizzBuzz\",\n    fbnums %% 3 == 0 ~ \"Fizz\",\n    fbnums %% 5 == 0 ~ \"Buzz\",\n    TRUE ~ as.character(fbnums)\n  )\n  print(output)\n}\n\n\ndef fizz_buzz(num):\n  if num % 15 == 0:\n    print(\"FizzBuzz\")\n  elif num % 5 == 0:\n    print(\"Buzz\")\n  elif num % 3 == 0:\n    print(\"Fizz\")\n  else:\n    print(num)\n\n\n\n\nRPython\n\n\nfizz_buzz &lt;- function(fbnums = 1:50) {\n  output &lt;- dplyr::case_when(\n    fbnums %% 15 == 0 ~ \"FizzBuzz\",\n    fbnums %% 3 == 0 ~ \"Fizz\",\n    fbnums %% 5 == 0 ~ \"Buzz\",\n    TRUE ~ as.character(fbnums)\n  )\n  print(output)\n}\n\n\ndef fizz_buzz(num):\n  if num % 15 == 0:\n    print(\"FizzBuzz\")\n  elif num % 5 == 0:\n    print(\"Buzz\")\n  elif num % 3 == 0:\n    print(\"Fizz\")\n  else:\n    print(num)\n\n\n\n\n\n\nTyping  will render this:\n\n\n\n\n\nTyping &gt; Warning: There will be no second warning! will render this:\n\nWarning: There will be no second warning!\n\nTyping &gt; Important: Pay attention! It's important. will render this:\n\nImportant: Pay attention! It’s important.\n\nTyping &gt; Tip: This is my tip. will render this:\n\nTip: This is my tip.\n\nTyping &gt; Note: Take note of this. will render this:\n\nNote: Take note of this.\n\nTyping &gt; Note: A doc link to [an example website: fast.ai](https://www.fast.ai/) should also work fine. will render in the docs:\n\nNote: A doc link to an example website: fast.ai should also work fine.\n\n\n\n\nSee these docs.\n\n\n\nSee these docs.\nExample:\n\n\nThe hottest new programming language is English\n\n— Andrej Karpathy (@karpathy) January 24, 2023"
+  },
+  {
+    "objectID": "posts/nb_template/template.html#front-matter",
+    "href": "posts/nb_template/template.html#front-matter",
+    "title": "Some title",
+    "section": "",
+    "text": "Things that could also go into front matter (seel also these docs):\n\nabstract: Some abstract\ncomments: false\nsearch: false"
+  },
+  {
+    "objectID": "posts/nb_template/template.html#markdown",
+    "href": "posts/nb_template/template.html#markdown",
+    "title": "Some title",
+    "section": "",
+    "text": "Useful link for Quarto markdown."
+  },
+  {
+    "objectID": "posts/nb_template/template.html#about-page",
+    "href": "posts/nb_template/template.html#about-page",
+    "title": "Some title",
+    "section": "",
+    "text": "See these docs."
+  },
+  {
+    "objectID": "posts/nb_template/template.html#links",
+    "href": "posts/nb_template/template.html#links",
+    "title": "Some title",
+    "section": "",
+    "text": "Link that opens in the same tab.\nA link that opens in new tab.\nFull url: https://quarto.org"
+  },
+  {
+    "objectID": "posts/nb_template/template.html#images",
+    "href": "posts/nb_template/template.html#images",
+    "title": "Some title",
+    "section": "",
+    "text": "Simple image:\n\n\n\nfast.ai logo lol\n\n\nImage link: \nImage link new tab: .\nImage link with link and image titles (image title overrides link title): \nAlternative for alt text:"
+  },
+  {
+    "objectID": "posts/nb_template/template.html#publishing",
+    "href": "posts/nb_template/template.html#publishing",
+    "title": "Some title",
+    "section": "",
+    "text": "https://quarto.org/docs/publishing/github-pages.html."
+  },
+  {
+    "objectID": "posts/nb_template/template.html#divs-and-spans",
+    "href": "posts/nb_template/template.html#divs-and-spans",
+    "title": "Some title",
+    "section": "",
+    "text": "This content can be styled with a border\n\n\n\nHere is a warning.\n\nMore content.\n\nThis is some text\nUse Filter to adjust styles."
+  },
+  {
+    "objectID": "posts/nb_template/template.html#callout-blocks",
+    "href": "posts/nb_template/template.html#callout-blocks",
+    "title": "Some title",
+    "section": "",
+    "text": "Note\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\nTitles are possible\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\nTip with Title\n\n\n\nThis is a callout with a title.\n\n\n\n\n\n\n\n\nExpand To Learn About Collapse\n\n\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\n\nCaution\n\n\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\n\nImportant\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\nImportant\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important."
+  },
+  {
+    "objectID": "posts/nb_template/template.html#figure-from-code",
+    "href": "posts/nb_template/template.html#figure-from-code",
+    "title": "Some title",
+    "section": "",
+    "text": "import numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(subplot_kw={'projection': 'polar'})\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n\n\n\n\nFigure 1: Polar axis plot\n\n\n\n\nSee Figure 1 for an example.\n\n\nThe radius of the circle is 10."
+  },
+  {
+    "objectID": "posts/nb_template/template.html#hidingshowing-stuff",
+    "href": "posts/nb_template/template.html#hidingshowing-stuff",
+    "title": "Some title",
+    "section": "",
+    "text": "See these docs.\n\nprint('you can see the output but not the code!')\n\nyou can see the output but not the code!\n\n\n\n\nyou can see the output but not the code!\n\n\n\n# No output\n1 + 1\n\nprint(\"`hello fastai`\")\nhello fastai\nBelow is a cell with the following options:\n#|echo: false\n#|output: asis\nhello fastai\nCollapse code:\n\n\nCode\nprint('this is')\nprint('output')\nprint('that takes')\nprint('lots of vertical space')\n\n\nthis is\noutput\nthat takes\nlots of vertical space\n\n\n\n\nCode\nprint('this is')\nprint('output')\nprint('that takes')\nprint('lots of vertical space')\n\n\nthis is\noutput\nthat takes\nlots of vertical space"
+  },
+  {
+    "objectID": "posts/nb_template/template.html#tabset",
+    "href": "posts/nb_template/template.html#tabset",
+    "title": "Some title",
+    "section": "",
+    "text": "RPython\n\n\nfizz_buzz &lt;- function(fbnums = 1:50) {\n  output &lt;- dplyr::case_when(\n    fbnums %% 15 == 0 ~ \"FizzBuzz\",\n    fbnums %% 3 == 0 ~ \"Fizz\",\n    fbnums %% 5 == 0 ~ \"Buzz\",\n    TRUE ~ as.character(fbnums)\n  )\n  print(output)\n}\n\n\ndef fizz_buzz(num):\n  if num % 15 == 0:\n    print(\"FizzBuzz\")\n  elif num % 5 == 0:\n    print(\"Buzz\")\n  elif num % 3 == 0:\n    print(\"Fizz\")\n  else:\n    print(num)\n\n\n\n\nRPython\n\n\nfizz_buzz &lt;- function(fbnums = 1:50) {\n  output &lt;- dplyr::case_when(\n    fbnums %% 15 == 0 ~ \"FizzBuzz\",\n    fbnums %% 3 == 0 ~ \"Fizz\",\n    fbnums %% 5 == 0 ~ \"Buzz\",\n    TRUE ~ as.character(fbnums)\n  )\n  print(output)\n}\n\n\ndef fizz_buzz(num):\n  if num % 15 == 0:\n    print(\"FizzBuzz\")\n  elif num % 5 == 0:\n    print(\"Buzz\")\n  elif num % 3 == 0:\n    print(\"Fizz\")\n  else:\n    print(num)"
+  },
+  {
+    "objectID": "posts/nb_template/template.html#youtube-videos",
+    "href": "posts/nb_template/template.html#youtube-videos",
+    "title": "Some title",
+    "section": "",
+    "text": "Typing  will render this:"
+  },
+  {
+    "objectID": "posts/nb_template/template.html#boxes-callouts",
+    "href": "posts/nb_template/template.html#boxes-callouts",
+    "title": "Some title",
+    "section": "",
+    "text": "Typing &gt; Warning: There will be no second warning! will render this:\n\nWarning: There will be no second warning!\n\nTyping &gt; Important: Pay attention! It's important. will render this:\n\nImportant: Pay attention! It’s important.\n\nTyping &gt; Tip: This is my tip. will render this:\n\nTip: This is my tip.\n\nTyping &gt; Note: Take note of this. will render this:\n\nNote: Take note of this.\n\nTyping &gt; Note: A doc link to [an example website: fast.ai](https://www.fast.ai/) should also work fine. will render in the docs:\n\nNote: A doc link to an example website: fast.ai should also work fine."
+  },
+  {
+    "objectID": "posts/nb_template/template.html#footnotes",
+    "href": "posts/nb_template/template.html#footnotes",
+    "title": "Some title",
+    "section": "",
+    "text": "See these docs."
+  },
+  {
+    "objectID": "posts/nb_template/template.html#twitter",
+    "href": "posts/nb_template/template.html#twitter",
+    "title": "Some title",
+    "section": "",
+    "text": "See these docs.\nExample:\n\n\nThe hottest new programming language is English\n\n— Andrej Karpathy (@karpathy) January 24, 2023"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "test-website",
+    "section": "",
+    "text": "Some title\n\n\nSome subtitle\n\n\n\n\nmachine-learning\n\n\ndeep-learning\n\n\n\n\nSome description\n\n\n\n\n\n\nSep 13, 2023\n\n\nAugustas Macijauskas\n\n\n\n\n\n\n  \n\n\n\n\nPost With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nSep 13, 2023\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nSep 10, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "This is a post with executable code."
+  }
+]
