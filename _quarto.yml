@@ -1,14 +1,20 @@
 project:
   type: website
   output-dir: docs
+  resources: 
+    - "*.pdf"
 
 website:
   title: "Augustas Macijauskas"
+  favicon: favicon.ico
   navbar:
     right:
       - about.qmd
       - icon: github
         href: https://github.com/AugustasMacijauskas/
+        target: _blank
+      - icon: linkedin
+        href: https://www.linkedin.com/in/augustas-macijauskas/
         target: _blank
       - icon: twitter
         href: https://twitter.com/augustasmac

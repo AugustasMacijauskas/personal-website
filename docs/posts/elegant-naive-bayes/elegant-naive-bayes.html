@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Augustas Macijauskas">
+<meta name="dcterms.date" content="2021-02-01">
+<meta name="description" content="A tutorial on how to use a few tricks to implement a Naive Bayes model in just a few lines of code.">
+
+<title>Augustas Macijauskas - Elegant implementation of Naive Bayes in just 10 lines of code</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../favicon.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Augustas Macijauskas</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" rel="" target="_blank"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/augustasmac" rel="" target="_blank"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Elegant implementation of Naive Bayes in just 10 lines of code</h1>
+                  <div>
+        <div class="description">
+          A tutorial on how to use a few tricks to implement a Naive Bayes model in just a few lines of code.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">machine-learning</div>
+                <div class="quarto-category">nlp</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Augustas Macijauskas </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 1, 2021</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#tldr" id="toc-tldr" class="nav-link active" data-scroll-target="#tldr">TLDR</a></li>
+  <li><a href="#imports" id="toc-imports" class="nav-link" data-scroll-target="#imports">Imports</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#building-the-model" id="toc-building-the-model" class="nav-link" data-scroll-target="#building-the-model">Building the model</a></li>
+  <li><a href="#what-just-happened" id="toc-what-just-happened" class="nav-link" data-scroll-target="#what-just-happened">What just happened?!?</a>
+  <ul class="collapse">
+  <li><a href="#the-countvectorizer" id="toc-the-countvectorizer" class="nav-link" data-scroll-target="#the-countvectorizer">1. The <code>CountVectorizer</code></a></li>
+  <li><a href="#bayes-theorem" id="toc-bayes-theorem" class="nav-link" data-scroll-target="#bayes-theorem">2. Bayes’ theorem</a></li>
+  <li><a href="#a-few-final-tricks" id="toc-a-few-final-tricks" class="nav-link" data-scroll-target="#a-few-final-tricks">3. A few final tricks</a></li>
+  </ul></li>
+  <li><a href="#how-could-i-use-this" id="toc-how-could-i-use-this" class="nav-link" data-scroll-target="#how-could-i-use-this">How could I use this?</a>
+  <ul class="collapse">
+  <li><a href="#try-n-grams" id="toc-try-n-grams" class="nav-link" data-scroll-target="#try-n-grams">Try n-grams</a></li>
+  <li><a href="#binarized-version" id="toc-binarized-version" class="nav-link" data-scroll-target="#binarized-version">Binarized version</a></li>
+  <li><a href="#learning-the-parameters-with-logistic-regression" id="toc-learning-the-parameters-with-logistic-regression" class="nav-link" data-scroll-target="#learning-the-parameters-with-logistic-regression">Learning the parameters with logistic regression</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="tldr" class="level1">
+<h1>TLDR</h1>
+<p>This article is adapted from <a href="https://www.fast.ai/">fast.ai</a>’s <em>Machine Learning for Coders</em> course, specifically, <a href="https://course18.fast.ai/lessonsml1/lesson10.html">lesson 10</a>. I would highly recommend checking this and other courses from fast.ai, it has numerous tips on how to do practical machine learning and deep learning.</p>
+<p>We will be building a naive Bayes classifier in just <strong>10 lines</strong> of code that will get over <strong>98%</strong> accuracy on a spam message filtering task.</p>
+<p>We will do this in the top-bottom approach, where we will first build the model and then dig deeper into the theory of how it works.</p>
+</section>
+<section id="imports" class="level1">
+<h1>Imports</h1>
+<p>Toggle cells below if you want to see what imports are being made.</p>
+<div class="cell" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>reload_ext autoreload</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> CountVectorizer</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="data" class="level1">
+<h1>Data</h1>
+<p>We are going to use a dataset with 5572 messages in it. Unfortunately, I am unable to provide full access to this dataset, so you’ll have to take my word for what the contents of the dataset are.</p>
+<p>Label of <code>0</code> means the message is not spam, and <code>1</code> means it is spam.</p>
+<div class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">message</th>
+<th data-quarto-table-cell-role="th">label</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Go until jurong point, crazy.. Available only ...</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Ok lar... Joking wif u oni...</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Free entry in 2 a wkly comp to win FA Cup fina...</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>U dun say so early hor... U c already then say...</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>Nah I don't think he goes to usf, he lives aro...</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">5567</td>
+<td>This is the 2nd time we have tried 2 contact u...</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5568</td>
+<td>Will Ì_ b going to esplanade fr home?</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">5569</td>
+<td>Pity, * was in mood for that. So...any other s...</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5570</td>
+<td>The guy did some bitching but I acted like i'd...</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">5571</td>
+<td>Rofl. Its true to its name</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>5572 rows × 2 columns</p>
+</div>
+</div>
+</div>
+<p>The numbers of non-spam and spam messages are respectively:</p>
+<div class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>(4825, 747)</code></pre>
+</div>
+</div>
+<p>Example spam message is:</p>
+<div class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>"Free entry in 2 a wkly comp to win FA Cup final tkts 21st May 2005. Text FA to 87121 to receive entry question(std txt rate)T&amp;C's apply 08452810075over18's"</code></pre>
+</div>
+</div>
+<p>Let’s split the data into train and test sets with 20% of data going into the test set:</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>train_ratio <span class="op">=</span> <span class="fl">0.8</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>train_length <span class="op">=</span> <span class="bu">int</span>(<span class="bu">len</span>(df) <span class="op">*</span> train_ratio)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> np.squeeze(df.drop(columns<span class="op">=</span>[<span class="st">"label"</span>])[:train_length].values)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> df[<span class="st">"label"</span>][:train_length].values</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>X_val <span class="op">=</span> np.squeeze(df.drop(columns<span class="op">=</span>[<span class="st">"label"</span>])[train_length:].values)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>y_val <span class="op">=</span> df[<span class="st">"label"</span>][train_length:].values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="building-the-model" class="level1">
+<h1>Building the model</h1>
+<p>Below I am going to provide the code for the model without too much explanation, and then in the next section I’ll discuss what is happening under the hood.</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>vectorizer <span class="op">=</span> CountVectorizer(max_df<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>train_term_doc <span class="op">=</span> vectorizer.fit_transform(X_train)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>val_term_doc <span class="op">=</span> vectorizer.transform(X_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s see what our example spam message got turned into:</p>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>X_train[<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<pre><code>"Free entry in 2 a wkly comp to win FA Cup final tkts 21st May 2005. Text FA to 87121 to receive entry question(std txt rate)T&amp;C's apply 08452810075over18's"</code></pre>
+</div>
+</div>
+<p>has become:</p>
+<div class="cell" data-execution_count="27">
+<div class="cell-output cell-output-display" data-execution_count="27">
+<pre><code>'free entry wkly comp win fa cup final tkts 21st may 2005 text fa 87121 receive entry question std txt rate apply 08452810075over18'</code></pre>
+</div>
+</div>
+<p>As you can see, some words did not make it into the vocabulary because they were too common (e.g.&nbsp;the word “in”), and punctuation and apostrophes were also left out. This is <strong>not</strong> ideal and it would probably be a good idea to try a better tokenizer, and although we won’t do that here, you can try finding one yourself. A good place to start would be <a href="https://docs.fast.ai/text.core.html">here</a>.</p>
+<p>Since we we’ll be using Bayes’ theorem, note that here <code>p</code> stands for <strong>probability of features given spam</strong>, <code>q</code> stands for <strong>probability of features given non-spam</strong>, and <code>b</code> encodes the <strong>probabilities that a document is of a certain class</strong> (or what Bayesians call <em>priors</em>).</p>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">1</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">0</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ratio <span class="op">=</span> np.log((p <span class="op">/</span> p.<span class="bu">sum</span>()) <span class="op">/</span> (q <span class="op">/</span> q.<span class="bu">sum</span>()))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.log((y_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">/</span> (y_train <span class="op">==</span> <span class="dv">0</span>).<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s check what the accuracy is:</p>
+<div class="cell" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pre_preds <span class="op">=</span> val_term_doc <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="35">
+<pre><code>0.9856502242152466</code></pre>
+</div>
+</div>
+<p>Great! We got over 98% accuracy, and even though this dataset is not particularly hard, I think it is cool that we managed to do it in just 10 lines of code. Let’s check confusion matrices too:</p>
+<div class="cell" data-execution_count="40">
+<div class="cell-output cell-output-display" data-execution_count="40">
+<pre><code>array([[962,   8],
+       [  8, 137]])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="41">
+<div class="cell-output cell-output-display" data-execution_count="41">
+<pre><code>array([[0.99175258, 0.00824742],
+       [0.05517241, 0.94482759]])</code></pre>
+</div>
+</div>
+<p>We see that the model is slightly less accurate on spam messages, just over 94%, which means that if we used this model in real life, it would let some spam messages slip through. Regardless, it’s doing a great job overall. Let’s now try to understand the inner workings of it.</p>
+</section>
+<section id="what-just-happened" class="level1">
+<h1>What just happened?!?</h1>
+<p>As you can see, our naive Bayes classifier got over 98% accuracy on this dataset in just 10 lines of code. But how does it actually work? Let’s look at everything piece by piece.</p>
+<section id="the-countvectorizer" class="level2">
+<h2 class="anchored" data-anchor-id="the-countvectorizer">1. The <code>CountVectorizer</code></h2>
+<p>Naive Bayes classifier uses what is called a <strong>bag of words</strong> approach. It simply means that we disregard any relationships between words and just look at how often they appear in the text that we want to classify.</p>
+<blockquote class="blockquote">
+<p>Note: I am not saying that <em>bag of words</em> is the best approach to do NLP, it is usually quite the opposite as nowadays we have tools like RNNs and Transformers that perform much better on NLP tasks. However, we use it here because it is a really simple approach that sometimes still gives reasonable results, as it did in this case!</p>
+</blockquote>
+<p>This is exactly what we use a <code>CountVectorizer</code> for: it produces a <strong>term document matrix</strong> with frequencies of each word for each message.</p>
+<p>Let’s look at an example of what <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html">sklearn’s <code>CountVectorizer</code></a> is doing. Suppose that our messages are:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>message</th>
+<th>label</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>This is a good message</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>A good message</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>This message is bad</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>The message is bad</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>Then, what a <code>CountVectorizer</code> is going to do for us is produce the following matrix:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>message</th>
+<th>label</th>
+<th>this</th>
+<th>is</th>
+<th>a</th>
+<th>good</th>
+<th>message</th>
+<th>the</th>
+<th>bad</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>This is a good message</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>A good message</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>This message is bad</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>The message is bad</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>Important: <code>CountVectorizer</code> just finds the <em>vocabulary</em> (list of all the unique words in our data) and then counts how often each word from the vocabulary is found in each message.</p>
+</blockquote>
+<p>Notice that for a larger dataset, our vocabulary might become very large which would mean that most of the cells in our term document matrix would be <code>0</code>. For this reason, the sklearn implementation actually produces a <strong>sparse matrix</strong> which, instead of storing all the entries, stores only the location and values of non-zero entries, and since there are only so many of them, saves huge amounts of memory. How neat!</p>
+<p>You must have noticed that I used a <code>max_df=0.1</code> parameter for my <code>CountVectorizer</code>. This tells the vectorizer to <strong>ignore</strong> any words that appear in more than <code>10%</code> on the documents as we can safely say that they are <strong>too common</strong>. I came with this number by trying different values and looking at <code>vectorizer.stop_words_</code> to check how many and which words were ignored until I was satisfied. When you build your own model, make sure to play around with this and other parameters, such as <code>min_df</code> (opposite of <code>max_df</code>, used for very rare words), to find what works best for you! You can find more information on what parameters for <code>CountVectorizer</code> can be tinkered on the official docs.</p>
+<p>A trick that we want to do before moving on is to note that later we will want to calculate probabilities of each word appearing in spam or non-spam messages. But it might happen that certain words do not appear in a particular class at all and we might run into trouble because we will get feature probabilities of zero, and we don’t want that. To counter that, we will add a row of ones, like so:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>message</th>
+<th>label</th>
+<th>this</th>
+<th>is</th>
+<th>a</th>
+<th>good</th>
+<th>message</th>
+<th>the</th>
+<th>bad</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>This is a good message</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>A good message</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>This message is bad</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>The message is bad</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><em>row of ones</em></td>
+<td></td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>If we think more about, adding a row of ones is not that counter-intuitive at all, since the messages that we have so far only carry information up to this point in time, but if a word has not appeared in any of the messages so far, it is not at all impossible that it will not appear in the future, so adding the extra one takes care of that for us.</p>
+<p>So that our feature probabilities will be:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>message</th>
+<th>label</th>
+<th>this</th>
+<th>is</th>
+<th>a</th>
+<th>good</th>
+<th>message</th>
+<th>the</th>
+<th>bad</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>This is a good message</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>A good message</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>This message is bad</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>The message is bad</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><em>row of ones</em></td>
+<td></td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><strong>P(feature|0)</strong></td>
+<td></td>
+<td>0.67</td>
+<td>0.67</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0.33</td>
+<td>0.33</td>
+</tr>
+<tr class="odd">
+<td><strong>P(feature|1)</strong></td>
+<td></td>
+<td>0.67</td>
+<td>1</td>
+<td>0.33</td>
+<td>0.33</td>
+<td>1</td>
+<td>0.67</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>In code:</p>
+<div class="cell" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a vectorizer object that will ignore any</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># words that appear in more than 10% of messages.</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>vectorizer <span class="op">=</span> CountVectorizer(max_df<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the fit_transform method of the vectorizer to get</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the term document matrix for the training set.</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>train_term_doc <span class="op">=</span> vectorizer.fit_transform(X_train)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the transform method of the vectorizer to get</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># the term document matrix for the validation set.</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># We do it this way so that train and validation sets</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># are have the same vocabularies so that we could make predictions.</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>val_term_doc <span class="op">=</span> vectorizer.transform(X_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="bayes-theorem" class="level2">
+<h2 class="anchored" data-anchor-id="bayes-theorem">2. Bayes’ theorem</h2>
+<p>Now, we can get to the essence of the model which is to apply <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes’ theorem</a>. I am not going to give the usual form of the formula, but instead one that will illustrate how we will be using it. Our goal is, given a particular message, figure out whether it is spam or not. Hence, the formula for us is going to take the form:</p>
+<p><span class="math inline">\(P(\text{spam} \mid \text{message}) = \frac{P(\text{message} \mid \text{spam}) \cdot P(\text{spam})}{P(\text{message})}\)</span></p>
+<p>But we can use a trick: instead of trying to predict whether it is spam or not, let’s look at which class is a message more likely, i.e.&nbsp;<span class="math inline">\(\frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})}\)</span>. In that case, the formula will become:</p>
+<p><span class="math inline">\(\text{ratio} = \frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})} = \frac{P(\text{message} \mid \text{spam}) \cdot P(\text{spam})}{P(\text{message} \mid \text{non-spam}) \cdot P(\text{non-spam})}\)</span></p>
+<p>Referring to our previous example, the ratios would then be:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>message</th>
+<th>label</th>
+<th>this</th>
+<th>is</th>
+<th>a</th>
+<th>good</th>
+<th>message</th>
+<th>the</th>
+<th>bad</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>This is a good message</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>A good message</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>This message is bad</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>The message is bad</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><em>row of ones</em></td>
+<td></td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><strong>P(feature|0)</strong></td>
+<td></td>
+<td>0.67</td>
+<td>0.67</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0.33</td>
+<td>0.33</td>
+</tr>
+<tr class="odd">
+<td><strong>P(feature|1)</strong></td>
+<td></td>
+<td>0.67</td>
+<td>1</td>
+<td>0.33</td>
+<td>0.33</td>
+<td>1</td>
+<td>0.67</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><strong>ratio</strong></td>
+<td></td>
+<td>1</td>
+<td>1.5</td>
+<td>0.33</td>
+<td>0.33</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>Important: As you can see, ratios are greater than 1 for features that are more likely to be in spam messages and lower than one otherwise.</p>
+</blockquote>
+<p>Then, to further simplify things, we make the <strong>naive</strong> Bayes assumption, which says that probability of any word appearing in a message is independent of probabilities of other words appearing in that same message.</p>
+<blockquote class="blockquote">
+<p>Note: Obviously, this is a <strong>very</strong> naive assumption and that is most certainly not the case, but it turns out to work quite well.</p>
+</blockquote>
+<p>Under the naive assumption, the probabilities like <span class="math inline">\(P(\text{message} \mid \text{spam})\)</span> can be factorized into a product of probabilities of individual features appearing in a message, so that:</p>
+<p><span class="math inline">\(P(\text{message} \mid \text{spam}) = \prod_{i=1}^{n}{P(\text{features[i]} \mid \text{spam})}\)</span></p>
+<p>and similarly for <span class="math inline">\(P(\text{message} \mid \text{non-spam})\)</span>. Then, our big formula becomes:</p>
+<p><span class="math inline">\(\text{ratio} = \frac{P(\text{spam} \mid \text{message})}{P(\text{non-spam} \mid \text{message})} = \frac{\prod_{i=1}^{n}{P(\text{features[i]} \mid \text{spam})}}{\prod_{i=1}^{n}{P(\text{features[i]} \mid \text{non-spam})}} \cdot \frac{P(\text{spam})}{P(\text{non-spam})}\)</span></p>
+</section>
+<section id="a-few-final-tricks" class="level2">
+<h2 class="anchored" data-anchor-id="a-few-final-tricks">3. A few final tricks</h2>
+<p>We are almost done, now we just want to apply a few tricks to make our calculations easier. First, notice that multiplying lots of probabilities together is going to result into a very small number and we might run out of floating point precision, so we can take the <strong>natural logarithm</strong> instead to handle this. Note that in this case we compare ratios not with <code>1</code>, but with <code>0</code> (because <code>log(1)=0</code>) and that by the properties of logarithms all the products are going to turn into sums, which makes everything even simpler!</p>
+<p>Finally, we notice that to make predictions, we can just perform matrix multiplication on the <strong>validation term document matrix</strong> and our derived vector of ratios and add (remember, we are in log space!) the ratio of priors.</p>
+<p>Putting it all together:</p>
+<div class="cell" data-execution_count="46">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate P(feature|1) and P(feature|0).</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># This plus ones are there to constitute the</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># row of ones discussed above</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">1</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">0</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the ratios according to our derived formulae</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>ratio <span class="op">=</span> np.log((p <span class="op">/</span> p.<span class="bu">sum</span>()) <span class="op">/</span> (q <span class="op">/</span> q.<span class="bu">sum</span>()))</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the log of ratio of priors</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.log((y_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">/</span> (y_train <span class="op">==</span> <span class="dv">0</span>).<span class="bu">sum</span>())</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Make some predictions on the validation set</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>pre_preds <span class="op">=</span> val_term_doc <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span> <span class="co"># Greater than 0 because we are working in log space</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean() <span class="co"># Accuracy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="46">
+<pre><code>0.9856502242152466</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="how-could-i-use-this" class="level1">
+<h1>How could I use this?</h1>
+<p>With this newly acquired knowledge, you can go ahead and try using this model on your own NLP data! Though I have to warn you: the dataset used in this article was quite easy and naive Bayes classifier might not work as good for your data. But it is well-worth trying it out, especially when you can build one in just 10 lines of code!</p>
+<p>To better understand the materials of this article make sure to play around with anything that you want to dig deeper into, e.g.&nbsp;the different parameters and attributes of <code>CountVectorizer</code>. You can also check the full version of this on GitHub to see what cells I ran myself to better understand the inner working of this model.</p>
+<p>If you were to try and run your own model, a few suggestions for improving the models performance are presented below.</p>
+<section id="try-n-grams" class="level2">
+<h2 class="anchored" data-anchor-id="try-n-grams">Try n-grams</h2>
+<div class="cell" data-execution_count="47">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>vectorizer <span class="op">=</span> CountVectorizer(ngram_range<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">3</span>), max_df<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>train_term_doc <span class="op">=</span> vectorizer.fit_transform(X_train)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>val_term_doc <span class="op">=</span> vectorizer.transform(X_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">1</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">0</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>ratio <span class="op">=</span> np.log((p <span class="op">/</span> p.<span class="bu">sum</span>()) <span class="op">/</span> (q <span class="op">/</span> q.<span class="bu">sum</span>()))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.log((y_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">/</span> (y_train <span class="op">==</span> <span class="dv">0</span>).<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="51">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pre_preds <span class="op">=</span> val_term_doc <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="51">
+<pre><code>0.9874439461883409</code></pre>
+</div>
+</div>
+<p>Turns out the model gives even better accuracy with bigrams and trigrams included. But watch out! Checking the confusion matrices, we see that the model is now perfect on non-spam messages, but the error on spam messages has increased. This might not be what we want, so we have to be careful with interpreting our models!</p>
+<div class="cell" data-execution_count="52">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>confusion_matrix(y_val, preds.T, normalize<span class="op">=</span><span class="va">None</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="52">
+<pre><code>array([[968,   2],
+       [ 12, 133]])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="53">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>confusion_matrix(y_val, preds.T, normalize<span class="op">=</span><span class="st">"true"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="53">
+<pre><code>array([[0.99793814, 0.00206186],
+       [0.08275862, 0.91724138]])</code></pre>
+</div>
+</div>
+</section>
+<section id="binarized-version" class="level2">
+<h2 class="anchored" data-anchor-id="binarized-version">Binarized version</h2>
+<p>You can also try the binarized version of the term document matrix (i.e.&nbsp;instead of frequencies we look at whether a word is present or not)</p>
+<div class="cell" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pre_preds <span class="op">=</span> val_term_doc.sign() <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="54">
+<pre><code>0.9874439461883409</code></pre>
+</div>
+</div>
+</section>
+<section id="learning-the-parameters-with-logistic-regression" class="level2">
+<h2 class="anchored" data-anchor-id="learning-the-parameters-with-logistic-regression">Learning the parameters with logistic regression</h2>
+<p>Finally, you might try taking it to the next level and <strong>learning</strong> the parameters with a logistic regression instead of using the theoretical ones. Check the parameters <code>C</code> for regularization and <code>dual=True</code> for when you term document matrix is <em>much</em> wider than it is tall.</p>
+<div class="cell" data-execution_count="55">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> LogisticRegression(C<span class="op">=</span><span class="fl">1e1</span>, dual<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>m.fit(train_term_doc, y_train)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> m.predict(val_term_doc)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="55">
+<pre><code>0.9811659192825112</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="56">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Binarized version</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> LogisticRegression(C<span class="op">=</span><span class="fl">1e1</span>, dual<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>m.fit(train_term_doc.sign(), y_train)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> m.predict(val_term_doc.sign())</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="56">
+<pre><code>0.9802690582959641</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>We’ve managed to build a fast and considerably accurate naive Bayes model in just 10 lines of code. We’ve also discussed some ways for how it could be improved and adapted to your own problems, e.g.&nbsp;using n-grams, trying the binarized version or employing a logistic regression to learn the parameters.</p>
+<p>It turns out that the best linear model that we can build (i.e.&nbsp;not involving RNNs or transformer) is actually a combination of naive Bayes and logistic regression, but that that is something for another time, although you can check <a href="https://course18.fast.ai/lessonsml1/lesson11.html">this</a> lesson from fast.ai if you want to find out more yourself.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

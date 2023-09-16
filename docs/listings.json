@@ -2,9 +2,11 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/nb_template/template.html",
-      "/posts/post-with-code/index.html",
-      "/posts/welcome/index.html"
+      "/posts/prompt-engineering-course/prompt-engineering-course-notes.html",
+      "/posts/basic-panorama/basic-panorama.html",
+      "/posts/optimization-algorithms/optimisation-algorithms.html",
+      "/posts/captcha-fastai/captcha-fastai.html",
+      "/posts/elegant-naive-bayes/elegant-naive-bayes.html"
     ]
   }
 ]
