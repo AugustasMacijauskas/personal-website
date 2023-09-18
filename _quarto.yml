@@ -22,6 +22,12 @@ website:
   open-graph:
     site-name: "Augustas Macijauskas' blog"
     image: augustas-macijauskas-square-profile.jpg
+  google-analytics:
+    tracking-id: "G-1M6C1LWNHY"
+    storage: cookies
+    anonymize-ip: true
+  cookie-consent:
+    type: implied
 format:
   html:
     theme: cosmo
