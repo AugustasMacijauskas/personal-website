@@ -19,7 +19,9 @@ website:
       - icon: twitter
         href: https://twitter.com/augustasmac
         target: _blank
-  open-graph: true
+  open-graph:
+    site-name: "Augustas Macijauskas' blog"
+    image: augustas-macijauskas-square-profile.jpg
 format:
   html:
     theme: cosmo
