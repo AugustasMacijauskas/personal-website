@@ -19,10 +19,12 @@ website:
       - icon: twitter
         href: https://twitter.com/augustasmac
         target: _blank
+  open-graph: true
 format:
   html:
     theme: cosmo
     css: styles.css
 
 comments:
-  hypothesis: true
+  hypothesis:
+    theme: clean
