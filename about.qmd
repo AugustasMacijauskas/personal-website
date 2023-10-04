@@ -1,6 +1,6 @@
 ---
 title: "About"
-image: augustas-macijauskas-square-profile.jpg
+image: assets/augustas-macijauskas-square-profile.jpg
 about:
   template: trestles
   links:
@@ -18,7 +18,7 @@ about:
       target: _blank
     - icon: file-earmark-text-fill
       text: CV
-      href: Augustas_Macijauskas_CV.pdf
+      href: assets/Augustas_Macijauskas_CV.pdf
       target: _blank
 ---
 

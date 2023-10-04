@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/thesis/thesis.html",
       "/posts/prompt-engineering-course/prompt-engineering-course-notes.html",
       "/posts/basic-panorama/basic-panorama.html",
       "/posts/optimization-algorithms/optimisation-algorithms.html",
