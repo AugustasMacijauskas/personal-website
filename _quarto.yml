@@ -32,6 +32,8 @@ format:
   html:
     theme: cosmo
     css: styles.css
+    code-line-numbers: true
+    highlight-style: monokai
 
 comments:
   hypothesis:

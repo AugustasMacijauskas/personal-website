@@ -271,16 +271,16 @@ cookieconsent.run({
 <div class="cell" data-execution_count="1">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>reload_ext autoreload</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> CountVectorizer</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">%</span>reload_ext autoreload</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="op">%</span>autoreload <span class="dv">2</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> CountVectorizer</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -378,25 +378,25 @@ cookieconsent.run({
 </div>
 <p>Let’s split the data into train and test sets with 20% of data going into the test set:</p>
 <div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>train_ratio <span class="op">=</span> <span class="fl">0.8</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>train_length <span class="op">=</span> <span class="bu">int</span>(<span class="bu">len</span>(df) <span class="op">*</span> train_ratio)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> np.squeeze(df.drop(columns<span class="op">=</span>[<span class="st">"label"</span>])[:train_length].values)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> df[<span class="st">"label"</span>][:train_length].values</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>X_val <span class="op">=</span> np.squeeze(df.drop(columns<span class="op">=</span>[<span class="st">"label"</span>])[train_length:].values)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>y_val <span class="op">=</span> df[<span class="st">"label"</span>][train_length:].values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>train_ratio <span class="op">=</span> <span class="fl">0.8</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>train_length <span class="op">=</span> <span class="bu">int</span>(<span class="bu">len</span>(df) <span class="op">*</span> train_ratio)</span>
+<span id="cb4-3"><a href="#cb4-3"></a>X_train <span class="op">=</span> np.squeeze(df.drop(columns<span class="op">=</span>[<span class="st">"label"</span>])[:train_length].values)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>y_train <span class="op">=</span> df[<span class="st">"label"</span>][:train_length].values</span>
+<span id="cb4-5"><a href="#cb4-5"></a>X_val <span class="op">=</span> np.squeeze(df.drop(columns<span class="op">=</span>[<span class="st">"label"</span>])[train_length:].values)</span>
+<span id="cb4-6"><a href="#cb4-6"></a>y_val <span class="op">=</span> df[<span class="st">"label"</span>][train_length:].values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="building-the-model" class="level1">
 <h1>Building the model</h1>
 <p>Below I am going to provide the code for the model without too much explanation, and then in the next section I’ll discuss what is happening under the hood.</p>
 <div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>vectorizer <span class="op">=</span> CountVectorizer(max_df<span class="op">=</span><span class="fl">0.1</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>train_term_doc <span class="op">=</span> vectorizer.fit_transform(X_train)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>val_term_doc <span class="op">=</span> vectorizer.transform(X_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>vectorizer <span class="op">=</span> CountVectorizer(max_df<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>train_term_doc <span class="op">=</span> vectorizer.fit_transform(X_train)</span>
+<span id="cb5-3"><a href="#cb5-3"></a>val_term_doc <span class="op">=</span> vectorizer.transform(X_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s see what our example spam message got turned into:</p>
 <div class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>X_train[<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>X_train[<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
 <pre><code>"Free entry in 2 a wkly comp to win FA Cup final tkts 21st May 2005. Text FA to 87121 to receive entry question(std txt rate)T&amp;C's apply 08452810075over18's"</code></pre>
 </div>
@@ -410,16 +410,16 @@ cookieconsent.run({
 <p>As you can see, some words did not make it into the vocabulary because they were too common (e.g.&nbsp;the word “in”), and punctuation and apostrophes were also left out. This is <strong>not</strong> ideal and it would probably be a good idea to try a better tokenizer, and although we won’t do that here, you can try finding one yourself. A good place to start would be <a href="https://docs.fast.ai/text.core.html">here</a>.</p>
 <p>Since we we’ll be using Bayes’ theorem, note that here <code>p</code> stands for <strong>probability of features given spam</strong>, <code>q</code> stands for <strong>probability of features given non-spam</strong>, and <code>b</code> encodes the <strong>probabilities that a document is of a certain class</strong> (or what Bayesians call <em>priors</em>).</p>
 <div class="cell" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">1</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">0</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ratio <span class="op">=</span> np.log((p <span class="op">/</span> p.<span class="bu">sum</span>()) <span class="op">/</span> (q <span class="op">/</span> q.<span class="bu">sum</span>()))</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.log((y_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">/</span> (y_train <span class="op">==</span> <span class="dv">0</span>).<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>p <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">1</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>q <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">0</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>ratio <span class="op">=</span> np.log((p <span class="op">/</span> p.<span class="bu">sum</span>()) <span class="op">/</span> (q <span class="op">/</span> q.<span class="bu">sum</span>()))</span>
+<span id="cb9-4"><a href="#cb9-4"></a>b <span class="op">=</span> np.log((y_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">/</span> (y_train <span class="op">==</span> <span class="dv">0</span>).<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s check what the accuracy is:</p>
 <div class="cell" data-execution_count="35">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pre_preds <span class="op">=</span> val_term_doc <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>pre_preds <span class="op">=</span> val_term_doc <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
+<span id="cb10-2"><a href="#cb10-2"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="35">
 <pre><code>0.9856502242152466</code></pre>
 </div>
@@ -714,20 +714,20 @@ cookieconsent.run({
 </table>
 <p>In code:</p>
 <div class="cell" data-execution_count="45">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a vectorizer object that will ignore any</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># words that appear in more than 10% of messages.</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>vectorizer <span class="op">=</span> CountVectorizer(max_df<span class="op">=</span><span class="fl">0.1</span>)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the fit_transform method of the vectorizer to get</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the term document matrix for the training set.</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>train_term_doc <span class="op">=</span> vectorizer.fit_transform(X_train)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the transform method of the vectorizer to get</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># the term document matrix for the validation set.</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># We do it this way so that train and validation sets</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># are have the same vocabularies so that we could make predictions.</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>val_term_doc <span class="op">=</span> vectorizer.transform(X_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a></span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="co"># Create a vectorizer object that will ignore any</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="co"># words that appear in more than 10% of messages.</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a>vectorizer <span class="op">=</span> CountVectorizer(max_df<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb14-5"><a href="#cb14-5"></a></span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="co"># Use the fit_transform method of the vectorizer to get</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a><span class="co"># the term document matrix for the training set.</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a>train_term_doc <span class="op">=</span> vectorizer.fit_transform(X_train)</span>
+<span id="cb14-9"><a href="#cb14-9"></a></span>
+<span id="cb14-10"><a href="#cb14-10"></a><span class="co"># Use the transform method of the vectorizer to get</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a><span class="co"># the term document matrix for the validation set.</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a><span class="co"># We do it this way so that train and validation sets</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a><span class="co"># are have the same vocabularies so that we could make predictions.</span></span>
+<span id="cb14-14"><a href="#cb14-14"></a>val_term_doc <span class="op">=</span> vectorizer.transform(X_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="bayes-theorem" class="level2">
@@ -860,23 +860,23 @@ cookieconsent.run({
 <p>Finally, we notice that to make predictions, we can just perform matrix multiplication on the <strong>validation term document matrix</strong> and our derived vector of ratios and add (remember, we are in log space!) the ratio of priors.</p>
 <p>Putting it all together:</p>
 <div class="cell" data-execution_count="46">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate P(feature|1) and P(feature|0).</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># This plus ones are there to constitute the</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># row of ones discussed above</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">1</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">0</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the ratios according to our derived formulae</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>ratio <span class="op">=</span> np.log((p <span class="op">/</span> p.<span class="bu">sum</span>()) <span class="op">/</span> (q <span class="op">/</span> q.<span class="bu">sum</span>()))</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the log of ratio of priors</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.log((y_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">/</span> (y_train <span class="op">==</span> <span class="dv">0</span>).<span class="bu">sum</span>())</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Make some predictions on the validation set</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>pre_preds <span class="op">=</span> val_term_doc <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span> <span class="co"># Greater than 0 because we are working in log space</span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean() <span class="co"># Accuracy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="co"># Calculate P(feature|1) and P(feature|0).</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="co"># This plus ones are there to constitute the</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a><span class="co"># row of ones discussed above</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a>p <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">1</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a>q <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">0</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a></span>
+<span id="cb15-8"><a href="#cb15-8"></a><span class="co"># Calculate the ratios according to our derived formulae</span></span>
+<span id="cb15-9"><a href="#cb15-9"></a>ratio <span class="op">=</span> np.log((p <span class="op">/</span> p.<span class="bu">sum</span>()) <span class="op">/</span> (q <span class="op">/</span> q.<span class="bu">sum</span>()))</span>
+<span id="cb15-10"><a href="#cb15-10"></a></span>
+<span id="cb15-11"><a href="#cb15-11"></a><span class="co"># Calculate the log of ratio of priors</span></span>
+<span id="cb15-12"><a href="#cb15-12"></a>b <span class="op">=</span> np.log((y_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">/</span> (y_train <span class="op">==</span> <span class="dv">0</span>).<span class="bu">sum</span>())</span>
+<span id="cb15-13"><a href="#cb15-13"></a></span>
+<span id="cb15-14"><a href="#cb15-14"></a><span class="co"># Make some predictions on the validation set</span></span>
+<span id="cb15-15"><a href="#cb15-15"></a>pre_preds <span class="op">=</span> val_term_doc <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
+<span id="cb15-16"><a href="#cb15-16"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span> <span class="co"># Greater than 0 because we are working in log space</span></span>
+<span id="cb15-17"><a href="#cb15-17"></a>(preds <span class="op">==</span> y_val).mean() <span class="co"># Accuracy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="46">
 <pre><code>0.9856502242152466</code></pre>
 </div>
@@ -891,34 +891,34 @@ cookieconsent.run({
 <section id="try-n-grams" class="level2">
 <h2 class="anchored" data-anchor-id="try-n-grams">Try n-grams</h2>
 <div class="cell" data-execution_count="47">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>vectorizer <span class="op">=</span> CountVectorizer(ngram_range<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">3</span>), max_df<span class="op">=</span><span class="fl">0.1</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>train_term_doc <span class="op">=</span> vectorizer.fit_transform(X_train)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>val_term_doc <span class="op">=</span> vectorizer.transform(X_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a>vectorizer <span class="op">=</span> CountVectorizer(ngram_range<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">3</span>), max_df<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a>train_term_doc <span class="op">=</span> vectorizer.fit_transform(X_train)</span>
+<span id="cb17-3"><a href="#cb17-3"></a>val_term_doc <span class="op">=</span> vectorizer.transform(X_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="49">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">1</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>q <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">0</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>ratio <span class="op">=</span> np.log((p <span class="op">/</span> p.<span class="bu">sum</span>()) <span class="op">/</span> (q <span class="op">/</span> q.<span class="bu">sum</span>()))</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.log((y_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">/</span> (y_train <span class="op">==</span> <span class="dv">0</span>).<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>p <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">1</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>q <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">0</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a>ratio <span class="op">=</span> np.log((p <span class="op">/</span> p.<span class="bu">sum</span>()) <span class="op">/</span> (q <span class="op">/</span> q.<span class="bu">sum</span>()))</span>
+<span id="cb18-4"><a href="#cb18-4"></a>b <span class="op">=</span> np.log((y_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">/</span> (y_train <span class="op">==</span> <span class="dv">0</span>).<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="51">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pre_preds <span class="op">=</span> val_term_doc <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a>pre_preds <span class="op">=</span> val_term_doc <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
+<span id="cb19-2"><a href="#cb19-2"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="51">
 <pre><code>0.9874439461883409</code></pre>
 </div>
 </div>
 <p>Turns out the model gives even better accuracy with bigrams and trigrams included. But watch out! Checking the confusion matrices, we see that the model is now perfect on non-spam messages, but the error on spam messages has increased. This might not be what we want, so we have to be careful with interpreting our models!</p>
 <div class="cell" data-execution_count="52">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>confusion_matrix(y_val, preds.T, normalize<span class="op">=</span><span class="va">None</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a>confusion_matrix(y_val, preds.T, normalize<span class="op">=</span><span class="va">None</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="52">
 <pre><code>array([[968,   2],
        [ 12, 133]])</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="53">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>confusion_matrix(y_val, preds.T, normalize<span class="op">=</span><span class="st">"true"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a>confusion_matrix(y_val, preds.T, normalize<span class="op">=</span><span class="st">"true"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="53">
 <pre><code>array([[0.99793814, 0.00206186],
        [0.08275862, 0.91724138]])</code></pre>
@@ -929,9 +929,9 @@ cookieconsent.run({
 <h2 class="anchored" data-anchor-id="binarized-version">Binarized version</h2>
 <p>You can also try the binarized version of the term document matrix (i.e.&nbsp;instead of frequencies we look at whether a word is present or not)</p>
 <div class="cell" data-execution_count="54">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pre_preds <span class="op">=</span> val_term_doc.sign() <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1"></a>pre_preds <span class="op">=</span> val_term_doc.sign() <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
+<span id="cb25-2"><a href="#cb25-2"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb25-3"><a href="#cb25-3"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="54">
 <pre><code>0.9874439461883409</code></pre>
 </div>
@@ -941,21 +941,21 @@ cookieconsent.run({
 <h2 class="anchored" data-anchor-id="learning-the-parameters-with-logistic-regression">Learning the parameters with logistic regression</h2>
 <p>Finally, you might try taking it to the next level and <strong>learning</strong> the parameters with a logistic regression instead of using the theoretical ones. Check the parameters <code>C</code> for regularization and <code>dual=True</code> for when you term document matrix is <em>much</em> wider than it is tall.</p>
 <div class="cell" data-execution_count="55">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> LogisticRegression(C<span class="op">=</span><span class="fl">1e1</span>, dual<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>m.fit(train_term_doc, y_train)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> m.predict(val_term_doc)</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1"></a>m <span class="op">=</span> LogisticRegression(C<span class="op">=</span><span class="fl">1e1</span>, dual<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb27-2"><a href="#cb27-2"></a>m.fit(train_term_doc, y_train)</span>
+<span id="cb27-3"><a href="#cb27-3"></a>preds <span class="op">=</span> m.predict(val_term_doc)</span>
+<span id="cb27-4"><a href="#cb27-4"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="55">
 <pre><code>0.9811659192825112</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="56">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Binarized version</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> LogisticRegression(C<span class="op">=</span><span class="fl">1e1</span>, dual<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>m.fit(train_term_doc.sign(), y_train)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> m.predict(val_term_doc.sign())</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1"></a></span>
+<span id="cb29-2"><a href="#cb29-2"></a><span class="co"># Binarized version</span></span>
+<span id="cb29-3"><a href="#cb29-3"></a>m <span class="op">=</span> LogisticRegression(C<span class="op">=</span><span class="fl">1e1</span>, dual<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb29-4"><a href="#cb29-4"></a>m.fit(train_term_doc.sign(), y_train)</span>
+<span id="cb29-5"><a href="#cb29-5"></a>preds <span class="op">=</span> m.predict(val_term_doc.sign())</span>
+<span id="cb29-6"><a href="#cb29-6"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="56">
 <pre><code>0.9802690582959641</code></pre>
 </div>

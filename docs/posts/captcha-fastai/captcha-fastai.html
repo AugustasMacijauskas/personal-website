@@ -293,21 +293,21 @@ cookieconsent.run({
 <div class="cell" data-execution_count="1">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Uncomment these and run once if you are using colab</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># !pip install -qq torchtext==0.8.1</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># !pip install -Uqq fastbook</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Uncomment these and run once if you are using colab</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># !pip install -qq torchtext==0.8.1</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># !pip install -Uqq fastbook</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-execution_count="3">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext autoreload</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.vision.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> PIL</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="op">%</span>load_ext autoreload</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="op">%</span>autoreload <span class="dv">2</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="im">from</span> fastai.vision.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="im">import</span> PIL</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -315,9 +315,9 @@ cookieconsent.run({
 <h1>Data</h1>
 <p>Use fastai <code>get_image_files</code> utility function to get a list of paths to captcha files:</p>
 <div class="cell" data-outputid="653c4ce4-f2ad-46f6-9ba9-57350b4b09d8" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>PATH <span class="op">=</span> Path(<span class="st">"captcha_images"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>files <span class="op">=</span> get_image_files(PATH)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>files[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>PATH <span class="op">=</span> Path(<span class="st">"captcha_images"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>files <span class="op">=</span> get_image_files(PATH)</span>
+<span id="cb3-3"><a href="#cb3-3"></a>files[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>Path('captcha_images/PRBV.png')</code></pre>
 </div>
@@ -325,68 +325,68 @@ cookieconsent.run({
 <p>We separately checked that all the images are 24x72x3.</p>
 <p>Create python dictionaries that will be used to map symbols to integers and vice versa:</p>
 <div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Find all the unique labels</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>ld <span class="op">=</span> <span class="bu">set</span>()</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> f <span class="kw">in</span> files:</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> l <span class="kw">in</span> f.stem:</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        ld.add(l)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>label_mapper <span class="op">=</span> <span class="st">""</span>.join(<span class="bu">sorted</span>(ld))</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>l2i <span class="op">=</span> { label_mapper[i]: i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(label_mapper)) } <span class="co"># labels to int</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>i2l <span class="op">=</span> { v: k <span class="cf">for</span> k, v <span class="kw">in</span> l2i.items() } <span class="co"># int to labels</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># Find all the unique labels</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>ld <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="cf">for</span> f <span class="kw">in</span> files:</span>
+<span id="cb5-5"><a href="#cb5-5"></a>    <span class="cf">for</span> l <span class="kw">in</span> f.stem:</span>
+<span id="cb5-6"><a href="#cb5-6"></a>        ld.add(l)</span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a>label_mapper <span class="op">=</span> <span class="st">""</span>.join(<span class="bu">sorted</span>(ld))</span>
+<span id="cb5-9"><a href="#cb5-9"></a>l2i <span class="op">=</span> { label_mapper[i]: i <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(label_mapper)) } <span class="co"># labels to int</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a>i2l <span class="op">=</span> { v: k <span class="cf">for</span> k, v <span class="kw">in</span> l2i.items() } <span class="co"># int to labels</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="dataset" class="level1">
 <h1>Dataset</h1>
 <p>This custom thing that we need is a fastai <code>Transform</code> that knows how to deal with a multi-output label. Reading through fastai source code we’ve managed to find that a convenient way to do this is to create a class that inherits from <code>DisplayedTransform</code>. The attributes <code>l2i</code> and <code>i2l</code> are used for label to int mapping. The <code>encodes</code> method is how to tell the library how something should be encoded, here we just take a string type label and turn it into a <code>TensorCategory</code> which is nothing more but a length four tensor with the name given for it to have a more human-readable semantic meaning. Similarly, the <code>decodes</code> method takes an encoded label and reverses it back to a string label which is wrapped in the <code>Category</code> class that is intended for categories that will be shown somewhere, e.g.&nbsp;in plots.</p>
 <div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MultiOutputCategorize(DisplayedTransform):</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, l2i<span class="op">=</span>l2i, i2l<span class="op">=</span>i2l):</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.l2i <span class="op">=</span> l2i</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.i2l <span class="op">=</span> i2l</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> encodes(<span class="va">self</span>, string_label):</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> TensorCategory([<span class="va">self</span>.l2i[l] <span class="cf">for</span> l <span class="kw">in</span> string_label])</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> decodes(<span class="va">self</span>, encoded_label):</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Category(<span class="st">""</span>.join([<span class="va">self</span>.i2l[v.item()] <span class="cf">for</span> v <span class="kw">in</span> encoded_label]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">class</span> MultiOutputCategorize(DisplayedTransform):</span>
+<span id="cb6-2"><a href="#cb6-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, l2i<span class="op">=</span>l2i, i2l<span class="op">=</span>i2l):</span>
+<span id="cb6-3"><a href="#cb6-3"></a>        <span class="va">self</span>.l2i <span class="op">=</span> l2i</span>
+<span id="cb6-4"><a href="#cb6-4"></a>        <span class="va">self</span>.i2l <span class="op">=</span> i2l</span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a>    <span class="kw">def</span> encodes(<span class="va">self</span>, string_label):</span>
+<span id="cb6-7"><a href="#cb6-7"></a>        <span class="cf">return</span> TensorCategory([<span class="va">self</span>.l2i[l] <span class="cf">for</span> l <span class="kw">in</span> string_label])</span>
+<span id="cb6-8"><a href="#cb6-8"></a></span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="kw">def</span> decodes(<span class="va">self</span>, encoded_label):</span>
+<span id="cb6-10"><a href="#cb6-10"></a>        <span class="cf">return</span> Category(<span class="st">""</span>.join([<span class="va">self</span>.i2l[v.item()] <span class="cf">for</span> v <span class="kw">in</span> encoded_label]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can now use our new transform to create a <code>DataBlock</code>, the cornerstone of fastai’s mid-level API that is very flexible and can be customized for various purposes (a good example is <a href="https://docs.fast.ai/tutorial.siamese.html">this</a> where it is used to implement a siamese network).</p>
 <p>Important thing to notice is how we wrap our <code>MultiOutputCategorize</code> in a <code>TransformBlock</code>.</p>
 <p>We also use augmentations to have more variety in our data while training the model. <code>CropPad</code> is used to pad image to a square (remember that all images were 24x72). All the other transform are pretty self explanatory, but make sure you read about them in the fastai docs if you feel like you need to.</p>
 <div class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>captcha_data_block <span class="op">=</span> DataBlock(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    blocks<span class="op">=</span>(ImageBlock, TransformBlock(type_tfms<span class="op">=</span>MultiOutputCategorize())),</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    splitter<span class="op">=</span>RandomSplitter(valid_pct<span class="op">=</span><span class="fl">0.2</span>, seed<span class="op">=</span><span class="dv">42</span>),</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    get_y<span class="op">=</span><span class="kw">lambda</span> x: x.stem,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    item_tfms<span class="op">=</span>[CropPad(size<span class="op">=</span><span class="dv">72</span>, pad_mode<span class="op">=</span>PadMode.Border), Resize(<span class="dv">64</span>)],</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    batch_tfms<span class="op">=</span>[<span class="op">*</span>aug_transforms(do_flip<span class="op">=</span><span class="va">False</span>, max_rotate<span class="op">=</span><span class="fl">5.0</span>)],</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>captcha_data_block <span class="op">=</span> DataBlock(</span>
+<span id="cb7-2"><a href="#cb7-2"></a>    blocks<span class="op">=</span>(ImageBlock, TransformBlock(type_tfms<span class="op">=</span>MultiOutputCategorize())),</span>
+<span id="cb7-3"><a href="#cb7-3"></a>    splitter<span class="op">=</span>RandomSplitter(valid_pct<span class="op">=</span><span class="fl">0.2</span>, seed<span class="op">=</span><span class="dv">42</span>),</span>
+<span id="cb7-4"><a href="#cb7-4"></a>    get_y<span class="op">=</span><span class="kw">lambda</span> x: x.stem,</span>
+<span id="cb7-5"><a href="#cb7-5"></a>    item_tfms<span class="op">=</span>[CropPad(size<span class="op">=</span><span class="dv">72</span>, pad_mode<span class="op">=</span>PadMode.Border), Resize(<span class="dv">64</span>)],</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    batch_tfms<span class="op">=</span>[<span class="op">*</span>aug_transforms(do_flip<span class="op">=</span><span class="va">False</span>, max_rotate<span class="op">=</span><span class="fl">5.0</span>)],</span>
+<span id="cb7-7"><a href="#cb7-7"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now create a dataloader, we use batch size 128 since experiments showed that it was the optimal one:</p>
 <div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> captcha_data_block.dataloaders(files, bs<span class="op">=</span><span class="dv">128</span>, num_workers<span class="op">=</span><span class="dv">4</span>, shuffle<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> dls.cuda()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>dls <span class="op">=</span> captcha_data_block.dataloaders(files, bs<span class="op">=</span><span class="dv">128</span>, num_workers<span class="op">=</span><span class="dv">4</span>, shuffle<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>dls <span class="op">=</span> dls.cuda()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Another important thing to note is how fastai handles types behind the scenes - even though the images and labels were transformed and their actual types changed, the library manages to bubble up the correct initial types if needed. One of the authors of the library Jeremy Howard mentions in his code walk-thrus on YouTube that such an approach was borrowed from other programming languages that he used.</p>
 <div class="cell" data-outputid="c8f77f88-bfc0-4e7c-bcd1-40e93721a2a6" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dls._types</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>dls._types</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>{tuple: [fastai.torch_core.TensorImage, fastai.torch_core.TensorCategory]}</code></pre>
 </div>
 </div>
 <p>Let’s just one batch to make sure everything is alright:</p>
 <div class="cell" data-outputid="8176b3c4-ea20-4840-a3a3-36eaad9087bc" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dls.show_batch()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>dls.show_batch()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="captcha-fastai_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>Also check that our custom transform is working as it should be:</p>
 <div class="cell" data-outputid="8ea3304b-c641-4e6c-f227-cf59510d5271" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> dls.one_batch()</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>b[<span class="dv">1</span>][<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>b <span class="op">=</span> dls.one_batch()</span>
+<span id="cb12-2"><a href="#cb12-2"></a>b[<span class="dv">1</span>][<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <pre><code>TensorCategory([ 9, 19,  0, 15], device='cuda:0')</code></pre>
 </div>
@@ -396,39 +396,39 @@ cookieconsent.run({
 <h1>Model</h1>
 <p>It is now time to build our multi-output model. Let’s begin by creating the final layer that will just take the outputs and will reshape them to 32x4 (ignoring batch dimension)</p>
 <div class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>N_OUTPUTS <span class="op">=</span> <span class="dv">4</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ReshapeLayer(nn.Module):</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n_classes<span class="op">=</span><span class="bu">len</span>(l2i), n_outputs<span class="op">=</span>N_OUTPUTS):</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_classes <span class="op">=</span> n_classes</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_outputs <span class="op">=</span> n_outputs</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, out):</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> out.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="va">self</span>.n_classes, <span class="va">self</span>.n_outputs)</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>N_OUTPUTS <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="kw">class</span> ReshapeLayer(nn.Module):</span>
+<span id="cb14-4"><a href="#cb14-4"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n_classes<span class="op">=</span><span class="bu">len</span>(l2i), n_outputs<span class="op">=</span>N_OUTPUTS):</span>
+<span id="cb14-5"><a href="#cb14-5"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb14-6"><a href="#cb14-6"></a>        <span class="va">self</span>.n_classes <span class="op">=</span> n_classes</span>
+<span id="cb14-7"><a href="#cb14-7"></a>        <span class="va">self</span>.n_outputs <span class="op">=</span> n_outputs</span>
+<span id="cb14-8"><a href="#cb14-8"></a>    </span>
+<span id="cb14-9"><a href="#cb14-9"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, out):</span>
+<span id="cb14-10"><a href="#cb14-10"></a>        out <span class="op">=</span> out.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="va">self</span>.n_classes, <span class="va">self</span>.n_outputs)</span>
+<span id="cb14-11"><a href="#cb14-11"></a></span>
+<span id="cb14-12"><a href="#cb14-12"></a>        <span class="cf">return</span> out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, we use fastai’s <code>create_body</code> method to get a <code>resnet18</code> model backbone pretrained on ImageNet data. We then use the <code>create_head</code> method to add a head mainly consisting of fully-connected layers to map the outputs from the convolutional backbone to a <code>32*4=128</code> length vector. The weird parameter <code>body[-1][-1].bn2.num_features</code> is actually equal to <code>512</code> and is just the number of outputs of the convolutional backbone. We found that the model does not overfit so we turn off dropout by setting <code>ps=0.0</code>:</p>
 <div class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> create_body(resnet18, cut<span class="op">=-</span><span class="dv">2</span>, pretrained<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>head <span class="op">=</span> create_head(body[<span class="op">-</span><span class="dv">1</span>][<span class="op">-</span><span class="dv">1</span>].bn2.num_features, N_OUTPUTS <span class="op">*</span> <span class="bu">len</span>(l2i), ps<span class="op">=</span><span class="fl">0.0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a>body <span class="op">=</span> create_body(resnet18, cut<span class="op">=-</span><span class="dv">2</span>, pretrained<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-2"><a href="#cb15-2"></a>head <span class="op">=</span> create_head(body[<span class="op">-</span><span class="dv">1</span>][<span class="op">-</span><span class="dv">1</span>].bn2.num_features, N_OUTPUTS <span class="op">*</span> <span class="bu">len</span>(l2i), ps<span class="op">=</span><span class="fl">0.0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Combine the <code>body</code>, the <code>head</code> and the <code>ReshapeLayer</code> into a final model:</p>
 <div class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> nn.Sequential(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    body,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    head,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    ReshapeLayer(n_classes<span class="op">=</span><span class="bu">len</span>(l2i), n_outputs<span class="op">=</span>N_OUTPUTS),</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># output will be [bs, num_classes=32, n_outputs=4]</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> model.cuda()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a>model <span class="op">=</span> nn.Sequential(</span>
+<span id="cb16-2"><a href="#cb16-2"></a>    body,</span>
+<span id="cb16-3"><a href="#cb16-3"></a>    head,</span>
+<span id="cb16-4"><a href="#cb16-4"></a>    ReshapeLayer(n_classes<span class="op">=</span><span class="bu">len</span>(l2i), n_outputs<span class="op">=</span>N_OUTPUTS),</span>
+<span id="cb16-5"><a href="#cb16-5"></a>    <span class="co"># output will be [bs, num_classes=32, n_outputs=4]</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a>)</span>
+<span id="cb16-7"><a href="#cb16-7"></a>model <span class="op">=</span> model.cuda()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This last line that casts to model to the GPU might be redundant, but we haven’t checked that, so for now it is better to be safe than sorry.</p>
 <p>Finally create a function that will tell how the model’s parameters have to be split when we’ll use transfer learning (e.g.&nbsp;which parts should be frozen or not):</p>
 <div class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> model_splitter(model):</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [params(model[<span class="dv">0</span>]), params(model[<span class="dv">1</span>:])]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">def</span> model_splitter(model):</span>
+<span id="cb17-2"><a href="#cb17-2"></a>    <span class="cf">return</span> [params(model[<span class="dv">0</span>]), params(model[<span class="dv">1</span>:])]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="training" class="level1">
@@ -436,43 +436,43 @@ cookieconsent.run({
 <p>We have come up to training the model.</p>
 <p>First we need some custom functions that will track our metrics. The first one calculates overall accuracy (fraction of images were the model gets <strong>all</strong> four outputs right) and the second one calculates the fraction of individual outputs that the model got right. For example, for captcha “ABCD”, if the model guesses “ABCA”, then the overall accuracy will be 0, but individual accuracy will be 75% (3 out of 4 letters guessed correctly):</p>
 <div class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> multi_output_accuracy(inp, targ):</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    labels_pred <span class="op">=</span> torch.softmax(inp, dim<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    labels_pred <span class="op">=</span> torch.argmax(labels_pred, dim<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ((labels_pred <span class="op">==</span> targ).<span class="bu">all</span>(dim<span class="op">=</span><span class="dv">1</span>)).<span class="bu">sum</span>() <span class="op">/</span> inp.size(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">def</span> multi_output_accuracy(inp, targ):</span>
+<span id="cb18-2"><a href="#cb18-2"></a>    labels_pred <span class="op">=</span> torch.softmax(inp, dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb18-3"><a href="#cb18-3"></a>    labels_pred <span class="op">=</span> torch.argmax(labels_pred, dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb18-4"><a href="#cb18-4"></a></span>
+<span id="cb18-5"><a href="#cb18-5"></a>    <span class="cf">return</span> ((labels_pred <span class="op">==</span> targ).<span class="bu">all</span>(dim<span class="op">=</span><span class="dv">1</span>)).<span class="bu">sum</span>() <span class="op">/</span> inp.size(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> multi_output_individual_accuracy(inp, targ):</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    labels_pred <span class="op">=</span> torch.softmax(inp, dim<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    labels_pred <span class="op">=</span> torch.argmax(labels_pred, dim<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (labels_pred <span class="op">==</span> targ).<span class="bu">sum</span>() <span class="op">/</span> (inp.size(<span class="dv">0</span>) <span class="op">*</span> targ.size(<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">def</span> multi_output_individual_accuracy(inp, targ):</span>
+<span id="cb19-2"><a href="#cb19-2"></a>    labels_pred <span class="op">=</span> torch.softmax(inp, dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb19-3"><a href="#cb19-3"></a>    labels_pred <span class="op">=</span> torch.argmax(labels_pred, dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb19-4"><a href="#cb19-4"></a></span>
+<span id="cb19-5"><a href="#cb19-5"></a>    <span class="cf">return</span> (labels_pred <span class="op">==</span> targ).<span class="bu">sum</span>() <span class="op">/</span> (inp.size(<span class="dv">0</span>) <span class="op">*</span> targ.size(<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, we create a custom <code>MultiOutputCrossEntropyLoss</code> which is an adaption of fastai’s <code>CrossEntropyLossFlat</code> for our multi-output needs.</p>
 <p>Figuring out the details of this one took a substantial amount of time, but in the end we figured out what each of the parameters do: - setting <code>flatten=False</code> turns off the default output flattening which is what we want - <code>reduction="sum"</code> makes the loss functions sum up the losses of individual outputs instead of averaging them - <code>axis=1</code> tells the loss function that softmax and argmax should operate on dim=1, in our case this means that we go from shape [bs, num_classes=32, n_output=4] to shape [bs, n_output=4] after those activations are applied which is exactly what we want</p>
 <p>Finally, we override the <code>__call__</code> method because we noticed that the output gets weirdly transposed internally, so adding an additional transpose here reverses it and makes things work the way they should be:</p>
 <div class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MultiOutputCrossEntropyLoss(CrossEntropyLossFlat):</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(flatten<span class="op">=</span><span class="va">False</span>, reduction<span class="op">=</span><span class="st">"sum"</span>, axis<span class="op">=</span><span class="dv">1</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, inp, targ, <span class="op">**</span>kwargs):</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        <span class="co"># fastai does an extra transpose inside, but we do need it, so this reverses it</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        inp <span class="op">=</span> inp.transpose(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">super</span>().<span class="fu">__call__</span>(inp, targ, <span class="op">**</span>kwargs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw">class</span> MultiOutputCrossEntropyLoss(CrossEntropyLossFlat):</span>
+<span id="cb20-2"><a href="#cb20-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb20-3"><a href="#cb20-3"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(flatten<span class="op">=</span><span class="va">False</span>, reduction<span class="op">=</span><span class="st">"sum"</span>, axis<span class="op">=</span><span class="dv">1</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb20-4"><a href="#cb20-4"></a>    </span>
+<span id="cb20-5"><a href="#cb20-5"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, inp, targ, <span class="op">**</span>kwargs):</span>
+<span id="cb20-6"><a href="#cb20-6"></a>        <span class="co"># fastai does an extra transpose inside, but we do need it, so this reverses it</span></span>
+<span id="cb20-7"><a href="#cb20-7"></a>        inp <span class="op">=</span> inp.transpose(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb20-8"><a href="#cb20-8"></a>        <span class="cf">return</span> <span class="bu">super</span>().<span class="fu">__call__</span>(inp, targ, <span class="op">**</span>kwargs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now assemble all the bits from above to create a fastai learner:</p>
 <div class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> Learner(dls, model, loss_func<span class="op">=</span>MultiOutputCrossEntropyLoss(), metrics<span class="op">=</span>[multi_output_accuracy, multi_output_individual_accuracy], splitter<span class="op">=</span>model_splitter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a>learn <span class="op">=</span> Learner(dls, model, loss_func<span class="op">=</span>MultiOutputCrossEntropyLoss(), metrics<span class="op">=</span>[multi_output_accuracy, multi_output_individual_accuracy], splitter<span class="op">=</span>model_splitter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We want to start by only training the head for a little bit, so let’s freeze the convolutional backbone:</p>
 <div class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>learn.freeze()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a>learn.freeze()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Look for a suitable learning rate:</p>
 <div class="cell" data-outputid="5f9cbf89-32ac-4952-e505-c15043b90a36" data-execution_count="25">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>learn.lr_find()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a>learn.lr_find()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 
 </div>
@@ -485,7 +485,7 @@ cookieconsent.run({
 </div>
 <p>Train the head for 2 epochs with the found learning rate:</p>
 <div class="cell" data-outputid="f82e5864-e128-4063-a2ef-5ea66ca55393" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">2</span>, <span class="fl">5e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1"></a>learn.fit_one_cycle(<span class="dv">2</span>, <span class="fl">5e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
@@ -521,11 +521,11 @@ cookieconsent.run({
 </div>
 <p>Unfreeze the convolutional backbone:</p>
 <div class="cell" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>learn.unfreeze()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1"></a>learn.unfreeze()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Look for a good learning rate and then train the whole model for 3 epochs:</p>
 <div class="cell" data-outputid="6c76bb39-4cfb-4ba8-bb90-00eec48643d9" data-execution_count="28">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>learn.lr_find()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1"></a>learn.lr_find()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 
 </div>
@@ -537,7 +537,7 @@ cookieconsent.run({
 </div>
 </div>
 <div class="cell" data-outputid="eaad8b51-13be-44d3-bb78-253d3f8967e5" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">3</span>, <span class="fl">5e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1"></a>learn.fit_one_cycle(<span class="dv">3</span>, <span class="fl">5e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
@@ -581,7 +581,7 @@ cookieconsent.run({
 </div>
 <p>Look for a learning rate again (we will find it is a much smaller one) and train the model for one more epoch to get those extra bits of accuracy:</p>
 <div class="cell" data-outputid="bfd49e45-f751-4012-93fa-050ac73b2dc6" data-execution_count="30">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>learn.lr_find()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1"></a>learn.lr_find()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 
 </div>
@@ -593,7 +593,7 @@ cookieconsent.run({
 </div>
 </div>
 <div class="cell" data-outputid="44025268-e807-485b-a63a-2f5f327619f9" data-execution_count="31">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">1</span>, <span class="fl">1e-4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1"></a>learn.fit_one_cycle(<span class="dv">1</span>, <span class="fl">1e-4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
@@ -627,7 +627,7 @@ cookieconsent.run({
 <h2 class="anchored" data-anchor-id="check-validation-set-results">Check validation set results</h2>
 <p>Check the model’s performance on a batch of data:</p>
 <div class="cell" data-outputid="afa3eeb4-0bbd-4df0-dd2c-2a755c4d40bd" data-execution_count="42">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>learn.show_results()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1"></a>learn.show_results()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 
 </div>
@@ -640,8 +640,8 @@ cookieconsent.run({
 <h2 class="anchored" data-anchor-id="get-failed-captchas">Get failed captchas</h2>
 <p>Get predictions:</p>
 <div class="cell" data-outputid="e57568cd-be8c-4243-fdf0-a9d2c5035ff1" data-execution_count="43">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>inputs, _, targets, decoded_preds <span class="op">=</span> learn.get_preds(with_input<span class="op">=</span><span class="va">True</span>, with_decoded<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>inputs.size(), targets.size(), decoded_preds.size()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1"></a>inputs, _, targets, decoded_preds <span class="op">=</span> learn.get_preds(with_input<span class="op">=</span><span class="va">True</span>, with_decoded<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb34-2"><a href="#cb34-2"></a>inputs.size(), targets.size(), decoded_preds.size()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 
 </div>
@@ -651,11 +651,11 @@ cookieconsent.run({
 </div>
 <p>Indices of failed captchas are:</p>
 <div class="cell" data-execution_count="44">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>failed_idxs <span class="op">=</span> (<span class="op">~</span>(decoded_preds <span class="op">==</span> targets).<span class="bu">all</span>(dim<span class="op">=</span><span class="dv">1</span>)).nonzero().view(<span class="op">-</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1"></a>failed_idxs <span class="op">=</span> (<span class="op">~</span>(decoded_preds <span class="op">==</span> targets).<span class="bu">all</span>(dim<span class="op">=</span><span class="dv">1</span>)).nonzero().view(<span class="op">-</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Show those captchas to check why the model failed:</p>
 <div class="cell" data-outputid="e457bd80-138b-4d67-c8d3-a84455e3759f" data-execution_count="45">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>dls.show_results(b<span class="op">=</span>(inputs[failed_idxs], targets[failed_idxs]), out<span class="op">=</span>decoded_preds[failed_idxs])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1"></a>dls.show_results(b<span class="op">=</span>(inputs[failed_idxs], targets[failed_idxs]), out<span class="op">=</span>decoded_preds[failed_idxs])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="captcha-fastai_files/figure-html/cell-36-output-1.png" class="img-fluid"></p>
 </div>
@@ -663,10 +663,10 @@ cookieconsent.run({
 <p>We can see that the model does some slight errors, but it only fails on 4 captchas out of a validation set of 1991 images which is an amazing result. I hope that it is now obvious that using captchas to protect a website from bots is not a good idea.</p>
 <p>Check the model’s confidence when it makes errors:</p>
 <div class="cell" data-outputid="63268ae8-abf6-4b57-ee25-238ed7cdcab7" data-execution_count="46">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx <span class="kw">in</span> failed_idxs.detach().cpu().numpy().flatten():</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    decoded_pred, pred, model_output <span class="op">=</span> learn.predict(dls.valid_ds[idx][<span class="dv">0</span>])</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> torch.softmax(model_output, dim<span class="op">=</span><span class="dv">0</span>)[pred].diag()</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Actual: </span><span class="sc">{</span><span class="st">''</span><span class="sc">.</span>join([i2l[v.item()] <span class="cf">for</span> v <span class="kw">in</span> dls.valid_ds[idx][<span class="dv">1</span>]])<span class="sc">}</span><span class="ss">, predicted: </span><span class="sc">{</span>decoded_pred<span class="sc">}</span><span class="ss">, probs: </span><span class="sc">{</span>probs<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1"></a><span class="cf">for</span> idx <span class="kw">in</span> failed_idxs.detach().cpu().numpy().flatten():</span>
+<span id="cb38-2"><a href="#cb38-2"></a>    decoded_pred, pred, model_output <span class="op">=</span> learn.predict(dls.valid_ds[idx][<span class="dv">0</span>])</span>
+<span id="cb38-3"><a href="#cb38-3"></a>    probs <span class="op">=</span> torch.softmax(model_output, dim<span class="op">=</span><span class="dv">0</span>)[pred].diag()</span>
+<span id="cb38-4"><a href="#cb38-4"></a>    <span class="bu">print</span>(<span class="ss">f"Actual: </span><span class="sc">{</span><span class="st">''</span><span class="sc">.</span>join([i2l[v.item()] <span class="cf">for</span> v <span class="kw">in</span> dls.valid_ds[idx][<span class="dv">1</span>]])<span class="sc">}</span><span class="ss">, predicted: </span><span class="sc">{</span>decoded_pred<span class="sc">}</span><span class="ss">, probs: </span><span class="sc">{</span>probs<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 
 </div>

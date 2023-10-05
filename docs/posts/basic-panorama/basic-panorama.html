@@ -261,42 +261,42 @@ Caution
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> cv2</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Let’s first import the some images that we want to stich together:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>PATH_TO_YOUR_IMAGES <span class="op">=</span> Path(<span class="st">"path/to/your/images"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>PATH_TO_YOUR_IMAGES <span class="op">=</span> Path(<span class="st">"path/to/your/images"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-outputid="2c3ae29d-bb17-4fe8-db31-6cc92dc33148">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load images</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> <span class="bu">sorted</span>([f <span class="cf">for</span> f <span class="kw">in</span> PATH_TO_YOUR_IMAGES.iterdir()])</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> <span class="bu">map</span>(<span class="bu">str</span>, images)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> <span class="bu">map</span>(cv2.imread, images)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> [cv2.cvtColor(img, cv2.COLOR_BGR2RGB) <span class="cf">for</span> img <span class="kw">in</span> images]</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(images)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Load images</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>images <span class="op">=</span> <span class="bu">sorted</span>([f <span class="cf">for</span> f <span class="kw">in</span> PATH_TO_YOUR_IMAGES.iterdir()])</span>
+<span id="cb3-3"><a href="#cb3-3"></a>images <span class="op">=</span> <span class="bu">map</span>(<span class="bu">str</span>, images)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>images <span class="op">=</span> <span class="bu">map</span>(cv2.imread, images)</span>
+<span id="cb3-5"><a href="#cb3-5"></a>images <span class="op">=</span> [cv2.cvtColor(img, cv2.COLOR_BGR2RGB) <span class="cf">for</span> img <span class="kw">in</span> images]</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="bu">len</span>(images)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="46">
 <pre><code>10</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> images[<span class="dv">2</span>:<span class="dv">4</span>] <span class="op">+</span> images[<span class="dv">5</span>:]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>images <span class="op">=</span> images[<span class="dv">2</span>:<span class="dv">4</span>] <span class="op">+</span> images[<span class="dv">5</span>:]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s have a look at the images:</p>
 <div class="cell" data-outputid="a424c5d0-a984-4995-8200-5182fe8b9320">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(images), figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> img, ax <span class="kw">in</span> <span class="bu">zip</span>(images, axes.flatten()):</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    ax.imshow(img)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    ax.axis(<span class="st">"off"</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(images), figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="cf">for</span> img, ax <span class="kw">in</span> <span class="bu">zip</span>(images, axes.flatten()):</span>
+<span id="cb6-4"><a href="#cb6-4"></a>    ax.imshow(img)</span>
+<span id="cb6-5"><a href="#cb6-5"></a>    ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a>fig.tight_layout()</span>
+<span id="cb6-8"><a href="#cb6-8"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="basic-panorama_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
 </div>
@@ -306,67 +306,67 @@ Caution
 <h2 class="anchored" data-anchor-id="finding-keypoints">Finding keypoints</h2>
 <p>To estimate the homography matrix, we need correspondence pairs between images. The following is a function for this based on feature matching:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_keypoints(img1, img2):</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    orb <span class="op">=</span> cv2.ORB_create(nfeatures<span class="op">=</span><span class="dv">2000</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    keypoints1, descriptors1 <span class="op">=</span> orb.detectAndCompute(img1, <span class="va">None</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    keypoints2, descriptors2 <span class="op">=</span> orb.detectAndCompute(img2, <span class="va">None</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    bf <span class="op">=</span> cv2.BFMatcher_create(cv2.NORM_HAMMING)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find matching points</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    matches <span class="op">=</span> bf.knnMatch(descriptors1, descriptors2, k<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    good <span class="op">=</span> []</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> m, n <span class="kw">in</span> matches:</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> m.distance <span class="op">&lt;</span> <span class="fl">0.5</span> <span class="op">*</span> n.distance:</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>            good.append(m)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    p_source <span class="op">=</span> np.float32([keypoints1[good_match.queryIdx].pt <span class="cf">for</span> good_match <span class="kw">in</span> good]).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    p_target <span class="op">=</span> np.float32([keypoints2[good_match.trainIdx].pt <span class="cf">for</span> good_match <span class="kw">in</span> good]).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> p_source.shape[<span class="dv">0</span>]</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    p_source <span class="op">=</span> np.concatenate([p_source, np.ones((N, <span class="dv">1</span>))], axis<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    p_target <span class="op">=</span> np.concatenate([p_target, np.ones((N, <span class="dv">1</span>))], axis<span class="op">=-</span><span class="dv">1</span>)</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> p_source, p_target</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">def</span> get_keypoints(img1, img2):</span>
+<span id="cb7-2"><a href="#cb7-2"></a>    orb <span class="op">=</span> cv2.ORB_create(nfeatures<span class="op">=</span><span class="dv">2000</span>)</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a>    keypoints1, descriptors1 <span class="op">=</span> orb.detectAndCompute(img1, <span class="va">None</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a>    keypoints2, descriptors2 <span class="op">=</span> orb.detectAndCompute(img2, <span class="va">None</span>)</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    bf <span class="op">=</span> cv2.BFMatcher_create(cv2.NORM_HAMMING)</span>
+<span id="cb7-7"><a href="#cb7-7"></a></span>
+<span id="cb7-8"><a href="#cb7-8"></a>    <span class="co"># Find matching points</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>    matches <span class="op">=</span> bf.knnMatch(descriptors1, descriptors2, k<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb7-10"><a href="#cb7-10"></a>    good <span class="op">=</span> []</span>
+<span id="cb7-11"><a href="#cb7-11"></a>    <span class="cf">for</span> m, n <span class="kw">in</span> matches:</span>
+<span id="cb7-12"><a href="#cb7-12"></a>        <span class="cf">if</span> m.distance <span class="op">&lt;</span> <span class="fl">0.5</span> <span class="op">*</span> n.distance:</span>
+<span id="cb7-13"><a href="#cb7-13"></a>            good.append(m)</span>
+<span id="cb7-14"><a href="#cb7-14"></a>    </span>
+<span id="cb7-15"><a href="#cb7-15"></a>    p_source <span class="op">=</span> np.float32([keypoints1[good_match.queryIdx].pt <span class="cf">for</span> good_match <span class="kw">in</span> good]).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb7-16"><a href="#cb7-16"></a>    p_target <span class="op">=</span> np.float32([keypoints2[good_match.trainIdx].pt <span class="cf">for</span> good_match <span class="kw">in</span> good]).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb7-17"><a href="#cb7-17"></a>    </span>
+<span id="cb7-18"><a href="#cb7-18"></a>    N <span class="op">=</span> p_source.shape[<span class="dv">0</span>]</span>
+<span id="cb7-19"><a href="#cb7-19"></a>    p_source <span class="op">=</span> np.concatenate([p_source, np.ones((N, <span class="dv">1</span>))], axis<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb7-20"><a href="#cb7-20"></a>    p_target <span class="op">=</span> np.concatenate([p_target, np.ones((N, <span class="dv">1</span>))], axis<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb7-21"><a href="#cb7-21"></a>    </span>
+<span id="cb7-22"><a href="#cb7-22"></a>    <span class="cf">return</span> p_source, p_target</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s now look at some correspondence pairs. For this, the we use the <code>draw_matches</code> function:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> draw_matches(img1, points_source, img2, points_target):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' Returns an image with matches drawn onto the images.</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    r, c <span class="op">=</span> img1.shape[:<span class="dv">2</span>]</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    r1, c1 <span class="op">=</span> img2.shape[:<span class="dv">2</span>]</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    output_img <span class="op">=</span> np.zeros((<span class="bu">max</span>([r, r1]), c <span class="op">+</span> c1, <span class="dv">3</span>), dtype<span class="op">=</span><span class="st">'uint8'</span>)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    output_img[:r, :c, :] <span class="op">=</span> np.dstack([img1])</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    output_img[:r1, c:c <span class="op">+</span> c1, :] <span class="op">=</span> np.dstack([img2])</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> p1, p2 <span class="kw">in</span> <span class="bu">zip</span>(points_source, points_target):</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        (x1, y1) <span class="op">=</span> p1[:<span class="dv">2</span>]</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        (x2, y2) <span class="op">=</span> p2[:<span class="dv">2</span>]</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        cv2.circle(output_img, (<span class="bu">int</span>(x1), <span class="bu">int</span>(y1)), <span class="dv">10</span>, (<span class="dv">0</span>, <span class="dv">255</span>, <span class="dv">255</span>), <span class="dv">10</span>)</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        cv2.circle(output_img, (<span class="bu">int</span>(x2) <span class="op">+</span> c, <span class="bu">int</span>(y2)), <span class="dv">10</span>, (<span class="dv">0</span>, <span class="dv">255</span>, <span class="dv">255</span>), <span class="dv">10</span>)</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        cv2.line(output_img, (<span class="bu">int</span>(x1), <span class="bu">int</span>(y1)), (<span class="bu">int</span>(x2) <span class="op">+</span> c, <span class="bu">int</span>(y2)), (<span class="dv">0</span>, <span class="dv">255</span>, <span class="dv">255</span>), <span class="dv">5</span>)</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> output_img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">def</span> draw_matches(img1, points_source, img2, points_target):</span>
+<span id="cb8-2"><a href="#cb8-2"></a>    <span class="co">''' Returns an image with matches drawn onto the images.</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="co">    '''</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>    r, c <span class="op">=</span> img1.shape[:<span class="dv">2</span>]</span>
+<span id="cb8-5"><a href="#cb8-5"></a>    r1, c1 <span class="op">=</span> img2.shape[:<span class="dv">2</span>]</span>
+<span id="cb8-6"><a href="#cb8-6"></a></span>
+<span id="cb8-7"><a href="#cb8-7"></a>    output_img <span class="op">=</span> np.zeros((<span class="bu">max</span>([r, r1]), c <span class="op">+</span> c1, <span class="dv">3</span>), dtype<span class="op">=</span><span class="st">'uint8'</span>)</span>
+<span id="cb8-8"><a href="#cb8-8"></a>    output_img[:r, :c, :] <span class="op">=</span> np.dstack([img1])</span>
+<span id="cb8-9"><a href="#cb8-9"></a>    output_img[:r1, c:c <span class="op">+</span> c1, :] <span class="op">=</span> np.dstack([img2])</span>
+<span id="cb8-10"><a href="#cb8-10"></a></span>
+<span id="cb8-11"><a href="#cb8-11"></a>    <span class="cf">for</span> p1, p2 <span class="kw">in</span> <span class="bu">zip</span>(points_source, points_target):</span>
+<span id="cb8-12"><a href="#cb8-12"></a>        (x1, y1) <span class="op">=</span> p1[:<span class="dv">2</span>]</span>
+<span id="cb8-13"><a href="#cb8-13"></a>        (x2, y2) <span class="op">=</span> p2[:<span class="dv">2</span>]</span>
+<span id="cb8-14"><a href="#cb8-14"></a></span>
+<span id="cb8-15"><a href="#cb8-15"></a>        cv2.circle(output_img, (<span class="bu">int</span>(x1), <span class="bu">int</span>(y1)), <span class="dv">10</span>, (<span class="dv">0</span>, <span class="dv">255</span>, <span class="dv">255</span>), <span class="dv">10</span>)</span>
+<span id="cb8-16"><a href="#cb8-16"></a>        cv2.circle(output_img, (<span class="bu">int</span>(x2) <span class="op">+</span> c, <span class="bu">int</span>(y2)), <span class="dv">10</span>, (<span class="dv">0</span>, <span class="dv">255</span>, <span class="dv">255</span>), <span class="dv">10</span>)</span>
+<span id="cb8-17"><a href="#cb8-17"></a></span>
+<span id="cb8-18"><a href="#cb8-18"></a>        cv2.line(output_img, (<span class="bu">int</span>(x1), <span class="bu">int</span>(y1)), (<span class="bu">int</span>(x2) <span class="op">+</span> c, <span class="bu">int</span>(y2)), (<span class="dv">0</span>, <span class="dv">255</span>, <span class="dv">255</span>), <span class="dv">5</span>)</span>
+<span id="cb8-19"><a href="#cb8-19"></a></span>
+<span id="cb8-20"><a href="#cb8-20"></a>    <span class="cf">return</span> output_img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We calculate the keypoints:</p>
 <div class="cell" data-outputid="e5cd7d65-7e2a-4c86-cadb-588448915293">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>keypoint_pairs <span class="op">=</span> [get_keypoints(img1, img2) <span class="cf">for</span> img1, img2 <span class="kw">in</span> <span class="bu">zip</span>(images[:<span class="op">-</span><span class="dv">1</span>], images[<span class="dv">1</span>:])]</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>source_points <span class="op">=</span> [pair[<span class="dv">0</span>] <span class="cf">for</span> pair <span class="kw">in</span> keypoint_pairs]</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>target_points <span class="op">=</span> [pair[<span class="dv">1</span>] <span class="cf">for</span> pair <span class="kw">in</span> keypoint_pairs]</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(source_points), <span class="bu">len</span>(target_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>keypoint_pairs <span class="op">=</span> [get_keypoints(img1, img2) <span class="cf">for</span> img1, img2 <span class="kw">in</span> <span class="bu">zip</span>(images[:<span class="op">-</span><span class="dv">1</span>], images[<span class="dv">1</span>:])]</span>
+<span id="cb9-2"><a href="#cb9-2"></a>source_points <span class="op">=</span> [pair[<span class="dv">0</span>] <span class="cf">for</span> pair <span class="kw">in</span> keypoint_pairs]</span>
+<span id="cb9-3"><a href="#cb9-3"></a>target_points <span class="op">=</span> [pair[<span class="dv">1</span>] <span class="cf">for</span> pair <span class="kw">in</span> keypoint_pairs]</span>
+<span id="cb9-4"><a href="#cb9-4"></a></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="bu">len</span>(source_points), <span class="bu">len</span>(target_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="51">
 <pre><code>(6, 6)</code></pre>
 </div>
 </div>
 <p>Check how many keypoints we have:</p>
 <div class="cell" data-outputid="01ea858b-7c76-41b0-9a2c-1a94b4eaf5aa">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(source_points)):</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(source_points[i].shape, target_points[i].shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(source_points)):</span>
+<span id="cb11-2"><a href="#cb11-2"></a>    <span class="bu">print</span>(source_points[i].shape, target_points[i].shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(305, 3) (305, 3)
 (188, 3) (188, 3)
@@ -378,13 +378,13 @@ Caution
 </div>
 <p>Visualise the keypoints:</p>
 <div class="cell" data-outputid="7db6cbc9-97af-4a73-de97-67420ef27c7d">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>matches_to_show <span class="op">=</span> <span class="dv">200</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> img1, p_source, img2, p_target <span class="kw">in</span> <span class="bu">zip</span>(images[:<span class="op">-</span><span class="dv">1</span>], source_points, images[<span class="dv">1</span>:], target_points):</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    f <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">20</span>, <span class="dv">10</span>))</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    vis <span class="op">=</span> draw_matches(img1, p_source[:matches_to_show], img2, p_target[:matches_to_show])</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">"off"</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    plt.imshow(vis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>matches_to_show <span class="op">=</span> <span class="dv">200</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="cf">for</span> img1, p_source, img2, p_target <span class="kw">in</span> <span class="bu">zip</span>(images[:<span class="op">-</span><span class="dv">1</span>], source_points, images[<span class="dv">1</span>:], target_points):</span>
+<span id="cb13-4"><a href="#cb13-4"></a>    f <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">20</span>, <span class="dv">10</span>))</span>
+<span id="cb13-5"><a href="#cb13-5"></a>    vis <span class="op">=</span> draw_matches(img1, p_source[:matches_to_show], img2, p_target[:matches_to_show])</span>
+<span id="cb13-6"><a href="#cb13-6"></a>    plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb13-7"><a href="#cb13-7"></a>    plt.imshow(vis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="basic-panorama_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
 </div>
@@ -409,118 +409,118 @@ Caution
 <h2 class="anchored" data-anchor-id="estimating-the-homography-matrix">Estimating the homography matrix</h2>
 <p>After looking at the correspondences, let’s stitch the images together! In order to stitch together the images, we need a function to return the 2x9 homography matrix <code>A_i</code> matrix for a given 2D correspondence pair <code>xi_vector</code> and <code>xi_prime_vector</code> (which are 3D homogeneous vectors).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_Ai(xi_vector, xi_prime_vector):</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' Returns the A_i matrix discussed in the lecture for input vectors.</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">        xi_vector (array): the x_i vector in homogeneous coordinates</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">        xi_vector_prime (array): the x_i_prime vector in homogeneous coordinates</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> xi_vector.shape <span class="op">==</span> (<span class="dv">3</span>, ) <span class="kw">and</span> xi_prime_vector.shape <span class="op">==</span> (<span class="dv">3</span>, )</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    Ai <span class="op">=</span> np.zeros((<span class="dv">2</span>, <span class="dv">9</span>))</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    Ai[<span class="dv">0</span>, <span class="dv">3</span>:<span class="dv">6</span>] <span class="op">=</span> <span class="op">-</span>xi_prime_vector[<span class="dv">2</span>] <span class="op">*</span> xi_vector</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    Ai[<span class="dv">0</span>, <span class="dv">6</span>:<span class="dv">9</span>] <span class="op">=</span> xi_prime_vector[<span class="dv">1</span>] <span class="op">*</span> xi_vector</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    Ai[<span class="dv">1</span>, <span class="dv">0</span>:<span class="dv">3</span>] <span class="op">=</span> xi_prime_vector[<span class="dv">2</span>] <span class="op">*</span> xi_vector</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    Ai[<span class="dv">1</span>, <span class="dv">6</span>:<span class="dv">9</span>] <span class="op">=</span> <span class="op">-</span>xi_prime_vector[<span class="dv">0</span>] <span class="op">*</span> xi_vector</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(Ai.shape <span class="op">==</span> (<span class="dv">2</span>, <span class="dv">9</span>))</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Ai</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">def</span> get_Ai(xi_vector, xi_prime_vector):</span>
+<span id="cb14-2"><a href="#cb14-2"></a>    <span class="co">''' Returns the A_i matrix discussed in the lecture for input vectors.</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="co">    </span></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="co">    Args:</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="co">        xi_vector (array): the x_i vector in homogeneous coordinates</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="co">        xi_vector_prime (array): the x_i_prime vector in homogeneous coordinates</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a><span class="co">    '''</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a>    <span class="cf">assert</span> xi_vector.shape <span class="op">==</span> (<span class="dv">3</span>, ) <span class="kw">and</span> xi_prime_vector.shape <span class="op">==</span> (<span class="dv">3</span>, )</span>
+<span id="cb14-9"><a href="#cb14-9"></a></span>
+<span id="cb14-10"><a href="#cb14-10"></a>    Ai <span class="op">=</span> np.zeros((<span class="dv">2</span>, <span class="dv">9</span>))</span>
+<span id="cb14-11"><a href="#cb14-11"></a>    Ai[<span class="dv">0</span>, <span class="dv">3</span>:<span class="dv">6</span>] <span class="op">=</span> <span class="op">-</span>xi_prime_vector[<span class="dv">2</span>] <span class="op">*</span> xi_vector</span>
+<span id="cb14-12"><a href="#cb14-12"></a>    Ai[<span class="dv">0</span>, <span class="dv">6</span>:<span class="dv">9</span>] <span class="op">=</span> xi_prime_vector[<span class="dv">1</span>] <span class="op">*</span> xi_vector</span>
+<span id="cb14-13"><a href="#cb14-13"></a>    Ai[<span class="dv">1</span>, <span class="dv">0</span>:<span class="dv">3</span>] <span class="op">=</span> xi_prime_vector[<span class="dv">2</span>] <span class="op">*</span> xi_vector</span>
+<span id="cb14-14"><a href="#cb14-14"></a>    Ai[<span class="dv">1</span>, <span class="dv">6</span>:<span class="dv">9</span>] <span class="op">=</span> <span class="op">-</span>xi_prime_vector[<span class="dv">0</span>] <span class="op">*</span> xi_vector</span>
+<span id="cb14-15"><a href="#cb14-15"></a></span>
+<span id="cb14-16"><a href="#cb14-16"></a>    <span class="cf">assert</span>(Ai.shape <span class="op">==</span> (<span class="dv">2</span>, <span class="dv">9</span>))</span>
+<span id="cb14-17"><a href="#cb14-17"></a>    </span>
+<span id="cb14-18"><a href="#cb14-18"></a>    <span class="cf">return</span> Ai</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Using <code>get_Ai</code>, write a function <code>get_A</code> which returns the A matrix of size 2Nx9:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_A(points_source, points_target):</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' Returns the A matrix discussed in the lecture.</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">        points_source (array): 3D homogeneous points from source image</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">        points_target (array): 3D homogeneous points from target image</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> points_source.shape[<span class="dv">0</span>]</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Insert your code here</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> np.vstack([</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        get_Ai(src, target) <span class="cf">for</span> src, target <span class="kw">in</span> <span class="bu">zip</span>(points_source, points_target)</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span>(A.shape <span class="op">==</span> (<span class="dv">2</span><span class="op">*</span>N, <span class="dv">9</span>))</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> A</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">def</span> get_A(points_source, points_target):</span>
+<span id="cb15-2"><a href="#cb15-2"></a>    <span class="co">''' Returns the A matrix discussed in the lecture.</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="co">    </span></span>
+<span id="cb15-4"><a href="#cb15-4"></a><span class="co">    Args:</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a><span class="co">        points_source (array): 3D homogeneous points from source image</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="co">        points_target (array): 3D homogeneous points from target image</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a><span class="co">    '''</span></span>
+<span id="cb15-8"><a href="#cb15-8"></a>    N <span class="op">=</span> points_source.shape[<span class="dv">0</span>]</span>
+<span id="cb15-9"><a href="#cb15-9"></a></span>
+<span id="cb15-10"><a href="#cb15-10"></a>    <span class="co"># Insert your code here</span></span>
+<span id="cb15-11"><a href="#cb15-11"></a>    A <span class="op">=</span> np.vstack([</span>
+<span id="cb15-12"><a href="#cb15-12"></a>        get_Ai(src, target) <span class="cf">for</span> src, target <span class="kw">in</span> <span class="bu">zip</span>(points_source, points_target)</span>
+<span id="cb15-13"><a href="#cb15-13"></a>    ])</span>
+<span id="cb15-14"><a href="#cb15-14"></a>    </span>
+<span id="cb15-15"><a href="#cb15-15"></a>    <span class="cf">assert</span>(A.shape <span class="op">==</span> (<span class="dv">2</span><span class="op">*</span>N, <span class="dv">9</span>))</span>
+<span id="cb15-16"><a href="#cb15-16"></a>    <span class="cf">return</span> A</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, implement the function <code>get_homography</code> which returns the homography H for point correspondence pairs. We obtain H by performing the Direct Linear Transformation (DLT) algorithm:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_homography(points_source, points_target):</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' Returns the homography H.</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">        points_source (array): 3D homogeneous points from source image</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">        points_target (array): 3D homogeneous points from target image        </span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Insert your code here</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> get_A(points_source, points_target)</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    _, _, V_T <span class="op">=</span> np.linalg.svd(A)</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    H <span class="op">=</span> V_T.T[:, <span class="op">-</span><span class="dv">1</span>].reshape((<span class="dv">3</span>, <span class="dv">3</span>))</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> H.shape <span class="op">==</span> (<span class="dv">3</span>, <span class="dv">3</span>)</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> H</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">def</span> get_homography(points_source, points_target):</span>
+<span id="cb16-2"><a href="#cb16-2"></a>    <span class="co">''' Returns the homography H.</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="co">    </span></span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="co">    Args:</span></span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="co">        points_source (array): 3D homogeneous points from source image</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="co">        points_target (array): 3D homogeneous points from target image        </span></span>
+<span id="cb16-7"><a href="#cb16-7"></a><span class="co">    '''</span></span>
+<span id="cb16-8"><a href="#cb16-8"></a></span>
+<span id="cb16-9"><a href="#cb16-9"></a>    <span class="co"># Insert your code here</span></span>
+<span id="cb16-10"><a href="#cb16-10"></a>    A <span class="op">=</span> get_A(points_source, points_target)</span>
+<span id="cb16-11"><a href="#cb16-11"></a>    _, _, V_T <span class="op">=</span> np.linalg.svd(A)</span>
+<span id="cb16-12"><a href="#cb16-12"></a>    H <span class="op">=</span> V_T.T[:, <span class="op">-</span><span class="dv">1</span>].reshape((<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb16-13"><a href="#cb16-13"></a></span>
+<span id="cb16-14"><a href="#cb16-14"></a>    <span class="cf">assert</span> H.shape <span class="op">==</span> (<span class="dv">3</span>, <span class="dv">3</span>)</span>
+<span id="cb16-15"><a href="#cb16-15"></a>    </span>
+<span id="cb16-16"><a href="#cb16-16"></a>    <span class="cf">return</span> H</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We need a function which takes in the two images and the calculated homography and it returns the stiched image in a format which we can display easy with matplotlib. This function is provided in the following.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stitch_images(img1, img2, H):</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' Stitches together the images via given homography H.</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">        img1 (array): image 1</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">        img2 (array): image 2</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">        H (array): homography</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    rows1, cols1 <span class="op">=</span> img1.shape[:<span class="dv">2</span>]</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    rows2, cols2 <span class="op">=</span> img2.shape[:<span class="dv">2</span>]</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    list_of_points_1 <span class="op">=</span> np.float32([[<span class="dv">0</span>,<span class="dv">0</span>], [<span class="dv">0</span>, rows1],[cols1, rows1], [cols1, <span class="dv">0</span>]]).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    temp_points <span class="op">=</span> np.float32([[<span class="dv">0</span>,<span class="dv">0</span>], [<span class="dv">0</span>,rows2], [cols2,rows2], [cols2,<span class="dv">0</span>]]).reshape(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>)</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    list_of_points_2 <span class="op">=</span> cv2.perspectiveTransform(temp_points, H)</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    list_of_points <span class="op">=</span> np.concatenate((list_of_points_1,list_of_points_2), axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    [x_min, y_min] <span class="op">=</span> np.int32(list_of_points.<span class="bu">min</span>(axis<span class="op">=</span><span class="dv">0</span>).ravel() <span class="op">-</span> <span class="fl">0.5</span>)</span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    [x_max, y_max] <span class="op">=</span> np.int32(list_of_points.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">0</span>).ravel() <span class="op">+</span> <span class="fl">0.5</span>)</span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    translation_dist <span class="op">=</span> [<span class="op">-</span>x_min,<span class="op">-</span>y_min]</span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    H_translation <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, translation_dist[<span class="dv">0</span>]], [<span class="dv">0</span>, <span class="dv">1</span>, translation_dist[<span class="dv">1</span>]], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
-<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>    H_final <span class="op">=</span> H_translation.dot(H)</span>
-<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>    output_img <span class="op">=</span> cv2.warpPerspective(img2, H_final, (x_max<span class="op">-</span>x_min, y_max<span class="op">-</span>y_min))</span>
-<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>    output_img[translation_dist[<span class="dv">1</span>]:rows1<span class="op">+</span>translation_dist[<span class="dv">1</span>], translation_dist[<span class="dv">0</span>]:cols1<span class="op">+</span>translation_dist[<span class="dv">0</span>]] <span class="op">=</span> img1</span>
-<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>    output_img <span class="op">=</span> output_img[translation_dist[<span class="dv">1</span>]:rows1<span class="op">+</span>translation_dist[<span class="dv">1</span>]:, :]</span>
-<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find top and bottom rows</span></span>
-<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>    top_row <span class="op">=</span> output_img.nonzero()[<span class="dv">0</span>].<span class="bu">min</span>()</span>
-<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>    bottom_row <span class="op">=</span> output_img.nonzero()[<span class="dv">0</span>].<span class="bu">max</span>()</span>
-<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>    top_max <span class="op">=</span> output_img[top_row, :].nonzero()[<span class="dv">0</span>].<span class="bu">max</span>()</span>
-<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>    bottom_max <span class="op">=</span> output_img[bottom_row, :].nonzero()[<span class="dv">0</span>].<span class="bu">max</span>()</span>
-<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cut width</span></span>
-<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>    output_img <span class="op">=</span> output_img[:, :<span class="bu">min</span>(top_max, bottom_max)]</span>
-<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> output_img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">def</span> stitch_images(img1, img2, H):</span>
+<span id="cb17-2"><a href="#cb17-2"></a>    <span class="co">''' Stitches together the images via given homography H.</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a></span>
+<span id="cb17-4"><a href="#cb17-4"></a><span class="co">    Args:</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="co">        img1 (array): image 1</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a><span class="co">        img2 (array): image 2</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a><span class="co">        H (array): homography</span></span>
+<span id="cb17-8"><a href="#cb17-8"></a><span class="co">    '''</span></span>
+<span id="cb17-9"><a href="#cb17-9"></a></span>
+<span id="cb17-10"><a href="#cb17-10"></a>    rows1, cols1 <span class="op">=</span> img1.shape[:<span class="dv">2</span>]</span>
+<span id="cb17-11"><a href="#cb17-11"></a>    rows2, cols2 <span class="op">=</span> img2.shape[:<span class="dv">2</span>]</span>
+<span id="cb17-12"><a href="#cb17-12"></a></span>
+<span id="cb17-13"><a href="#cb17-13"></a>    list_of_points_1 <span class="op">=</span> np.float32([[<span class="dv">0</span>,<span class="dv">0</span>], [<span class="dv">0</span>, rows1],[cols1, rows1], [cols1, <span class="dv">0</span>]]).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb17-14"><a href="#cb17-14"></a>    temp_points <span class="op">=</span> np.float32([[<span class="dv">0</span>,<span class="dv">0</span>], [<span class="dv">0</span>,rows2], [cols2,rows2], [cols2,<span class="dv">0</span>]]).reshape(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>)</span>
+<span id="cb17-15"><a href="#cb17-15"></a></span>
+<span id="cb17-16"><a href="#cb17-16"></a>    list_of_points_2 <span class="op">=</span> cv2.perspectiveTransform(temp_points, H)</span>
+<span id="cb17-17"><a href="#cb17-17"></a>    list_of_points <span class="op">=</span> np.concatenate((list_of_points_1,list_of_points_2), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb17-18"><a href="#cb17-18"></a></span>
+<span id="cb17-19"><a href="#cb17-19"></a>    [x_min, y_min] <span class="op">=</span> np.int32(list_of_points.<span class="bu">min</span>(axis<span class="op">=</span><span class="dv">0</span>).ravel() <span class="op">-</span> <span class="fl">0.5</span>)</span>
+<span id="cb17-20"><a href="#cb17-20"></a>    [x_max, y_max] <span class="op">=</span> np.int32(list_of_points.<span class="bu">max</span>(axis<span class="op">=</span><span class="dv">0</span>).ravel() <span class="op">+</span> <span class="fl">0.5</span>)</span>
+<span id="cb17-21"><a href="#cb17-21"></a></span>
+<span id="cb17-22"><a href="#cb17-22"></a>    translation_dist <span class="op">=</span> [<span class="op">-</span>x_min,<span class="op">-</span>y_min]</span>
+<span id="cb17-23"><a href="#cb17-23"></a></span>
+<span id="cb17-24"><a href="#cb17-24"></a>    H_translation <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">0</span>, translation_dist[<span class="dv">0</span>]], [<span class="dv">0</span>, <span class="dv">1</span>, translation_dist[<span class="dv">1</span>]], [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>]])</span>
+<span id="cb17-25"><a href="#cb17-25"></a>    H_final <span class="op">=</span> H_translation.dot(H)</span>
+<span id="cb17-26"><a href="#cb17-26"></a></span>
+<span id="cb17-27"><a href="#cb17-27"></a>    output_img <span class="op">=</span> cv2.warpPerspective(img2, H_final, (x_max<span class="op">-</span>x_min, y_max<span class="op">-</span>y_min))</span>
+<span id="cb17-28"><a href="#cb17-28"></a>    </span>
+<span id="cb17-29"><a href="#cb17-29"></a>    output_img[translation_dist[<span class="dv">1</span>]:rows1<span class="op">+</span>translation_dist[<span class="dv">1</span>], translation_dist[<span class="dv">0</span>]:cols1<span class="op">+</span>translation_dist[<span class="dv">0</span>]] <span class="op">=</span> img1</span>
+<span id="cb17-30"><a href="#cb17-30"></a>    output_img <span class="op">=</span> output_img[translation_dist[<span class="dv">1</span>]:rows1<span class="op">+</span>translation_dist[<span class="dv">1</span>]:, :]</span>
+<span id="cb17-31"><a href="#cb17-31"></a></span>
+<span id="cb17-32"><a href="#cb17-32"></a>    <span class="co"># Find top and bottom rows</span></span>
+<span id="cb17-33"><a href="#cb17-33"></a>    top_row <span class="op">=</span> output_img.nonzero()[<span class="dv">0</span>].<span class="bu">min</span>()</span>
+<span id="cb17-34"><a href="#cb17-34"></a>    bottom_row <span class="op">=</span> output_img.nonzero()[<span class="dv">0</span>].<span class="bu">max</span>()</span>
+<span id="cb17-35"><a href="#cb17-35"></a></span>
+<span id="cb17-36"><a href="#cb17-36"></a>    top_max <span class="op">=</span> output_img[top_row, :].nonzero()[<span class="dv">0</span>].<span class="bu">max</span>()</span>
+<span id="cb17-37"><a href="#cb17-37"></a>    bottom_max <span class="op">=</span> output_img[bottom_row, :].nonzero()[<span class="dv">0</span>].<span class="bu">max</span>()</span>
+<span id="cb17-38"><a href="#cb17-38"></a>   </span>
+<span id="cb17-39"><a href="#cb17-39"></a>    <span class="co"># Cut width</span></span>
+<span id="cb17-40"><a href="#cb17-40"></a>    output_img <span class="op">=</span> output_img[:, :<span class="bu">min</span>(top_max, bottom_max)]</span>
+<span id="cb17-41"><a href="#cb17-41"></a></span>
+<span id="cb17-42"><a href="#cb17-42"></a>    <span class="cf">return</span> output_img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>With this, we can stitch two images together and see how it looks:</p>
 <div class="cell" data-outputid="8f4f7a80-fd38-42d4-b825-cd22563c4f02">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> img1, p_source, img2, p_target <span class="kw">in</span> <span class="bu">zip</span>(images[:<span class="op">-</span><span class="dv">1</span>], source_points, images[<span class="dv">1</span>:], target_points):</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    H <span class="op">=</span> get_homography(p_target, p_source)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    stitched_image <span class="op">=</span> stitch_images(img1, img2, H)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">10</span>))</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">"off"</span>)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    plt.imshow(stitched_image)</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a><span class="cf">for</span> img1, p_source, img2, p_target <span class="kw">in</span> <span class="bu">zip</span>(images[:<span class="op">-</span><span class="dv">1</span>], source_points, images[<span class="dv">1</span>:], target_points):</span>
+<span id="cb18-2"><a href="#cb18-2"></a>    H <span class="op">=</span> get_homography(p_target, p_source)</span>
+<span id="cb18-3"><a href="#cb18-3"></a>    stitched_image <span class="op">=</span> stitch_images(img1, img2, H)</span>
+<span id="cb18-4"><a href="#cb18-4"></a></span>
+<span id="cb18-5"><a href="#cb18-5"></a>    fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">10</span>))</span>
+<span id="cb18-6"><a href="#cb18-6"></a>    plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7"></a>    plt.imshow(stitched_image)</span>
+<span id="cb18-8"><a href="#cb18-8"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="basic-panorama_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
 </div>
@@ -542,36 +542,36 @@ Caution
 </div>
 <p>Finally, we repeat this process iteratively until all images are stitched together:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_panorama(images):</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    n_repeats <span class="op">=</span> <span class="bu">len</span>(images) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    current_images <span class="op">=</span> images</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n_repeats):</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        new_images <span class="op">=</span> []</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        keypoint_pairs <span class="op">=</span> [get_keypoints(img1, img2) <span class="cf">for</span> img1, img2 <span class="kw">in</span> <span class="bu">zip</span>(current_images[:<span class="op">-</span><span class="dv">1</span>], current_images[<span class="dv">1</span>:])]</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        source_points <span class="op">=</span> [pair[<span class="dv">0</span>] <span class="cf">for</span> pair <span class="kw">in</span> keypoint_pairs]</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        target_points <span class="op">=</span> [pair[<span class="dv">1</span>] <span class="cf">for</span> pair <span class="kw">in</span> keypoint_pairs]</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> img1, p_source, img2, p_target <span class="kw">in</span> <span class="bu">zip</span>(current_images[:<span class="op">-</span><span class="dv">1</span>], source_points, current_images[<span class="dv">1</span>:], target_points):</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>            H <span class="op">=</span> get_homography(p_target, p_source)</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>            stitched_image <span class="op">=</span> stitch_images(img1, img2, H)</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>            new_images.append(stitched_image)</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        current_images <span class="op">=</span> new_images</span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">len</span>(current_images) <span class="op">==</span> <span class="dv">1</span></span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> current_images[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">def</span> get_panorama(images):</span>
+<span id="cb19-2"><a href="#cb19-2"></a>    n_repeats <span class="op">=</span> <span class="bu">len</span>(images) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a></span>
+<span id="cb19-4"><a href="#cb19-4"></a>    current_images <span class="op">=</span> images</span>
+<span id="cb19-5"><a href="#cb19-5"></a></span>
+<span id="cb19-6"><a href="#cb19-6"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n_repeats):</span>
+<span id="cb19-7"><a href="#cb19-7"></a>        new_images <span class="op">=</span> []</span>
+<span id="cb19-8"><a href="#cb19-8"></a></span>
+<span id="cb19-9"><a href="#cb19-9"></a>        keypoint_pairs <span class="op">=</span> [get_keypoints(img1, img2) <span class="cf">for</span> img1, img2 <span class="kw">in</span> <span class="bu">zip</span>(current_images[:<span class="op">-</span><span class="dv">1</span>], current_images[<span class="dv">1</span>:])]</span>
+<span id="cb19-10"><a href="#cb19-10"></a>        source_points <span class="op">=</span> [pair[<span class="dv">0</span>] <span class="cf">for</span> pair <span class="kw">in</span> keypoint_pairs]</span>
+<span id="cb19-11"><a href="#cb19-11"></a>        target_points <span class="op">=</span> [pair[<span class="dv">1</span>] <span class="cf">for</span> pair <span class="kw">in</span> keypoint_pairs]</span>
+<span id="cb19-12"><a href="#cb19-12"></a></span>
+<span id="cb19-13"><a href="#cb19-13"></a>        <span class="cf">for</span> img1, p_source, img2, p_target <span class="kw">in</span> <span class="bu">zip</span>(current_images[:<span class="op">-</span><span class="dv">1</span>], source_points, current_images[<span class="dv">1</span>:], target_points):</span>
+<span id="cb19-14"><a href="#cb19-14"></a>            H <span class="op">=</span> get_homography(p_target, p_source)</span>
+<span id="cb19-15"><a href="#cb19-15"></a>            stitched_image <span class="op">=</span> stitch_images(img1, img2, H)</span>
+<span id="cb19-16"><a href="#cb19-16"></a></span>
+<span id="cb19-17"><a href="#cb19-17"></a>            new_images.append(stitched_image)</span>
+<span id="cb19-18"><a href="#cb19-18"></a></span>
+<span id="cb19-19"><a href="#cb19-19"></a>        current_images <span class="op">=</span> new_images</span>
+<span id="cb19-20"><a href="#cb19-20"></a>    </span>
+<span id="cb19-21"><a href="#cb19-21"></a>    <span class="cf">assert</span> <span class="bu">len</span>(current_images) <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb19-22"><a href="#cb19-22"></a></span>
+<span id="cb19-23"><a href="#cb19-23"></a>    <span class="cf">return</span> current_images[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-outputid="69f66c04-10d3-44fa-93ca-301bdaa873a1">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>panorama <span class="op">=</span> get_panorama(images)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">10</span>))</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(panorama)</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"off"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a>panorama <span class="op">=</span> get_panorama(images)</span>
+<span id="cb20-2"><a href="#cb20-2"></a></span>
+<span id="cb20-3"><a href="#cb20-3"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">10</span>))</span>
+<span id="cb20-4"><a href="#cb20-4"></a>plt.imshow(panorama)</span>
+<span id="cb20-5"><a href="#cb20-5"></a>plt.axis(<span class="st">"off"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="basic-panorama_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
 </div>

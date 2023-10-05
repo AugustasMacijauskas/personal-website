@@ -1,0 +1,13 @@
+tango
+breezedark
+kate
+atom-one
+ayu
+breeze
+> dracula
+github
+gruvbox
+> monokai
+nord
+radical
+solarized
