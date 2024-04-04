@@ -7,7 +7,7 @@ image: pe_image.webp
 image-alt: An associative photo of prompt engineering
 categories: [prompt engineering]
 toc: true
-draft: false
+draft: true
 ---
 
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -50,7 +50,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -59,6 +65,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -114,6 +121,8 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
@@ -124,23 +133,55 @@ cookieconsent.run({
 }
 </script>
 <script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="Augustas Macijauskas - Blog Posts">
 <meta property="og:image" content="augustas-macijauskas-square-profile.jpg">
-<meta property="og:site-name" content="Augustas Macijauskas' blog">
+<meta property="og:site_name" content="Augustas Macijauskas' blog">
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Augustas Macijauskas</span>
     </a>
@@ -152,28 +193,28 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" rel="" target="_blank"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" target="_blank"> <i class="bi bi-linkedin" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/augustasmac" rel="" target="_blank"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/augustasmac" target="_blank"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -186,7 +227,7 @@ cookieconsent.run({
   </div>
     
   
-  <div class="quarto-title-meta">
+  <div class="quarto-title-meta column-page-left">
 
       
     
@@ -199,7 +240,7 @@ cookieconsent.run({
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(7)</span></div><div class="category" data-category="LLMs">LLMs <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cambridge">cambridge <span class="quarto-category-count">(1)</span></div><div class="category" data-category="classification">classification <span class="quarto-category-count">(1)</span></div><div class="category" data-category="computer vision">computer vision <span class="quarto-category-count">(1)</span></div><div class="category" data-category="deep learning">deep learning <span class="quarto-category-count">(3)</span></div><div class="category" data-category="fastai">fastai <span class="quarto-category-count">(1)</span></div><div class="category" data-category="machine learning">machine learning <span class="quarto-category-count">(5)</span></div><div class="category" data-category="nlp">nlp <span class="quarto-category-count">(1)</span></div><div class="category" data-category="optimization">optimization <span class="quarto-category-count">(1)</span></div><div class="category" data-category="prompt engineering">prompt engineering <span class="quarto-category-count">(1)</span></div><div class="category" data-category="scientific computing">scientific computing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="vision">vision <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(7)</span></div><div class="category" data-category="LLMs">LLMs <span class="quarto-category-count">(2)</span></div><div class="category" data-category="cambridge">cambridge <span class="quarto-category-count">(1)</span></div><div class="category" data-category="classification">classification <span class="quarto-category-count">(1)</span></div><div class="category" data-category="computer vision">computer vision <span class="quarto-category-count">(1)</span></div><div class="category" data-category="deep learning">deep learning <span class="quarto-category-count">(4)</span></div><div class="category" data-category="fastai">fastai <span class="quarto-category-count">(1)</span></div><div class="category" data-category="machine learning">machine learning <span class="quarto-category-count">(5)</span></div><div class="category" data-category="nlp">nlp <span class="quarto-category-count">(1)</span></div><div class="category" data-category="optimization">optimization <span class="quarto-category-count">(1)</span></div><div class="category" data-category="scientific computing">scientific computing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="vision">vision <span class="quarto-category-count">(1)</span></div><div class="category" data-category="visualisation">visualisation <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
 
@@ -210,21 +251,61 @@ cookieconsent.run({
 
 
 
+
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="machine learning,deep learning,LLMs,cambridge" data-listing-date-sort="1696366800000" data-listing-file-modified-sort="1701289390818" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="quarto-post image-right" data-index="0" data-categories="deep learning,LLMs,visualisation" data-listing-date-sort="1712178000000" data-listing-file-modified-sort="1712257136036" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="42">
 <div class="thumbnail">
-<p><a href="./posts/thesis/thesis.html"> <img src="./posts/thesis/cambridge.jpg" class="thumbnail-image" alt="King&amp;#039;s College Cambridge"> </a></p>
+<p><a href="./posts/embedding-visualisation/embedding-visualisation.html" class="no-external"></a></p><a href="./posts/embedding-visualisation/embedding-visualisation.html" class="no-external">
+<p><img src="./posts/embedding-visualisation/dalle-3-embedding-visualisation.webp" class="thumbnail-image" alt="Visualising LLM embeddings as imaged by DALL-E 3"></p>
+</a><p><a href="./posts/embedding-visualisation/embedding-visualisation.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/thesis/thesis.html">
 <h3 class="no-anchor listing-title">
-Eliciting latent knowledge from language reward models
+<a href="./posts/embedding-visualisation/embedding-visualisation.html" class="no-external">Visualising large language model embeddings</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/embedding-visualisation/embedding-visualisation.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('deep learning'); return false;">
+deep learning
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('LLMs'); return false;">
+LLMs
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('visualisation'); return false;">
+visualisation
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/embedding-visualisation/embedding-visualisation.html" class="no-external">Dimensionality reduction techniques reveal interesting structure in the embeddings learnt by large language models.</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/embedding-visualisation/embedding-visualisation.html" class="no-external">
+<div class="listing-date">
+Apr 4, 2024
+</div>
+<div class="listing-author">
+Augustas Macijauskas
 </div>
 </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="machine learning,deep learning,LLMs,cambridge" data-listing-date-sort="1696366800000" data-listing-file-modified-sort="1712251191735" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="1000">
+<div class="thumbnail">
+<p><a href="./posts/thesis/thesis.html" class="no-external"></a></p><a href="./posts/thesis/thesis.html" class="no-external">
+<p><img src="./posts/thesis/cambridge.jpg" class="thumbnail-image" alt="King&amp;#039;s College Cambridge"></p>
+</a><p><a href="./posts/thesis/thesis.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/thesis/thesis.html" class="no-external">Eliciting latent knowledge from language reward models</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/thesis/thesis.html" class="no-external"></a>
+</div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('machine learning'); return false;">
 machine learning
@@ -239,14 +320,12 @@ LLMs
 cambridge
 </div>
 </div>
-<a href="./posts/thesis/thesis.html">
 <div class="listing-description">
-<p>Blog post about my master’s research project at the University of Cambridge.</p>
+<a href="./posts/thesis/thesis.html" class="no-external">Blog post about my master’s research project at the University of Cambridge.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/thesis/thesis.html">
+<a href="./posts/thesis/thesis.html" class="no-external">
 <div class="listing-date">
 Oct 4, 2023
 </div>
@@ -256,32 +335,30 @@ Augustas Macijauskas
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="scientific computing" data-listing-date-sort="1696107600000" data-listing-file-modified-sort="1701303043596" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="2" data-categories="scientific computing" data-listing-date-sort="1696107600000" data-listing-file-modified-sort="1712251191737" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="502">
 <div class="thumbnail">
-<p><a href="./posts/uom-project/uom-project.html"> <img src="./posts/uom-project/velocity-streamlines.png" class="thumbnail-image" alt="Streamlines of the fluid flow"> </a></p>
+<p><a href="./posts/uom-project/uom-project.html" class="no-external"></a></p><a href="./posts/uom-project/uom-project.html" class="no-external">
+<p><img src="./posts/uom-project/velocity-streamlines.png" class="thumbnail-image" alt="Streamlines of the fluid flow"></p>
+</a><p><a href="./posts/uom-project/uom-project.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/uom-project/uom-project.html">
 <h3 class="no-anchor listing-title">
-Numerical solutions to the Navier-Stokes equations
+<a href="./posts/uom-project/uom-project.html" class="no-external">Numerical solutions to the Navier-Stokes equations</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/uom-project/uom-project.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('scientific computing'); return false;">
 scientific computing
 </div>
 </div>
-<a href="./posts/uom-project/uom-project.html">
 <div class="listing-description">
-<p>Blog post about my undergraduate project at the University of Manchester.</p>
+<a href="./posts/uom-project/uom-project.html" class="no-external">Blog post about my undergraduate project at the University of Manchester.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/uom-project/uom-project.html">
+<a href="./posts/uom-project/uom-project.html" class="no-external">
 <div class="listing-date">
 Oct 1, 2023
 </div>
@@ -291,54 +368,19 @@ Augustas Macijauskas
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="prompt engineering" data-listing-date-sort="1694552400000" data-listing-file-modified-sort="1700318733989" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="quarto-post image-right" data-index="3" data-categories="machine learning,computer vision" data-listing-date-sort="1657314000000" data-listing-file-modified-sort="1712251191721" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="343">
 <div class="thumbnail">
-<p><a href="./posts/prompt-engineering-course/prompt-engineering-course-notes.html"> <img src="./posts/prompt-engineering-course/pe_image.webp" class="thumbnail-image" alt="An associative photo of prompt engineering"> </a></p>
+<p><a href="./posts/basic-panorama/basic-panorama.html" class="no-external"></a></p><a href="./posts/basic-panorama/basic-panorama.html" class="no-external">
+<p><img src="./posts/basic-panorama/city-panorama.jpg" class="thumbnail-image" alt="A panorama of a city"></p>
+</a><p><a href="./posts/basic-panorama/basic-panorama.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/prompt-engineering-course/prompt-engineering-course-notes.html">
 <h3 class="no-anchor listing-title">
-A list of notes on the “ChatGPT Prompt Engineering for Developers” course
+<a href="./posts/basic-panorama/basic-panorama.html" class="no-external">Basic panorama stitching</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/basic-panorama/basic-panorama.html" class="no-external"></a>
 </div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('prompt engineering'); return false;">
-prompt engineering
-</div>
-</div>
-<a href="./posts/prompt-engineering-course/prompt-engineering-course-notes.html">
-<div class="listing-description">
-<p>A collection of personal notes.</p>
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/prompt-engineering-course/prompt-engineering-course-notes.html">
-<div class="listing-date">
-Sep 13, 2023
-</div>
-<div class="listing-author">
-Augustas Macijauskas
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="machine learning,computer vision" data-listing-date-sort="1657314000000" data-listing-file-modified-sort="1700318733976" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
-<div class="thumbnail">
-<p><a href="./posts/basic-panorama/basic-panorama.html"> <img src="./posts/basic-panorama/city-panorama.jpg" class="thumbnail-image" alt="A panorama of a city"> </a></p>
-</div>
-<div class="body">
-<a href="./posts/basic-panorama/basic-panorama.html">
-<h3 class="no-anchor listing-title">
-Basic panorama stitching
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('machine learning'); return false;">
 machine learning
@@ -347,14 +389,12 @@ machine learning
 computer vision
 </div>
 </div>
-<a href="./posts/basic-panorama/basic-panorama.html">
 <div class="listing-description">
-<p>A look at homographies and how they can be used to stitch photos into a panorama.</p>
+<a href="./posts/basic-panorama/basic-panorama.html" class="no-external">A look at homographies and how they can be used to stitch photos into a panorama.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/basic-panorama/basic-panorama.html">
+<a href="./posts/basic-panorama/basic-panorama.html" class="no-external">
 <div class="listing-date">
 Jul 9, 2022
 </div>
@@ -364,19 +404,19 @@ Augustas Macijauskas
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="machine learning,deep learning,optimization" data-listing-date-sort="1619816400000" data-listing-file-modified-sort="1700318733985" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3">
+<div class="quarto-post image-right" data-index="4" data-categories="machine learning,deep learning,optimization" data-listing-date-sort="1619816400000" data-listing-file-modified-sort="1712251191725" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="510">
 <div class="thumbnail">
-<p><a href="./posts/optimization-algorithms/optimisation-algorithms.html"> <img src="./posts/optimization-algorithms/optimization.jpg" class="thumbnail-image" alt="Optimization surface"> </a></p>
+<p><a href="./posts/optimization-algorithms/optimisation-algorithms.html" class="no-external"></a></p><a href="./posts/optimization-algorithms/optimisation-algorithms.html" class="no-external">
+<p><img src="./posts/optimization-algorithms/optimization.jpg" class="thumbnail-image" alt="Optimization surface"></p>
+</a><p><a href="./posts/optimization-algorithms/optimisation-algorithms.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/optimization-algorithms/optimisation-algorithms.html">
 <h3 class="no-anchor listing-title">
-Implementing optimisation algorithms to optimise parameters of linear functions
+<a href="./posts/optimization-algorithms/optimisation-algorithms.html" class="no-external">Implementing optimisation algorithms to optimise parameters of linear functions</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/optimization-algorithms/optimisation-algorithms.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('machine learning'); return false;">
 machine learning
@@ -388,14 +428,12 @@ deep learning
 optimization
 </div>
 </div>
-<a href="./posts/optimization-algorithms/optimisation-algorithms.html">
 <div class="listing-description">
-<p>A sandbox notebook which I used to play around with optimizers.</p>
+<a href="./posts/optimization-algorithms/optimisation-algorithms.html" class="no-external">A sandbox notebook which I used to play around with optimizers.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/optimization-algorithms/optimisation-algorithms.html">
+<a href="./posts/optimization-algorithms/optimisation-algorithms.html" class="no-external">
 <div class="listing-date">
 May 1, 2021
 </div>
@@ -405,19 +443,19 @@ Augustas Macijauskas
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="machine learning,deep learning,classification,fastai,vision" data-listing-date-sort="1617138000000" data-listing-file-modified-sort="1700318733980" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8">
+<div class="quarto-post image-right" data-index="5" data-categories="machine learning,deep learning,classification,fastai,vision" data-listing-date-sort="1617138000000" data-listing-file-modified-sort="1712251191723" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1553">
 <div class="thumbnail">
-<p><a href="./posts/captcha-fastai/captcha-fastai.html"> <img src="./posts/captcha-fastai/captcha.png" class="thumbnail-image" alt="A captcha"> </a></p>
+<p><a href="./posts/captcha-fastai/captcha-fastai.html" class="no-external"></a></p><a href="./posts/captcha-fastai/captcha-fastai.html" class="no-external">
+<p><img src="./posts/captcha-fastai/captcha.png" class="thumbnail-image" alt="A captcha"></p>
+</a><p><a href="./posts/captcha-fastai/captcha-fastai.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/captcha-fastai/captcha-fastai.html">
 <h3 class="no-anchor listing-title">
-Multi-output classification for captcha recognition using fastai
+<a href="./posts/captcha-fastai/captcha-fastai.html" class="no-external">Multi-output classification for captcha recognition using fastai</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/captcha-fastai/captcha-fastai.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('machine learning'); return false;">
 machine learning
@@ -435,14 +473,12 @@ fastai
 vision
 </div>
 </div>
-<a href="./posts/captcha-fastai/captcha-fastai.html">
 <div class="listing-description">
-<p>Implementing a multi-output model to recognize easy captcha images using the fastai library.</p>
+<a href="./posts/captcha-fastai/captcha-fastai.html" class="no-external">Implementing a multi-output model to recognize easy captcha images using the fastai library.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/captcha-fastai/captcha-fastai.html">
+<a href="./posts/captcha-fastai/captcha-fastai.html" class="no-external">
 <div class="listing-date">
 Mar 31, 2021
 </div>
@@ -452,19 +488,19 @@ Augustas Macijauskas
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="machine learning,nlp" data-listing-date-sort="1612130400000" data-listing-file-modified-sort="1700318733981" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10">
+<div class="quarto-post image-right" data-index="6" data-categories="machine learning,nlp" data-listing-date-sort="1612130400000" data-listing-file-modified-sort="1712251191723" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1846">
 <div class="thumbnail">
-<p><a href="./posts/elegant-naive-bayes/elegant-naive-bayes.html"> <img src="./posts/elegant-naive-bayes/bayes-formula.jpg" class="thumbnail-image" alt="Bayes&amp;#039; theorem"> </a></p>
+<p><a href="./posts/elegant-naive-bayes/elegant-naive-bayes.html" class="no-external"></a></p><a href="./posts/elegant-naive-bayes/elegant-naive-bayes.html" class="no-external">
+<p><img src="./posts/elegant-naive-bayes/bayes-formula.jpg" class="thumbnail-image" alt="Bayes&amp;#039; theorem"></p>
+</a><p><a href="./posts/elegant-naive-bayes/elegant-naive-bayes.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/elegant-naive-bayes/elegant-naive-bayes.html">
 <h3 class="no-anchor listing-title">
-Elegant implementation of Naive Bayes in just 10 lines of code
+<a href="./posts/elegant-naive-bayes/elegant-naive-bayes.html" class="no-external">Elegant implementation of Naive Bayes in just 10 lines of code</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/elegant-naive-bayes/elegant-naive-bayes.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('machine learning'); return false;">
 machine learning
@@ -473,14 +509,12 @@ machine learning
 nlp
 </div>
 </div>
-<a href="./posts/elegant-naive-bayes/elegant-naive-bayes.html">
 <div class="listing-description">
-<p>A tutorial on how to use a few tricks to implement a Naive Bayes model in just a few lines of code.</p>
+<a href="./posts/elegant-naive-bayes/elegant-naive-bayes.html" class="no-external">A tutorial on how to use a few tricks to implement a Naive Bayes model in just a few lines of code.</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/elegant-naive-bayes/elegant-naive-bayes.html">
+<a href="./posts/elegant-naive-bayes/elegant-naive-bayes.html" class="no-external">
 <div class="listing-date">
 Feb 1, 2021
 </div>
@@ -574,10 +608,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -587,8 +638,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -600,7 +660,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -644,6 +827,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -669,6 +853,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -734,12 +944,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

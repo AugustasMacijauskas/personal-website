@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -60,7 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -85,7 +85,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -94,6 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -120,6 +127,8 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
@@ -130,27 +139,59 @@ cookieconsent.run({
 }
 </script>
 <script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="Augustas Macijauskas - Elegant implementation of Naive Bayes in just 10 lines of code">
 <meta property="og:description" content="A tutorial on how to use a few tricks to implement a Naive Bayes model in just a few lines of code.">
-<meta property="og:image" content="augustas-macijauskas-square-profile.jpg">
-<meta property="og:site-name" content="Augustas Macijauskas' blog">
+<meta property="og:image" content="bayes-formula.jpg">
+<meta property="og:site_name" content="Augustas Macijauskas' blog">
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Augustas Macijauskas</span>
     </a>
@@ -162,28 +203,28 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" rel="" target="_blank"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" target="_blank"> <i class="bi bi-linkedin" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/augustasmac" rel="" target="_blank"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/augustasmac" target="_blank"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -259,6 +300,7 @@ cookieconsent.run({
 
 
 
+
 <section id="tldr" class="level1">
 <h1>TLDR</h1>
 <p>This article is adapted from <a href="https://www.fast.ai/">fast.ai</a>’s <em>Machine Learning for Coders</em> course, specifically, <a href="https://course18.fast.ai/lessonsml1/lesson10.html">lesson 10</a>. I would highly recommend checking this and other courses from fast.ai, it has numerous tips on how to do practical machine learning and deep learning.</p>
@@ -268,8 +310,8 @@ cookieconsent.run({
 <section id="imports" class="level1">
 <h1>Imports</h1>
 <p>Toggle cells below if you want to see what imports are being made.</p>
-<div class="cell" data-execution_count="1">
-<details>
+<div id="cell-3" class="cell" data-execution_count="1">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">%</span>reload_ext autoreload</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="op">%</span>autoreload <span class="dv">2</span></span>
@@ -288,8 +330,9 @@ cookieconsent.run({
 <h1>Data</h1>
 <p>We are going to use a dataset with 5572 messages in it. Unfortunately, I am unable to provide full access to this dataset, so you’ll have to take my word for what the contents of the dataset are.</p>
 <p>Label of <code>0</code> means the message is not spam, and <code>1</code> means it is spam.</p>
-<div class="cell" data-execution_count="2">
+<div id="cell-5" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display" data-execution_count="2">
+<div>
 <div>
 
 
@@ -364,20 +407,21 @@ cookieconsent.run({
 </div>
 </div>
 </div>
+</div>
 <p>The numbers of non-spam and spam messages are respectively:</p>
-<div class="cell" data-execution_count="3">
+<div id="cell-7" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>(4825, 747)</code></pre>
 </div>
 </div>
 <p>Example spam message is:</p>
-<div class="cell" data-execution_count="4">
+<div id="cell-9" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>"Free entry in 2 a wkly comp to win FA Cup final tkts 21st May 2005. Text FA to 87121 to receive entry question(std txt rate)T&amp;C's apply 08452810075over18's"</code></pre>
 </div>
 </div>
 <p>Let’s split the data into train and test sets with 20% of data going into the test set:</p>
-<div class="cell" data-execution_count="5">
+<div id="cell-11" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>train_ratio <span class="op">=</span> <span class="fl">0.8</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>train_length <span class="op">=</span> <span class="bu">int</span>(<span class="bu">len</span>(df) <span class="op">*</span> train_ratio)</span>
 <span id="cb4-3"><a href="#cb4-3"></a>X_train <span class="op">=</span> np.squeeze(df.drop(columns<span class="op">=</span>[<span class="st">"label"</span>])[:train_length].values)</span>
@@ -389,34 +433,34 @@ cookieconsent.run({
 <section id="building-the-model" class="level1">
 <h1>Building the model</h1>
 <p>Below I am going to provide the code for the model without too much explanation, and then in the next section I’ll discuss what is happening under the hood.</p>
-<div class="cell" data-execution_count="11">
+<div id="cell-18" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>vectorizer <span class="op">=</span> CountVectorizer(max_df<span class="op">=</span><span class="fl">0.1</span>)</span>
 <span id="cb5-2"><a href="#cb5-2"></a>train_term_doc <span class="op">=</span> vectorizer.fit_transform(X_train)</span>
 <span id="cb5-3"><a href="#cb5-3"></a>val_term_doc <span class="op">=</span> vectorizer.transform(X_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s see what our example spam message got turned into:</p>
-<div class="cell" data-execution_count="26">
+<div id="cell-34" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>X_train[<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
 <pre><code>"Free entry in 2 a wkly comp to win FA Cup final tkts 21st May 2005. Text FA to 87121 to receive entry question(std txt rate)T&amp;C's apply 08452810075over18's"</code></pre>
 </div>
 </div>
 <p>has become:</p>
-<div class="cell" data-execution_count="27">
+<div id="cell-36" class="cell" data-execution_count="27">
 <div class="cell-output cell-output-display" data-execution_count="27">
 <pre><code>'free entry wkly comp win fa cup final tkts 21st may 2005 text fa 87121 receive entry question std txt rate apply 08452810075over18'</code></pre>
 </div>
 </div>
 <p>As you can see, some words did not make it into the vocabulary because they were too common (e.g.&nbsp;the word “in”), and punctuation and apostrophes were also left out. This is <strong>not</strong> ideal and it would probably be a good idea to try a better tokenizer, and although we won’t do that here, you can try finding one yourself. A good place to start would be <a href="https://docs.fast.ai/text.core.html">here</a>.</p>
 <p>Since we we’ll be using Bayes’ theorem, note that here <code>p</code> stands for <strong>probability of features given spam</strong>, <code>q</code> stands for <strong>probability of features given non-spam</strong>, and <code>b</code> encodes the <strong>probabilities that a document is of a certain class</strong> (or what Bayesians call <em>priors</em>).</p>
-<div class="cell" data-execution_count="29">
+<div id="cell-40" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>p <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">1</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a>q <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">0</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
 <span id="cb9-3"><a href="#cb9-3"></a>ratio <span class="op">=</span> np.log((p <span class="op">/</span> p.<span class="bu">sum</span>()) <span class="op">/</span> (q <span class="op">/</span> q.<span class="bu">sum</span>()))</span>
 <span id="cb9-4"><a href="#cb9-4"></a>b <span class="op">=</span> np.log((y_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">/</span> (y_train <span class="op">==</span> <span class="dv">0</span>).<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s check what the accuracy is:</p>
-<div class="cell" data-execution_count="35">
+<div id="cell-47" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>pre_preds <span class="op">=</span> val_term_doc <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
 <span id="cb10-2"><a href="#cb10-2"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
 <span id="cb10-3"><a href="#cb10-3"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -425,13 +469,13 @@ cookieconsent.run({
 </div>
 </div>
 <p>Great! We got over 98% accuracy, and even though this dataset is not particularly hard, I think it is cool that we managed to do it in just 10 lines of code. Let’s check confusion matrices too:</p>
-<div class="cell" data-execution_count="40">
+<div id="cell-53" class="cell" data-execution_count="40">
 <div class="cell-output cell-output-display" data-execution_count="40">
 <pre><code>array([[962,   8],
        [  8, 137]])</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="41">
+<div id="cell-54" class="cell" data-execution_count="41">
 <div class="cell-output cell-output-display" data-execution_count="41">
 <pre><code>array([[0.99175258, 0.00824742],
        [0.05517241, 0.94482759]])</code></pre>
@@ -713,7 +757,7 @@ cookieconsent.run({
 </tbody>
 </table>
 <p>In code:</p>
-<div class="cell" data-execution_count="45">
+<div id="cell-62" class="cell" data-execution_count="45">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a></span>
 <span id="cb14-2"><a href="#cb14-2"></a><span class="co"># Create a vectorizer object that will ignore any</span></span>
 <span id="cb14-3"><a href="#cb14-3"></a><span class="co"># words that appear in more than 10% of messages.</span></span>
@@ -859,7 +903,7 @@ cookieconsent.run({
 <p>We are almost done, now we just want to apply a few tricks to make our calculations easier. First, notice that multiplying lots of probabilities together is going to result into a very small number and we might run out of floating point precision, so we can take the <strong>natural logarithm</strong> instead to handle this. Note that in this case we compare ratios not with <code>1</code>, but with <code>0</code> (because <code>log(1)=0</code>) and that by the properties of logarithms all the products are going to turn into sums, which makes everything even simpler!</p>
 <p>Finally, we notice that to make predictions, we can just perform matrix multiplication on the <strong>validation term document matrix</strong> and our derived vector of ratios and add (remember, we are in log space!) the ratio of priors.</p>
 <p>Putting it all together:</p>
-<div class="cell" data-execution_count="46">
+<div id="cell-66" class="cell" data-execution_count="46">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a></span>
 <span id="cb15-2"><a href="#cb15-2"></a><span class="co"># Calculate P(feature|1) and P(feature|0).</span></span>
 <span id="cb15-3"><a href="#cb15-3"></a><span class="co"># This plus ones are there to constitute the</span></span>
@@ -890,18 +934,18 @@ cookieconsent.run({
 <p>If you were to try and run your own model, a few suggestions for improving the models performance are presented below.</p>
 <section id="try-n-grams" class="level2">
 <h2 class="anchored" data-anchor-id="try-n-grams">Try n-grams</h2>
-<div class="cell" data-execution_count="47">
+<div id="cell-69" class="cell" data-execution_count="47">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a>vectorizer <span class="op">=</span> CountVectorizer(ngram_range<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">3</span>), max_df<span class="op">=</span><span class="fl">0.1</span>)</span>
 <span id="cb17-2"><a href="#cb17-2"></a>train_term_doc <span class="op">=</span> vectorizer.fit_transform(X_train)</span>
 <span id="cb17-3"><a href="#cb17-3"></a>val_term_doc <span class="op">=</span> vectorizer.transform(X_val)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="49">
+<div id="cell-71" class="cell" data-execution_count="49">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>p <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">1</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
 <span id="cb18-2"><a href="#cb18-2"></a>q <span class="op">=</span> train_term_doc[y_train <span class="op">==</span> <span class="dv">0</span>].<span class="bu">sum</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
 <span id="cb18-3"><a href="#cb18-3"></a>ratio <span class="op">=</span> np.log((p <span class="op">/</span> p.<span class="bu">sum</span>()) <span class="op">/</span> (q <span class="op">/</span> q.<span class="bu">sum</span>()))</span>
 <span id="cb18-4"><a href="#cb18-4"></a>b <span class="op">=</span> np.log((y_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>() <span class="op">/</span> (y_train <span class="op">==</span> <span class="dv">0</span>).<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="51">
+<div id="cell-73" class="cell" data-execution_count="51">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a>pre_preds <span class="op">=</span> val_term_doc <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
 <span id="cb19-2"><a href="#cb19-2"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
 <span id="cb19-3"><a href="#cb19-3"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -910,14 +954,14 @@ cookieconsent.run({
 </div>
 </div>
 <p>Turns out the model gives even better accuracy with bigrams and trigrams included. But watch out! Checking the confusion matrices, we see that the model is now perfect on non-spam messages, but the error on spam messages has increased. This might not be what we want, so we have to be careful with interpreting our models!</p>
-<div class="cell" data-execution_count="52">
+<div id="cell-75" class="cell" data-execution_count="52">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a>confusion_matrix(y_val, preds.T, normalize<span class="op">=</span><span class="va">None</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="52">
 <pre><code>array([[968,   2],
        [ 12, 133]])</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="53">
+<div id="cell-76" class="cell" data-execution_count="53">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a>confusion_matrix(y_val, preds.T, normalize<span class="op">=</span><span class="st">"true"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="53">
 <pre><code>array([[0.99793814, 0.00206186],
@@ -928,7 +972,7 @@ cookieconsent.run({
 <section id="binarized-version" class="level2">
 <h2 class="anchored" data-anchor-id="binarized-version">Binarized version</h2>
 <p>You can also try the binarized version of the term document matrix (i.e.&nbsp;instead of frequencies we look at whether a word is present or not)</p>
-<div class="cell" data-execution_count="54">
+<div id="cell-78" class="cell" data-execution_count="54">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1"></a>pre_preds <span class="op">=</span> val_term_doc.sign() <span class="op">@</span> ratio.T <span class="op">+</span> b</span>
 <span id="cb25-2"><a href="#cb25-2"></a>preds <span class="op">=</span> pre_preds.T <span class="op">&gt;</span> <span class="dv">0</span></span>
 <span id="cb25-3"><a href="#cb25-3"></a>(preds <span class="op">==</span> y_val).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -940,7 +984,7 @@ cookieconsent.run({
 <section id="learning-the-parameters-with-logistic-regression" class="level2">
 <h2 class="anchored" data-anchor-id="learning-the-parameters-with-logistic-regression">Learning the parameters with logistic regression</h2>
 <p>Finally, you might try taking it to the next level and <strong>learning</strong> the parameters with a logistic regression instead of using the theoretical ones. Check the parameters <code>C</code> for regularization and <code>dual=True</code> for when you term document matrix is <em>much</em> wider than it is tall.</p>
-<div class="cell" data-execution_count="55">
+<div id="cell-80" class="cell" data-execution_count="55">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1"></a>m <span class="op">=</span> LogisticRegression(C<span class="op">=</span><span class="fl">1e1</span>, dual<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb27-2"><a href="#cb27-2"></a>m.fit(train_term_doc, y_train)</span>
 <span id="cb27-3"><a href="#cb27-3"></a>preds <span class="op">=</span> m.predict(val_term_doc)</span>
@@ -949,7 +993,7 @@ cookieconsent.run({
 <pre><code>0.9811659192825112</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="56">
+<div id="cell-81" class="cell" data-execution_count="56">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1"></a></span>
 <span id="cb29-2"><a href="#cb29-2"></a><span class="co"># Binarized version</span></span>
 <span id="cb29-3"><a href="#cb29-3"></a>m <span class="op">=</span> LogisticRegression(C<span class="op">=</span><span class="fl">1e1</span>, dual<span class="op">=</span><span class="va">False</span>)</span>
@@ -1050,10 +1094,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1063,8 +1124,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1076,7 +1146,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1120,6 +1313,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1145,6 +1339,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1210,12 +1430,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

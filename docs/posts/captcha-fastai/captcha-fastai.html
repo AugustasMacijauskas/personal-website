@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -60,7 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -85,7 +85,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -94,6 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -120,6 +127,8 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
@@ -130,25 +139,30 @@ cookieconsent.run({
 }
 </script>
 <script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="Augustas Macijauskas - Multi-output classification for captcha recognition using fastai">
 <meta property="og:description" content="Implementing a multi-output model to recognize easy captcha images using the fastai library.">
-<meta property="og:image" content="augustas-macijauskas-square-profile.jpg">
-<meta property="og:site-name" content="Augustas Macijauskas' blog">
+<meta property="og:image" content="captcha.png">
+<meta property="og:site_name" content="Augustas Macijauskas' blog">
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Augustas Macijauskas</span>
     </a>
@@ -160,28 +174,28 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" rel="" target="_blank"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" target="_blank"> <i class="bi bi-linkedin" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/augustasmac" rel="" target="_blank"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/augustasmac" target="_blank"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -256,6 +270,7 @@ cookieconsent.run({
 
 
 
+
 <section id="tldr" class="level1">
 <h1>TLDR</h1>
 <p>Special thanks to my dear friends <a href="https://github.com/jul1u5">Julius</a> and <a href="https://github.com/laurislopata">Laurynas</a> who joined me to work on this project.</p>
@@ -290,16 +305,16 @@ cookieconsent.run({
 <section id="imports" class="level1">
 <h1>Imports</h1>
 <p>Toggle cells below if you want to see what imports are being made.</p>
-<div class="cell" data-execution_count="1">
-<details>
+<div id="cell-4" class="cell" data-execution_count="1">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Uncomment these and run once if you are using colab</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="co"># !pip install -qq torchtext==0.8.1</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="co"># !pip install -Uqq fastbook</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-execution_count="3">
-<details>
+<div id="cell-5" class="cell" data-execution_count="3">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="op">%</span>load_ext autoreload</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="op">%</span>autoreload <span class="dv">2</span></span>
@@ -314,7 +329,7 @@ cookieconsent.run({
 <section id="data" class="level1">
 <h1>Data</h1>
 <p>Use fastai <code>get_image_files</code> utility function to get a list of paths to captcha files:</p>
-<div class="cell" data-outputid="653c4ce4-f2ad-46f6-9ba9-57350b4b09d8" data-execution_count="7">
+<div id="cell-11" class="cell" data-outputid="653c4ce4-f2ad-46f6-9ba9-57350b4b09d8" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>PATH <span class="op">=</span> Path(<span class="st">"captcha_images"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2"></a>files <span class="op">=</span> get_image_files(PATH)</span>
 <span id="cb3-3"><a href="#cb3-3"></a>files[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -324,7 +339,7 @@ cookieconsent.run({
 </div>
 <p>We separately checked that all the images are 24x72x3.</p>
 <p>Create python dictionaries that will be used to map symbols to integers and vice versa:</p>
-<div class="cell" data-execution_count="8">
+<div id="cell-13" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a></span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="co"># Find all the unique labels</span></span>
 <span id="cb5-3"><a href="#cb5-3"></a>ld <span class="op">=</span> <span class="bu">set</span>()</span>
@@ -340,7 +355,7 @@ cookieconsent.run({
 <section id="dataset" class="level1">
 <h1>Dataset</h1>
 <p>This custom thing that we need is a fastai <code>Transform</code> that knows how to deal with a multi-output label. Reading through fastai source code we’ve managed to find that a convenient way to do this is to create a class that inherits from <code>DisplayedTransform</code>. The attributes <code>l2i</code> and <code>i2l</code> are used for label to int mapping. The <code>encodes</code> method is how to tell the library how something should be encoded, here we just take a string type label and turn it into a <code>TensorCategory</code> which is nothing more but a length four tensor with the name given for it to have a more human-readable semantic meaning. Similarly, the <code>decodes</code> method takes an encoded label and reverses it back to a string label which is wrapped in the <code>Category</code> class that is intended for categories that will be shown somewhere, e.g.&nbsp;in plots.</p>
-<div class="cell" data-execution_count="9">
+<div id="cell-16" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">class</span> MultiOutputCategorize(DisplayedTransform):</span>
 <span id="cb6-2"><a href="#cb6-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, l2i<span class="op">=</span>l2i, i2l<span class="op">=</span>i2l):</span>
 <span id="cb6-3"><a href="#cb6-3"></a>        <span class="va">self</span>.l2i <span class="op">=</span> l2i</span>
@@ -355,7 +370,7 @@ cookieconsent.run({
 <p>We can now use our new transform to create a <code>DataBlock</code>, the cornerstone of fastai’s mid-level API that is very flexible and can be customized for various purposes (a good example is <a href="https://docs.fast.ai/tutorial.siamese.html">this</a> where it is used to implement a siamese network).</p>
 <p>Important thing to notice is how we wrap our <code>MultiOutputCategorize</code> in a <code>TransformBlock</code>.</p>
 <p>We also use augmentations to have more variety in our data while training the model. <code>CropPad</code> is used to pad image to a square (remember that all images were 24x72). All the other transform are pretty self explanatory, but make sure you read about them in the fastai docs if you feel like you need to.</p>
-<div class="cell" data-execution_count="10">
+<div id="cell-18" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>captcha_data_block <span class="op">=</span> DataBlock(</span>
 <span id="cb7-2"><a href="#cb7-2"></a>    blocks<span class="op">=</span>(ImageBlock, TransformBlock(type_tfms<span class="op">=</span>MultiOutputCategorize())),</span>
 <span id="cb7-3"><a href="#cb7-3"></a>    splitter<span class="op">=</span>RandomSplitter(valid_pct<span class="op">=</span><span class="fl">0.2</span>, seed<span class="op">=</span><span class="dv">42</span>),</span>
@@ -365,26 +380,30 @@ cookieconsent.run({
 <span id="cb7-7"><a href="#cb7-7"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now create a dataloader, we use batch size 128 since experiments showed that it was the optimal one:</p>
-<div class="cell" data-execution_count="11">
+<div id="cell-20" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>dls <span class="op">=</span> captcha_data_block.dataloaders(files, bs<span class="op">=</span><span class="dv">128</span>, num_workers<span class="op">=</span><span class="dv">4</span>, shuffle<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb8-2"><a href="#cb8-2"></a>dls <span class="op">=</span> dls.cuda()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Another important thing to note is how fastai handles types behind the scenes - even though the images and labels were transformed and their actual types changed, the library manages to bubble up the correct initial types if needed. One of the authors of the library Jeremy Howard mentions in his code walk-thrus on YouTube that such an approach was borrowed from other programming languages that he used.</p>
-<div class="cell" data-outputid="c8f77f88-bfc0-4e7c-bcd1-40e93721a2a6" data-execution_count="12">
+<div id="cell-22" class="cell" data-outputid="c8f77f88-bfc0-4e7c-bcd1-40e93721a2a6" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>dls._types</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>{tuple: [fastai.torch_core.TensorImage, fastai.torch_core.TensorCategory]}</code></pre>
 </div>
 </div>
 <p>Let’s just one batch to make sure everything is alright:</p>
-<div class="cell" data-outputid="8176b3c4-ea20-4840-a3a3-36eaad9087bc" data-execution_count="13">
+<div id="cell-24" class="cell" data-outputid="8176b3c4-ea20-4840-a3a3-36eaad9087bc" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>dls.show_batch()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="captcha-fastai_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="captcha-fastai_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Also check that our custom transform is working as it should be:</p>
-<div class="cell" data-outputid="8ea3304b-c641-4e6c-f227-cf59510d5271" data-execution_count="14">
+<div id="cell-26" class="cell" data-outputid="8ea3304b-c641-4e6c-f227-cf59510d5271" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>b <span class="op">=</span> dls.one_batch()</span>
 <span id="cb12-2"><a href="#cb12-2"></a>b[<span class="dv">1</span>][<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
@@ -395,7 +414,7 @@ cookieconsent.run({
 <section id="model" class="level1">
 <h1>Model</h1>
 <p>It is now time to build our multi-output model. Let’s begin by creating the final layer that will just take the outputs and will reshape them to 32x4 (ignoring batch dimension)</p>
-<div class="cell" data-execution_count="15">
+<div id="cell-29" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>N_OUTPUTS <span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb14-2"><a href="#cb14-2"></a></span>
 <span id="cb14-3"><a href="#cb14-3"></a><span class="kw">class</span> ReshapeLayer(nn.Module):</span>
@@ -410,12 +429,12 @@ cookieconsent.run({
 <span id="cb14-12"><a href="#cb14-12"></a>        <span class="cf">return</span> out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, we use fastai’s <code>create_body</code> method to get a <code>resnet18</code> model backbone pretrained on ImageNet data. We then use the <code>create_head</code> method to add a head mainly consisting of fully-connected layers to map the outputs from the convolutional backbone to a <code>32*4=128</code> length vector. The weird parameter <code>body[-1][-1].bn2.num_features</code> is actually equal to <code>512</code> and is just the number of outputs of the convolutional backbone. We found that the model does not overfit so we turn off dropout by setting <code>ps=0.0</code>:</p>
-<div class="cell" data-execution_count="16">
+<div id="cell-31" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a>body <span class="op">=</span> create_body(resnet18, cut<span class="op">=-</span><span class="dv">2</span>, pretrained<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb15-2"><a href="#cb15-2"></a>head <span class="op">=</span> create_head(body[<span class="op">-</span><span class="dv">1</span>][<span class="op">-</span><span class="dv">1</span>].bn2.num_features, N_OUTPUTS <span class="op">*</span> <span class="bu">len</span>(l2i), ps<span class="op">=</span><span class="fl">0.0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Combine the <code>body</code>, the <code>head</code> and the <code>ReshapeLayer</code> into a final model:</p>
-<div class="cell" data-execution_count="17">
+<div id="cell-33" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a>model <span class="op">=</span> nn.Sequential(</span>
 <span id="cb16-2"><a href="#cb16-2"></a>    body,</span>
 <span id="cb16-3"><a href="#cb16-3"></a>    head,</span>
@@ -426,7 +445,7 @@ cookieconsent.run({
 </div>
 <p>This last line that casts to model to the GPU might be redundant, but we haven’t checked that, so for now it is better to be safe than sorry.</p>
 <p>Finally create a function that will tell how the model’s parameters have to be split when we’ll use transfer learning (e.g.&nbsp;which parts should be frozen or not):</p>
-<div class="cell" data-execution_count="18">
+<div id="cell-35" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">def</span> model_splitter(model):</span>
 <span id="cb17-2"><a href="#cb17-2"></a>    <span class="cf">return</span> [params(model[<span class="dv">0</span>]), params(model[<span class="dv">1</span>:])]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -435,14 +454,14 @@ cookieconsent.run({
 <h1>Training</h1>
 <p>We have come up to training the model.</p>
 <p>First we need some custom functions that will track our metrics. The first one calculates overall accuracy (fraction of images were the model gets <strong>all</strong> four outputs right) and the second one calculates the fraction of individual outputs that the model got right. For example, for captcha “ABCD”, if the model guesses “ABCA”, then the overall accuracy will be 0, but individual accuracy will be 75% (3 out of 4 letters guessed correctly):</p>
-<div class="cell" data-execution_count="19">
+<div id="cell-38" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">def</span> multi_output_accuracy(inp, targ):</span>
 <span id="cb18-2"><a href="#cb18-2"></a>    labels_pred <span class="op">=</span> torch.softmax(inp, dim<span class="op">=</span><span class="dv">1</span>)</span>
 <span id="cb18-3"><a href="#cb18-3"></a>    labels_pred <span class="op">=</span> torch.argmax(labels_pred, dim<span class="op">=</span><span class="dv">1</span>)</span>
 <span id="cb18-4"><a href="#cb18-4"></a></span>
 <span id="cb18-5"><a href="#cb18-5"></a>    <span class="cf">return</span> ((labels_pred <span class="op">==</span> targ).<span class="bu">all</span>(dim<span class="op">=</span><span class="dv">1</span>)).<span class="bu">sum</span>() <span class="op">/</span> inp.size(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="20">
+<div id="cell-39" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">def</span> multi_output_individual_accuracy(inp, targ):</span>
 <span id="cb19-2"><a href="#cb19-2"></a>    labels_pred <span class="op">=</span> torch.softmax(inp, dim<span class="op">=</span><span class="dv">1</span>)</span>
 <span id="cb19-3"><a href="#cb19-3"></a>    labels_pred <span class="op">=</span> torch.argmax(labels_pred, dim<span class="op">=</span><span class="dv">1</span>)</span>
@@ -452,7 +471,7 @@ cookieconsent.run({
 <p>Next, we create a custom <code>MultiOutputCrossEntropyLoss</code> which is an adaption of fastai’s <code>CrossEntropyLossFlat</code> for our multi-output needs.</p>
 <p>Figuring out the details of this one took a substantial amount of time, but in the end we figured out what each of the parameters do: - setting <code>flatten=False</code> turns off the default output flattening which is what we want - <code>reduction="sum"</code> makes the loss functions sum up the losses of individual outputs instead of averaging them - <code>axis=1</code> tells the loss function that softmax and argmax should operate on dim=1, in our case this means that we go from shape [bs, num_classes=32, n_output=4] to shape [bs, n_output=4] after those activations are applied which is exactly what we want</p>
 <p>Finally, we override the <code>__call__</code> method because we noticed that the output gets weirdly transposed internally, so adding an additional transpose here reverses it and makes things work the way they should be:</p>
-<div class="cell" data-execution_count="21">
+<div id="cell-41" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw">class</span> MultiOutputCrossEntropyLoss(CrossEntropyLossFlat):</span>
 <span id="cb20-2"><a href="#cb20-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
 <span id="cb20-3"><a href="#cb20-3"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(flatten<span class="op">=</span><span class="va">False</span>, reduction<span class="op">=</span><span class="st">"sum"</span>, axis<span class="op">=</span><span class="dv">1</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
@@ -463,15 +482,15 @@ cookieconsent.run({
 <span id="cb20-8"><a href="#cb20-8"></a>        <span class="cf">return</span> <span class="bu">super</span>().<span class="fu">__call__</span>(inp, targ, <span class="op">**</span>kwargs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now assemble all the bits from above to create a fastai learner:</p>
-<div class="cell" data-execution_count="22">
+<div id="cell-43" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a>learn <span class="op">=</span> Learner(dls, model, loss_func<span class="op">=</span>MultiOutputCrossEntropyLoss(), metrics<span class="op">=</span>[multi_output_accuracy, multi_output_individual_accuracy], splitter<span class="op">=</span>model_splitter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We want to start by only training the head for a little bit, so let’s freeze the convolutional backbone:</p>
-<div class="cell" data-execution_count="24">
+<div id="cell-46" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a>learn.freeze()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Look for a suitable learning rate:</p>
-<div class="cell" data-outputid="5f9cbf89-32ac-4952-e505-c15043b90a36" data-execution_count="25">
+<div id="cell-48" class="cell" data-outputid="5f9cbf89-32ac-4952-e505-c15043b90a36" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a>learn.lr_find()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 
@@ -480,13 +499,18 @@ cookieconsent.run({
 <pre><code>SuggestedLRs(lr_min=0.0033113110810518267, lr_steep=0.007585775572806597)</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="captcha-fastai_files/figure-html/cell-25-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="captcha-fastai_files/figure-html/cell-25-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Train the head for 2 epochs with the found learning rate:</p>
-<div class="cell" data-outputid="f82e5864-e128-4063-a2ef-5ea66ca55393" data-execution_count="26">
+<div id="cell-50" class="cell" data-outputid="f82e5864-e128-4063-a2ef-5ea66ca55393" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1"></a>learn.fit_one_cycle(<span class="dv">2</span>, <span class="fl">5e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
+<div>
 <table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
@@ -519,12 +543,13 @@ cookieconsent.run({
 </table>
 </div>
 </div>
+</div>
 <p>Unfreeze the convolutional backbone:</p>
-<div class="cell" data-execution_count="27">
+<div id="cell-52" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1"></a>learn.unfreeze()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Look for a good learning rate and then train the whole model for 3 epochs:</p>
-<div class="cell" data-outputid="6c76bb39-4cfb-4ba8-bb90-00eec48643d9" data-execution_count="28">
+<div id="cell-54" class="cell" data-outputid="6c76bb39-4cfb-4ba8-bb90-00eec48643d9" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1"></a>learn.lr_find()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 
@@ -533,12 +558,17 @@ cookieconsent.run({
 <pre><code>SuggestedLRs(lr_min=0.002754228748381138, lr_steep=0.005248074419796467)</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="captcha-fastai_files/figure-html/cell-28-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="captcha-fastai_files/figure-html/cell-28-output-3.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
-<div class="cell" data-outputid="eaad8b51-13be-44d3-bb78-253d3f8967e5" data-execution_count="29">
+</div>
+<div id="cell-55" class="cell" data-outputid="eaad8b51-13be-44d3-bb78-253d3f8967e5" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1"></a>learn.fit_one_cycle(<span class="dv">3</span>, <span class="fl">5e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
+<div>
 <table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
@@ -579,8 +609,9 @@ cookieconsent.run({
 </table>
 </div>
 </div>
+</div>
 <p>Look for a learning rate again (we will find it is a much smaller one) and train the model for one more epoch to get those extra bits of accuracy:</p>
-<div class="cell" data-outputid="bfd49e45-f751-4012-93fa-050ac73b2dc6" data-execution_count="30">
+<div id="cell-57" class="cell" data-outputid="bfd49e45-f751-4012-93fa-050ac73b2dc6" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1"></a>learn.lr_find()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 
@@ -589,12 +620,17 @@ cookieconsent.run({
 <pre><code>SuggestedLRs(lr_min=0.00043651582673192023, lr_steep=6.309573450380412e-07)</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="captcha-fastai_files/figure-html/cell-30-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="captcha-fastai_files/figure-html/cell-30-output-3.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
-<div class="cell" data-outputid="44025268-e807-485b-a63a-2f5f327619f9" data-execution_count="31">
+</div>
+<div id="cell-58" class="cell" data-outputid="44025268-e807-485b-a63a-2f5f327619f9" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1"></a>learn.fit_one_cycle(<span class="dv">1</span>, <span class="fl">1e-4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
+<div>
 <table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
@@ -619,6 +655,7 @@ cookieconsent.run({
 </table>
 </div>
 </div>
+</div>
 <p>In just 6 epochs, transfer learning allowed us to reach we managed toan accuracy of 99.7% percent. Amazing!</p>
 </section>
 <section id="testing" class="level1">
@@ -626,20 +663,24 @@ cookieconsent.run({
 <section id="check-validation-set-results" class="level2">
 <h2 class="anchored" data-anchor-id="check-validation-set-results">Check validation set results</h2>
 <p>Check the model’s performance on a batch of data:</p>
-<div class="cell" data-outputid="afa3eeb4-0bbd-4df0-dd2c-2a755c4d40bd" data-execution_count="42">
+<div id="cell-64" class="cell" data-outputid="afa3eeb4-0bbd-4df0-dd2c-2a755c4d40bd" data-execution_count="42">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1"></a>learn.show_results()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="captcha-fastai_files/figure-html/cell-33-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="captcha-fastai_files/figure-html/cell-33-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="get-failed-captchas" class="level2">
 <h2 class="anchored" data-anchor-id="get-failed-captchas">Get failed captchas</h2>
 <p>Get predictions:</p>
-<div class="cell" data-outputid="e57568cd-be8c-4243-fdf0-a9d2c5035ff1" data-execution_count="43">
+<div id="cell-67" class="cell" data-outputid="e57568cd-be8c-4243-fdf0-a9d2c5035ff1" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1"></a>inputs, _, targets, decoded_preds <span class="op">=</span> learn.get_preds(with_input<span class="op">=</span><span class="va">True</span>, with_decoded<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb34-2"><a href="#cb34-2"></a>inputs.size(), targets.size(), decoded_preds.size()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
@@ -650,19 +691,23 @@ cookieconsent.run({
 </div>
 </div>
 <p>Indices of failed captchas are:</p>
-<div class="cell" data-execution_count="44">
+<div id="cell-69" class="cell" data-execution_count="44">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1"></a>failed_idxs <span class="op">=</span> (<span class="op">~</span>(decoded_preds <span class="op">==</span> targets).<span class="bu">all</span>(dim<span class="op">=</span><span class="dv">1</span>)).nonzero().view(<span class="op">-</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Show those captchas to check why the model failed:</p>
-<div class="cell" data-outputid="e457bd80-138b-4d67-c8d3-a84455e3759f" data-execution_count="45">
+<div id="cell-71" class="cell" data-outputid="e457bd80-138b-4d67-c8d3-a84455e3759f" data-execution_count="45">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1"></a>dls.show_results(b<span class="op">=</span>(inputs[failed_idxs], targets[failed_idxs]), out<span class="op">=</span>decoded_preds[failed_idxs])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="captcha-fastai_files/figure-html/cell-36-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="captcha-fastai_files/figure-html/cell-36-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>We can see that the model does some slight errors, but it only fails on 4 captchas out of a validation set of 1991 images which is an amazing result. I hope that it is now obvious that using captchas to protect a website from bots is not a good idea.</p>
 <p>Check the model’s confidence when it makes errors:</p>
-<div class="cell" data-outputid="63268ae8-abf6-4b57-ee25-238ed7cdcab7" data-execution_count="46">
+<div id="cell-73" class="cell" data-outputid="63268ae8-abf6-4b57-ee25-238ed7cdcab7" data-execution_count="46">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1"></a><span class="cf">for</span> idx <span class="kw">in</span> failed_idxs.detach().cpu().numpy().flatten():</span>
 <span id="cb38-2"><a href="#cb38-2"></a>    decoded_pred, pred, model_output <span class="op">=</span> learn.predict(dls.valid_ds[idx][<span class="dv">0</span>])</span>
 <span id="cb38-3"><a href="#cb38-3"></a>    probs <span class="op">=</span> torch.softmax(model_output, dim<span class="op">=</span><span class="dv">0</span>)[pred].diag()</span>
@@ -781,10 +826,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -794,8 +856,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -807,7 +878,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -851,6 +1045,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -876,6 +1071,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -941,12 +1162,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

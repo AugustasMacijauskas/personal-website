@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -85,7 +85,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -94,6 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -120,6 +127,8 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
@@ -130,22 +139,27 @@ cookieconsent.run({
 }
 </script>
 <script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
 
 
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="Augustas Macijauskas - Basic panorama stitching">
 <meta property="og:description" content="A look at homographies and how they can be used to stitch photos into a panorama.">
-<meta property="og:image" content="augustas-macijauskas-square-profile.jpg">
-<meta property="og:site-name" content="Augustas Macijauskas' blog">
+<meta property="og:image" content="city-panorama.jpg">
+<meta property="og:site_name" content="Augustas Macijauskas' blog">
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Augustas Macijauskas</span>
     </a>
@@ -157,28 +171,28 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" rel="" target="_blank"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" target="_blank"> <i class="bi bi-linkedin" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/augustasmac" rel="" target="_blank"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/augustasmac" target="_blank"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -241,6 +255,7 @@ cookieconsent.run({
 
 
 
+
 <p>In this notebook we will find that we can use knowledge of computer vision to create our own panoramas! We only need to take a few photos with a smartphone or camera, but we have to make sure that we only change the angle of the phone/camera, and not the position! This notebook then takes care of everything else.</p>
 <div class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -258,8 +273,8 @@ Caution
 <p>This notebook is based on the <a href="https://www.youtube.com/playlist?list=PL05umP7R6ij35L2MHGzis8AEHz7mg381_" target="_blank">Computer Vision course by Andreas Geiger</a>.</p>
 <section id="preliminaries" class="level2">
 <h2 class="anchored" data-anchor-id="preliminaries">Preliminaries</h2>
-<div class="cell">
-<details>
+<div id="cell-4" class="cell">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -269,10 +284,10 @@ Caution
 </details>
 </div>
 <p>Let’s first import the some images that we want to stich together:</p>
-<div class="cell">
+<div id="cell-6" class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>PATH_TO_YOUR_IMAGES <span class="op">=</span> Path(<span class="st">"path/to/your/images"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="2c3ae29d-bb17-4fe8-db31-6cc92dc33148">
+<div id="cell-7" class="cell" data-outputid="2c3ae29d-bb17-4fe8-db31-6cc92dc33148">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Load images</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>images <span class="op">=</span> <span class="bu">sorted</span>([f <span class="cf">for</span> f <span class="kw">in</span> PATH_TO_YOUR_IMAGES.iterdir()])</span>
 <span id="cb3-3"><a href="#cb3-3"></a>images <span class="op">=</span> <span class="bu">map</span>(<span class="bu">str</span>, images)</span>
@@ -284,11 +299,11 @@ Caution
 <pre><code>10</code></pre>
 </div>
 </div>
-<div class="cell">
+<div id="cell-8" class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>images <span class="op">=</span> images[<span class="dv">2</span>:<span class="dv">4</span>] <span class="op">+</span> images[<span class="dv">5</span>:]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s have a look at the images:</p>
-<div class="cell" data-outputid="a424c5d0-a984-4995-8200-5182fe8b9320">
+<div id="cell-10" class="cell" data-outputid="a424c5d0-a984-4995-8200-5182fe8b9320">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(images), figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
 <span id="cb6-2"><a href="#cb6-2"></a></span>
 <span id="cb6-3"><a href="#cb6-3"></a><span class="cf">for</span> img, ax <span class="kw">in</span> <span class="bu">zip</span>(images, axes.flatten()):</span>
@@ -298,14 +313,18 @@ Caution
 <span id="cb6-7"><a href="#cb6-7"></a>fig.tight_layout()</span>
 <span id="cb6-8"><a href="#cb6-8"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="finding-keypoints" class="level2">
 <h2 class="anchored" data-anchor-id="finding-keypoints">Finding keypoints</h2>
 <p>To estimate the homography matrix, we need correspondence pairs between images. The following is a function for this based on feature matching:</p>
-<div class="cell">
+<div id="cell-13" class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">def</span> get_keypoints(img1, img2):</span>
 <span id="cb7-2"><a href="#cb7-2"></a>    orb <span class="op">=</span> cv2.ORB_create(nfeatures<span class="op">=</span><span class="dv">2000</span>)</span>
 <span id="cb7-3"><a href="#cb7-3"></a></span>
@@ -330,7 +349,7 @@ Caution
 <span id="cb7-22"><a href="#cb7-22"></a>    <span class="cf">return</span> p_source, p_target</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s now look at some correspondence pairs. For this, the we use the <code>draw_matches</code> function:</p>
-<div class="cell">
+<div id="cell-15" class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">def</span> draw_matches(img1, points_source, img2, points_target):</span>
 <span id="cb8-2"><a href="#cb8-2"></a>    <span class="co">''' Returns an image with matches drawn onto the images.</span></span>
 <span id="cb8-3"><a href="#cb8-3"></a><span class="co">    '''</span></span>
@@ -353,7 +372,7 @@ Caution
 <span id="cb8-20"><a href="#cb8-20"></a>    <span class="cf">return</span> output_img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We calculate the keypoints:</p>
-<div class="cell" data-outputid="e5cd7d65-7e2a-4c86-cadb-588448915293">
+<div id="cell-17" class="cell" data-outputid="e5cd7d65-7e2a-4c86-cadb-588448915293">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>keypoint_pairs <span class="op">=</span> [get_keypoints(img1, img2) <span class="cf">for</span> img1, img2 <span class="kw">in</span> <span class="bu">zip</span>(images[:<span class="op">-</span><span class="dv">1</span>], images[<span class="dv">1</span>:])]</span>
 <span id="cb9-2"><a href="#cb9-2"></a>source_points <span class="op">=</span> [pair[<span class="dv">0</span>] <span class="cf">for</span> pair <span class="kw">in</span> keypoint_pairs]</span>
 <span id="cb9-3"><a href="#cb9-3"></a>target_points <span class="op">=</span> [pair[<span class="dv">1</span>] <span class="cf">for</span> pair <span class="kw">in</span> keypoint_pairs]</span>
@@ -364,7 +383,7 @@ Caution
 </div>
 </div>
 <p>Check how many keypoints we have:</p>
-<div class="cell" data-outputid="01ea858b-7c76-41b0-9a2c-1a94b4eaf5aa">
+<div id="cell-19" class="cell" data-outputid="01ea858b-7c76-41b0-9a2c-1a94b4eaf5aa">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(source_points)):</span>
 <span id="cb11-2"><a href="#cb11-2"></a>    <span class="bu">print</span>(source_points[i].shape, target_points[i].shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -377,7 +396,7 @@ Caution
 </div>
 </div>
 <p>Visualise the keypoints:</p>
-<div class="cell" data-outputid="7db6cbc9-97af-4a73-de97-67420ef27c7d">
+<div id="cell-21" class="cell" data-outputid="7db6cbc9-97af-4a73-de97-67420ef27c7d">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>matches_to_show <span class="op">=</span> <span class="dv">200</span></span>
 <span id="cb13-2"><a href="#cb13-2"></a></span>
 <span id="cb13-3"><a href="#cb13-3"></a><span class="cf">for</span> img1, p_source, img2, p_target <span class="kw">in</span> <span class="bu">zip</span>(images[:<span class="op">-</span><span class="dv">1</span>], source_points, images[<span class="dv">1</span>:], target_points):</span>
@@ -386,29 +405,53 @@ Caution
 <span id="cb13-6"><a href="#cb13-6"></a>    plt.axis(<span class="st">"off"</span>)</span>
 <span id="cb13-7"><a href="#cb13-7"></a>    plt.imshow(vis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-12-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-12-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-12-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-12-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-12-output-4.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-12-output-4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-12-output-5.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-12-output-5.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-12-output-6.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-12-output-6.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="estimating-the-homography-matrix" class="level2">
 <h2 class="anchored" data-anchor-id="estimating-the-homography-matrix">Estimating the homography matrix</h2>
 <p>After looking at the correspondences, let’s stitch the images together! In order to stitch together the images, we need a function to return the 2x9 homography matrix <code>A_i</code> matrix for a given 2D correspondence pair <code>xi_vector</code> and <code>xi_prime_vector</code> (which are 3D homogeneous vectors).</p>
-<div class="cell">
+<div id="cell-23" class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">def</span> get_Ai(xi_vector, xi_prime_vector):</span>
 <span id="cb14-2"><a href="#cb14-2"></a>    <span class="co">''' Returns the A_i matrix discussed in the lecture for input vectors.</span></span>
 <span id="cb14-3"><a href="#cb14-3"></a><span class="co">    </span></span>
@@ -429,7 +472,7 @@ Caution
 <span id="cb14-18"><a href="#cb14-18"></a>    <span class="cf">return</span> Ai</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Using <code>get_Ai</code>, write a function <code>get_A</code> which returns the A matrix of size 2Nx9:</p>
-<div class="cell">
+<div id="cell-25" class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">def</span> get_A(points_source, points_target):</span>
 <span id="cb15-2"><a href="#cb15-2"></a>    <span class="co">''' Returns the A matrix discussed in the lecture.</span></span>
 <span id="cb15-3"><a href="#cb15-3"></a><span class="co">    </span></span>
@@ -448,7 +491,7 @@ Caution
 <span id="cb15-16"><a href="#cb15-16"></a>    <span class="cf">return</span> A</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, implement the function <code>get_homography</code> which returns the homography H for point correspondence pairs. We obtain H by performing the Direct Linear Transformation (DLT) algorithm:</p>
-<div class="cell">
+<div id="cell-27" class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">def</span> get_homography(points_source, points_target):</span>
 <span id="cb16-2"><a href="#cb16-2"></a>    <span class="co">''' Returns the homography H.</span></span>
 <span id="cb16-3"><a href="#cb16-3"></a><span class="co">    </span></span>
@@ -467,7 +510,7 @@ Caution
 <span id="cb16-16"><a href="#cb16-16"></a>    <span class="cf">return</span> H</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We need a function which takes in the two images and the calculated homography and it returns the stiched image in a format which we can display easy with matplotlib. This function is provided in the following.</p>
-<div class="cell">
+<div id="cell-29" class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">def</span> stitch_images(img1, img2, H):</span>
 <span id="cb17-2"><a href="#cb17-2"></a>    <span class="co">''' Stitches together the images via given homography H.</span></span>
 <span id="cb17-3"><a href="#cb17-3"></a></span>
@@ -512,7 +555,7 @@ Caution
 <span id="cb17-42"><a href="#cb17-42"></a>    <span class="cf">return</span> output_img</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>With this, we can stitch two images together and see how it looks:</p>
-<div class="cell" data-outputid="8f4f7a80-fd38-42d4-b825-cd22563c4f02">
+<div id="cell-31" class="cell" data-outputid="8f4f7a80-fd38-42d4-b825-cd22563c4f02" data-scrolled="false">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a><span class="cf">for</span> img1, p_source, img2, p_target <span class="kw">in</span> <span class="bu">zip</span>(images[:<span class="op">-</span><span class="dv">1</span>], source_points, images[<span class="dv">1</span>:], target_points):</span>
 <span id="cb18-2"><a href="#cb18-2"></a>    H <span class="op">=</span> get_homography(p_target, p_source)</span>
 <span id="cb18-3"><a href="#cb18-3"></a>    stitched_image <span class="op">=</span> stitch_images(img1, img2, H)</span>
@@ -522,26 +565,50 @@ Caution
 <span id="cb18-7"><a href="#cb18-7"></a>    plt.imshow(stitched_image)</span>
 <span id="cb18-8"><a href="#cb18-8"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-17-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-17-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-17-output-3.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-17-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-17-output-4.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-17-output-4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-17-output-5.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-17-output-5.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-17-output-6.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-17-output-6.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Finally, we repeat this process iteratively until all images are stitched together:</p>
-<div class="cell">
+<div id="cell-33" class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">def</span> get_panorama(images):</span>
 <span id="cb19-2"><a href="#cb19-2"></a>    n_repeats <span class="op">=</span> <span class="bu">len</span>(images) <span class="op">-</span> <span class="dv">1</span></span>
 <span id="cb19-3"><a href="#cb19-3"></a></span>
@@ -566,14 +633,18 @@ Caution
 <span id="cb19-22"><a href="#cb19-22"></a></span>
 <span id="cb19-23"><a href="#cb19-23"></a>    <span class="cf">return</span> current_images[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="69f66c04-10d3-44fa-93ca-301bdaa873a1">
+<div id="cell-34" class="cell" data-outputid="69f66c04-10d3-44fa-93ca-301bdaa873a1">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a>panorama <span class="op">=</span> get_panorama(images)</span>
 <span id="cb20-2"><a href="#cb20-2"></a></span>
 <span id="cb20-3"><a href="#cb20-3"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">10</span>))</span>
 <span id="cb20-4"><a href="#cb20-4"></a>plt.imshow(panorama)</span>
 <span id="cb20-5"><a href="#cb20-5"></a>plt.axis(<span class="st">"off"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="basic-panorama_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="basic-panorama_files/figure-html/cell-19-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -665,10 +736,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -678,8 +766,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -691,7 +788,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -735,6 +955,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -760,6 +981,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -825,12 +1072,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

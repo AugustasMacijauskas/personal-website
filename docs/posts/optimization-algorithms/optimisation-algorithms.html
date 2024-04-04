@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -85,7 +85,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -94,6 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -120,6 +127,8 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
@@ -130,22 +139,27 @@ cookieconsent.run({
 }
 </script>
 <script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
 
 
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="Augustas Macijauskas - Implementing optimisation algorithms to optimise parameters of linear functions">
 <meta property="og:description" content="A sandbox notebook which I used to play around with optimizers.">
-<meta property="og:image" content="augustas-macijauskas-square-profile.jpg">
-<meta property="og:site-name" content="Augustas Macijauskas' blog">
+<meta property="og:image" content="optimization.jpg">
+<meta property="og:site_name" content="Augustas Macijauskas' blog">
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Augustas Macijauskas</span>
     </a>
@@ -157,28 +171,28 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" rel="" target="_blank"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" target="_blank"> <i class="bi bi-linkedin" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/augustasmac" rel="" target="_blank"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/augustasmac" target="_blank"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -245,11 +259,12 @@ cookieconsent.run({
 
 
 
+
 <section id="imports" class="level1">
 <h1>Imports</h1>
 <p>Toggle cells below if you want to see what imports are being made.</p>
-<div class="cell" data-execution_count="2">
-<details>
+<div id="cell-2" class="cell" data-execution_count="2">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">%</span>load_ext autoreload</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="op">%</span>autoreload <span class="dv">2</span></span>
@@ -264,22 +279,26 @@ cookieconsent.run({
 <section id="data" class="level1">
 <h1>Data</h1>
 <p>Let’s create 100 <code>x</code> values uniformly distributed between 0 and 100. Note the usage of a random seed for reproducibility:</p>
-<div class="cell" data-execution_count="3">
+<div id="cell-5" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb2-2"><a href="#cb2-2"></a>x <span class="op">=</span> np.random.uniform(<span class="dv">0</span>, <span class="dv">100</span>, size<span class="op">=</span><span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Calculate <code>y</code> values for the given <code>x</code> values. I chose a slope of -2 and an intercept of 10 and decided not to add noise to make the task easier:</p>
-<div class="cell" data-execution_count="4">
+<div id="cell-7" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>slope <span class="op">=</span> <span class="op">-</span><span class="dv">2</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>intercept <span class="op">=</span> <span class="dv">10</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a>y <span class="op">=</span> slope <span class="op">*</span> x <span class="op">+</span> intercept</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s plot the points to check that everything looks as it should be:</p>
-<div class="cell" data-execution_count="5">
+<div id="cell-9" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>plt.scatter(x, y)</span>
 <span id="cb4-2"><a href="#cb4-2"></a>plt.plot(x, slope <span class="op">*</span> x <span class="op">+</span> intercept, color<span class="op">=</span><span class="st">"red"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -289,7 +308,7 @@ cookieconsent.run({
 <p>We start by creating our simple <code>LinearModel</code> whose parameters we’ll try to optimize. Here we choose to initialize both the slope and the intercept with the value <code>1</code>, but this should not matter too much for this problem.</p>
 <p>The <code>forward</code> method performs the forward pass of the model to get a prediction for a given <code>x</code>, i.e.&nbsp;just return <code>ax+b</code>.</p>
 <p>The <code>backward</code> method is used to calculate gradients of the parameters given <code>x</code>, <code>y</code> and <code>y_pred</code>. These are usually calculated using automatic differentiation in deep learning libraries, such as PyTorch, but here we do everything by hand:</p>
-<div class="cell" data-execution_count="6">
+<div id="cell-12" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">class</span> LinearModel:</span>
 <span id="cb5-2"><a href="#cb5-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, initial_slope<span class="op">=</span><span class="dv">1</span>, initial_intercept<span class="op">=</span><span class="dv">1</span>):</span>
 <span id="cb5-3"><a href="#cb5-3"></a>        <span class="va">self</span>.slope <span class="op">=</span> initial_slope</span>
@@ -303,7 +322,7 @@ cookieconsent.run({
 </div>
 <p>The <code>Tracker</code> utility class will be used to track different values while experimenting. It can be considered an overkill for such a simple task (and I later ended up tracking only one value with it), but it can be very convenient for larger projects, so I included it here too.</p>
 <p>The class stores a dictionary of <code>string-list</code> pairs in its state and provides <code>add_record</code> and <code>get_values</code> methods to easily access and update that dictionary.</p>
-<div class="cell" data-execution_count="7">
+<div id="cell-14" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
 <span id="cb6-2"><a href="#cb6-2"></a></span>
 <span id="cb6-3"><a href="#cb6-3"></a><span class="kw">class</span> Tracker:</span>
@@ -319,7 +338,7 @@ cookieconsent.run({
 <span id="cb6-13"><a href="#cb6-13"></a>        <span class="cf">return</span> <span class="va">self</span>.tracker[key]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>train_one_epoch</code> is a utility function that trains the model for one epoch (one pass through the data). It performs a forward pass, calculates and tracks the error, gets the gradients of parameters by performing a backward pass and passes those along with the <code>params</code> parameter to the optimizer that updates the weights of the model. The <code>params</code> parameter is a dictionary that is used to hyperparameter constants, such as the learning rate, to the optimizer.</p>
-<div class="cell" data-execution_count="8">
+<div id="cell-16" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">def</span> train_one_epoch(model, data, optimizer, tracker, params):</span>
 <span id="cb7-2"><a href="#cb7-2"></a>    total_error <span class="op">=</span> <span class="fl">0.0</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a>    </span>
@@ -341,7 +360,7 @@ cookieconsent.run({
 <span id="cb7-19"><a href="#cb7-19"></a>    tracker.add_record(<span class="st">"error"</span>, total_error <span class="op">/</span> <span class="bu">len</span>(data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finally, a utility function that brings everything together to execute an experiment. Our goal is to train the model for as little as possible, stopping when error drops below some desired threshold.</p>
-<div class="cell" data-execution_count="9">
+<div id="cell-18" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">def</span> perform_experiment(optimizer, params, desired_error<span class="op">=</span><span class="fl">1e-8</span>):</span>
 <span id="cb8-2"><a href="#cb8-2"></a>    <span class="co"># Initialization</span></span>
 <span id="cb8-3"><a href="#cb8-3"></a>    model <span class="op">=</span> LinearModel()</span>
@@ -375,14 +394,14 @@ cookieconsent.run({
 </section>
 <section id="vanilla-sgd" class="level1">
 <h1>Vanilla SGD</h1>
-<div class="cell" data-execution_count="10">
+<div id="cell-20" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">class</span> SGDOptimizer:</span>
 <span id="cb9-2"><a href="#cb9-2"></a>    <span class="kw">def</span> step(<span class="va">self</span>, model, grad_slope, grad_intercept, params):</span>
 <span id="cb9-3"><a href="#cb9-3"></a>        lr <span class="op">=</span> params[<span class="st">"lr"</span>]</span>
 <span id="cb9-4"><a href="#cb9-4"></a>        model.slope <span class="op">-=</span> lr <span class="op">*</span> grad_slope</span>
 <span id="cb9-5"><a href="#cb9-5"></a>        model.intercept <span class="op">-=</span> lr <span class="op">*</span> grad_intercept</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="11">
+<div id="cell-21" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>optimizer <span class="op">=</span> SGDOptimizer()</span>
 <span id="cb10-2"><a href="#cb10-2"></a>params <span class="op">=</span> { <span class="st">"lr"</span>: <span class="fl">1e-4</span> }</span>
 <span id="cb10-3"><a href="#cb10-3"></a>perform_experiment(optimizer, params)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -393,14 +412,18 @@ Slope: -1.9999963788900519
 Intercept: 9.999738575620166</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-11-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-11-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Breaks with <code>lr=1e-3</code></p>
 </section>
 <section id="sgd-with-momentum" class="level1">
 <h1>SGD with momentum</h1>
-<div class="cell" data-execution_count="12">
+<div id="cell-24" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">class</span> SGDWithMomentumOptimizer(SGDOptimizer):</span>
 <span id="cb12-2"><a href="#cb12-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
 <span id="cb12-3"><a href="#cb12-3"></a>        <span class="va">self</span>.slope_momentum <span class="op">=</span> <span class="va">self</span>.intercept_momentum <span class="op">=</span> <span class="dv">0</span></span>
@@ -414,7 +437,7 @@ Intercept: 9.999738575620166</code></pre>
 <span id="cb12-11"><a href="#cb12-11"></a>        <span class="va">self</span>.intercept_momentum <span class="op">=</span> miu <span class="op">*</span> <span class="va">self</span>.intercept_momentum <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> miu) <span class="op">*</span> grad_intercept</span>
 <span id="cb12-12"><a href="#cb12-12"></a>        model.intercept <span class="op">-=</span> lr <span class="op">*</span> <span class="va">self</span>.intercept_momentum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="13">
+<div id="cell-25" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>optimizer <span class="op">=</span> SGDWithMomentumOptimizer()</span>
 <span id="cb13-2"><a href="#cb13-2"></a>params <span class="op">=</span> { <span class="st">"lr"</span>: <span class="fl">1e-4</span>, <span class="st">"miu"</span>: <span class="fl">0.9</span> }</span>
 <span id="cb13-3"><a href="#cb13-3"></a>perform_experiment(optimizer, params)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -425,10 +448,14 @@ Slope: -1.9999951526911044
 Intercept: 9.999742134759243</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-13-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-13-output-2.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
-<div class="cell" data-execution_count="14">
+</div>
+<div id="cell-26" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a>optimizer <span class="op">=</span> SGDWithMomentumOptimizer()</span>
 <span id="cb15-2"><a href="#cb15-2"></a>params <span class="op">=</span> { <span class="st">"lr"</span>: <span class="fl">1e-3</span>, <span class="st">"miu"</span>: <span class="fl">0.9</span> }</span>
 <span id="cb15-3"><a href="#cb15-3"></a>perform_experiment(optimizer, params)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -439,13 +466,17 @@ Slope: -1.9999980020599053
 Intercept: 9.999929876584854</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-14-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-14-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="rmsprop" class="level1">
 <h1>RMSprop</h1>
-<div class="cell" data-execution_count="15">
+<div id="cell-28" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">class</span> RMSpropOptimizer(SGDOptimizer):</span>
 <span id="cb17-2"><a href="#cb17-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, eps<span class="op">=</span><span class="fl">1e-8</span>):</span>
 <span id="cb17-3"><a href="#cb17-3"></a>        <span class="va">self</span>.eps <span class="op">=</span> eps</span>
@@ -460,7 +491,7 @@ Intercept: 9.999929876584854</code></pre>
 <span id="cb17-12"><a href="#cb17-12"></a>        <span class="va">self</span>.intercept_squared_grads <span class="op">=</span> decay_rate <span class="op">*</span> <span class="va">self</span>.intercept_squared_grads <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> decay_rate) <span class="op">*</span> grad_intercept <span class="op">**</span> <span class="dv">2</span></span>
 <span id="cb17-13"><a href="#cb17-13"></a>        model.intercept <span class="op">-=</span> lr <span class="op">*</span> grad_intercept <span class="op">/</span> (np.sqrt(<span class="va">self</span>.intercept_squared_grads) <span class="op">+</span> <span class="va">self</span>.eps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="16">
+<div id="cell-29" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>optimizer <span class="op">=</span> RMSpropOptimizer()</span>
 <span id="cb18-2"><a href="#cb18-2"></a>params <span class="op">=</span> { <span class="st">"lr"</span>: <span class="fl">1e-4</span>, <span class="st">"decay_rate"</span>: <span class="fl">0.99</span> }</span>
 <span id="cb18-3"><a href="#cb18-3"></a>perform_experiment(optimizer, params)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -471,10 +502,14 @@ Slope: -1.9999999858447193
 Intercept: 9.999996406289089</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-16-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-16-output-2.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
-<div class="cell" data-execution_count="17">
+</div>
+<div id="cell-30" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a>optimizer <span class="op">=</span> RMSpropOptimizer()</span>
 <span id="cb20-2"><a href="#cb20-2"></a>params <span class="op">=</span> { <span class="st">"lr"</span>: <span class="fl">1e-3</span>, <span class="st">"decay_rate"</span>: <span class="fl">0.99</span> }</span>
 <span id="cb20-3"><a href="#cb20-3"></a>perform_experiment(optimizer, params)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -485,10 +520,14 @@ Slope: -1.9999998782649515
 Intercept: 9.999976783670757</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-17-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-17-output-2.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
-<div class="cell" data-execution_count="18">
+</div>
+<div id="cell-31" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a>optimizer <span class="op">=</span> RMSpropOptimizer()</span>
 <span id="cb22-2"><a href="#cb22-2"></a>params <span class="op">=</span> { <span class="st">"lr"</span>: <span class="fl">3e-3</span>, <span class="st">"decay_rate"</span>: <span class="fl">0.99</span> }</span>
 <span id="cb22-3"><a href="#cb22-3"></a>perform_experiment(optimizer, params)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -499,11 +538,15 @@ Slope: -2.0000001115561656
 Intercept: 10.000020816756175</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-18-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-18-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Works best with <code>lr=3e-3</code> and <code>decay_rate=0.99</code>.</p>
-<div class="cell" data-execution_count="19">
+<div id="cell-33" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1"></a>optimizer <span class="op">=</span> RMSpropOptimizer()</span>
 <span id="cb24-2"><a href="#cb24-2"></a>params <span class="op">=</span> { <span class="st">"lr"</span>: <span class="fl">1e1</span>, <span class="st">"decay_rate"</span>: <span class="fl">0.99</span> }</span>
 <span id="cb24-3"><a href="#cb24-3"></a>perform_experiment(optimizer, params)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -514,13 +557,17 @@ Slope: -2.000000169655216
 Intercept: 10.000030570050711</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-19-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-19-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="adam" class="level1">
 <h1>Adam</h1>
-<div class="cell" data-execution_count="20">
+<div id="cell-35" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">class</span> Adam(SGDOptimizer):</span>
 <span id="cb26-2"><a href="#cb26-2"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, eps<span class="op">=</span><span class="fl">1e-8</span>):</span>
 <span id="cb26-3"><a href="#cb26-3"></a>        <span class="va">self</span>.eps <span class="op">=</span> eps</span>
@@ -545,7 +592,7 @@ Intercept: 10.000030570050711</code></pre>
 <span id="cb26-22"><a href="#cb26-22"></a>        intercept_corrected_squared_grads <span class="op">=</span> <span class="va">self</span>.intercept_squared_grads <span class="op">/</span> (<span class="dv">1</span> <span class="op">-</span> beta2 <span class="op">**</span> step)</span>
 <span id="cb26-23"><a href="#cb26-23"></a>        model.intercept <span class="op">-=</span> lr <span class="op">*</span> intercept_corrected_momentum <span class="op">/</span> (np.sqrt(intercept_corrected_squared_grads) <span class="op">+</span> <span class="va">self</span>.eps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="21">
+<div id="cell-36" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1"></a>optimizer <span class="op">=</span> Adam()</span>
 <span id="cb27-2"><a href="#cb27-2"></a>params <span class="op">=</span> { <span class="st">"lr"</span>: <span class="fl">1e-4</span>, <span class="st">"betas"</span>: (<span class="fl">0.9</span>, <span class="fl">0.999</span>) }</span>
 <span id="cb27-3"><a href="#cb27-3"></a>perform_experiment(optimizer, params)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -556,10 +603,14 @@ Slope: -1.9999980335219065
 Intercept: 9.999814585095613</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-21-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-21-output-2.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
-<div class="cell" data-execution_count="22">
+</div>
+<div id="cell-37" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1"></a>optimizer <span class="op">=</span> Adam()</span>
 <span id="cb29-2"><a href="#cb29-2"></a>params <span class="op">=</span> { <span class="st">"lr"</span>: <span class="fl">1e0</span>, <span class="st">"betas"</span>: (<span class="fl">0.9</span>, <span class="fl">0.999</span>) }</span>
 <span id="cb29-3"><a href="#cb29-3"></a>perform_experiment(optimizer, params)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -570,11 +621,15 @@ Slope: -2.00000001786048
 Intercept: 10.000001361061178</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-22-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-22-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Adam seems to be of the order of 10 times faster than other optimization methods and works with much greater learning rates</p>
-<div class="cell" data-execution_count="23">
+<div id="cell-39" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1"></a>optimizer <span class="op">=</span> Adam()</span>
 <span id="cb31-2"><a href="#cb31-2"></a>params <span class="op">=</span> { <span class="st">"lr"</span>: <span class="fl">1e8</span>, <span class="st">"betas"</span>: (<span class="fl">0.9</span>, <span class="fl">0.999</span>) }</span>
 <span id="cb31-3"><a href="#cb31-3"></a>perform_experiment(optimizer, params)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -585,11 +640,15 @@ Slope: -2.000001151784137
 Intercept: 9.999987336010909</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-23-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-23-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>In this very easy case of parameters of a linear curve estimation it works with learning rates as large as <code>1e8</code>, whereas the largest learning rate that still works among other methods is <code>1e1</code> for RMSprop. However, the graphs there showed that oscillations in the error were all over the place, while Adam barely oscillated at all.</p>
-<div class="cell" data-execution_count="24">
+<div id="cell-41" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1"></a>optimizer <span class="op">=</span> Adam()</span>
 <span id="cb33-2"><a href="#cb33-2"></a>params <span class="op">=</span> { <span class="st">"lr"</span>: <span class="fl">6e-2</span>, <span class="st">"betas"</span>: (<span class="fl">0.9</span>, <span class="fl">0.999</span>) }</span>
 <span id="cb33-3"><a href="#cb33-3"></a>perform_experiment(optimizer, params, <span class="fl">1e-32</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -600,7 +659,11 @@ Slope: -2.0
 Intercept: 10.0</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="optimisation-algorithms_files/figure-html/cell-24-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="optimisation-algorithms_files/figure-html/cell-24-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Also, Adam is the only optimizer that was able to achieve an error as little as <code>1e-32</code>. Even though out of the box the number of steps (in epochs) was of the same order as for other optimization methods, some hyperparameter tinkering allowed to top them by reducing the number of steps to 72.</p>
@@ -688,10 +751,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -701,8 +781,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -714,7 +803,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -758,6 +970,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -783,6 +996,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -848,12 +1087,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 
