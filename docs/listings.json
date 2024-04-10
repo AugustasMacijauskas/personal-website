@@ -10,5 +10,11 @@
       "/posts/captcha-fastai/captcha-fastai.html",
       "/posts/elegant-naive-bayes/elegant-naive-bayes.html"
     ]
+  },
+  {
+    "listing": "/notes.html",
+    "items": [
+      "/notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html"
+    ]
   }
 ]

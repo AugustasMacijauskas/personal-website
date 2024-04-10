@@ -10,6 +10,8 @@ website:
   navbar:
     right:
       - about.qmd
+      - text: "Notes"
+        file: notes.qmd
       - icon: github
         href: https://github.com/AugustasMacijauskas/
         target: _blank

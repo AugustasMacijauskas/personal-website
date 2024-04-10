@@ -169,7 +169,12 @@ require(['plotly'], function(Plotly) {
 <meta property="og:title" content="Augustas Macijauskas - Visualising large language model embeddings">
 <meta property="og:description" content="Dimensionality reduction techniques reveal interesting structure in the embeddings learnt by large language models.">
 <meta property="og:image" content="dalle-3-embedding-visualisation.webp">
-<meta property="og:site_name" content="Augustas Macijauskas' blog">
+<meta property="og:site_name" content="Augustas Macijauskas's blog">
+<meta name="twitter:title" content="Augustas Macijauskas - Visualising large language model embeddings">
+<meta name="twitter:description" content="Dimensionality reduction techniques reveal interesting structure in the embeddings learnt by large language models.">
+<meta name="twitter:image" content="dalle-3-embedding-visualisation.webp">
+<meta name="twitter:creator" content="@augustasmac">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed">
@@ -192,6 +197,10 @@ require(['plotly'], function(Plotly) {
   <li class="nav-item">
     <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes.html"> 
+<span class="menu-text">Notes</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/AugustasMacijauskas/" target="_blank"> <i class="bi bi-github" role="img">
@@ -264,6 +273,7 @@ require(['plotly'], function(Plotly) {
   <ul>
   <li><a href="#visualising-large-language-model-embeddings" id="toc-visualising-large-language-model-embeddings" class="nav-link active" data-scroll-target="#visualising-large-language-model-embeddings">Visualising large language model embeddings</a></li>
   <li><a href="#imports" id="toc-imports" class="nav-link" data-scroll-target="#imports">Imports</a></li>
+  <li><a href="#dimensionality-reduction" id="toc-dimensionality-reduction" class="nav-link" data-scroll-target="#dimensionality-reduction">Dimensionality reduction</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
@@ -323,12 +333,15 @@ require(['plotly'], function(Plotly) {
 <span id="cb3-15"><a href="#cb3-15"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
+<section id="dimensionality-reduction" class="level1">
+<h1>Dimensionality reduction</h1>
 <p>As you can see below, the code uses very standard libraries and functions. We begin by loading a model and extracting the tensor containing the embedding vectors:</p>
-<div id="cell-7" class="cell" data-execution_count="4">
+<div id="cell-8" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>model_name <span class="op">=</span> <span class="st">"google-bert/bert-base-cased"</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>model <span class="op">=</span> AutoModel.from_pretrained(model_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-8" class="cell" data-execution_count="5">
+<div id="cell-9" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>embedding_vectors <span class="op">=</span> model.embeddings.word_embeddings.weight.data</span>
 <span id="cb5-2"><a href="#cb5-2"></a>embedding_vectors.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
@@ -336,7 +349,7 @@ require(['plotly'], function(Plotly) {
 </div>
 </div>
 <p>We also extract the unique tokens in the tokenizer:</p>
-<div id="cell-10" class="cell" data-execution_count="6">
+<div id="cell-11" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(model_name)</span>
 <span id="cb7-2"><a href="#cb7-2"></a>vocab <span class="op">=</span> tokenizer.get_vocab()</span>
 <span id="cb7-3"><a href="#cb7-3"></a></span>
@@ -352,11 +365,11 @@ require(['plotly'], function(Plotly) {
 <div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="im">import</span> umap</span>
 <span id="cb9-2"><a href="#cb9-2"></a>reducer <span class="op">=</span> umap.UMAP()</span>
 <span id="cb9-3"><a href="#cb9-3"></a>data_2d <span class="op">=</span> reducer.fit_transform(embedding_vectors[NUM_TOKENS_TO_SKIP:NUM_TOKENS_TO_SKIP<span class="op">+</span>NUM_TOKENS_TO_VISUALISE])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="cell-12" class="cell" data-execution_count="7">
+<div id="cell-13" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>NUM_TOKENS_TO_VISUALISE <span class="op">=</span> <span class="dv">2000</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a>NUM_TOKENS_TO_SKIP <span class="op">=</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-13" class="cell" data-execution_count="8">
+<div id="cell-14" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Performing t-SNE to reduce the dataset to 2 dimensions</span></span>
 <span id="cb11-2"><a href="#cb11-2"></a>tsne <span class="op">=</span> TSNE(n_components<span class="op">=</span><span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
 <span id="cb11-3"><a href="#cb11-3"></a>data_2d <span class="op">=</span> tsne.fit_transform(</span>
@@ -368,7 +381,7 @@ require(['plotly'], function(Plotly) {
 </div>
 </div>
 <p>The code to visualise the embeddings is below. The first cell contains mundane code to color the various token groups, toggle the cell if you are interested to see it.</p>
-<div id="cell-15" class="cell" data-execution_count="9">
+<div id="cell-16" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>relevant_tokens <span class="op">=</span> tokens[NUM_TOKENS_TO_SKIP:NUM_TOKENS_TO_SKIP <span class="op">+</span> NUM_TOKENS_TO_VISUALISE]</span>
@@ -421,7 +434,7 @@ require(['plotly'], function(Plotly) {
 <span id="cb13-48"><a href="#cb13-48"></a>unique_colors <span class="op">=</span> DEFAULT_PLOTLY_COLORS[: <span class="bu">len</span>(cluster_names)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-16" class="cell" data-execution_count="10">
+<div id="cell-17" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>fig <span class="op">=</span> go.Figure(</span>
 <span id="cb14-2"><a href="#cb14-2"></a>    data<span class="op">=</span>go.Scatter(</span>
 <span id="cb14-3"><a href="#cb14-3"></a>        x<span class="op">=</span>data_2d[:, <span class="dv">0</span>],</span>
