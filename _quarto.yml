@@ -19,9 +19,11 @@ website:
       - icon: twitter
         href: https://twitter.com/augustasmac
         target: _blank
+  twitter-card: true
+    creator: "@augustasmac"
   open-graph:
-    site-name: "Augustas Macijauskas' blog"
-    image: augustas-macijauskas-square-profile.jpg
+    site-name: "Augustas Macijauskas's blog"
+    # image: augustas-macijauskas-square-profile.jpg
   google-analytics:
     tracking-id: "G-1M6C1LWNHY"
     storage: cookies
