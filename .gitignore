@@ -161,3 +161,8 @@ cython_debug/
 
 /.quarto/
 /_site/
+
+# Custom
+**/hr-data.json
+**/cubic-spline-interpolation-exercise-local.ipynb
+**/.DS_Store
