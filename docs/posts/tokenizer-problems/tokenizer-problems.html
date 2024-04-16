@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Augustas Macijauskas">
+<meta name="dcterms.date" content="2024-04-16">
+<meta name="description" content="Tokenization is (at least partially) the cause of a lot of the problems with large language models.">
 
-<title>Augustas Macijauskas - Miscellaneous notes</title>
+<title>Augustas Macijauskas - Good tokenizers is all you need</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,30 +23,62 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./assets/favicon.ico" rel="icon">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/cookie-consent/cookie-consent.js"></script>
-<link href="site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../assets/favicon.ico" rel="icon">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,35 +106,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-1M6C1LWNHY"></script>
 
 <script type="text/plain" cookie-consent="tracking">
@@ -139,42 +145,17 @@ cookieconsent.run({
   });
 </script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="Augustas Macijauskas - Miscellaneous notes">
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Augustas Macijauskas - Good tokenizers is all you need">
+<meta property="og:description" content="Tokenization is (at least partially) the cause of a lot of the problems with large language models.">
+<meta property="og:image" content="dalle-3-perplexed-robot.webp">
 <meta property="og:site_name" content="Augustas Macijauskas's blog">
-<meta name="twitter:title" content="Augustas Macijauskas - Miscellaneous notes">
+<meta name="twitter:title" content="Augustas Macijauskas - Good tokenizers is all you need">
+<meta name="twitter:description" content="Tokenization is (at least partially) the cause of a lot of the problems with large language models.">
+<meta name="twitter:image" content="dalle-3-perplexed-robot.webp">
 <meta name="twitter:creator" content="@augustasmac">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed">
@@ -184,7 +165,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Augustas Macijauskas</span>
     </a>
   </div>
@@ -195,11 +176,11 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./notes.html" aria-current="page"> 
+    <a class="nav-link" href="../../notes.html"> 
 <span class="menu-text">Notes</span></a>
   </li>  
   <li class="nav-item compact">
@@ -227,119 +208,254 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Miscellaneous notes</h1>
-                      </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">Good tokenizers is all you need</h1>
+                  <div>
+        <div class="description">
+          Tokenization is (at least partially) the cause of a lot of the problems with large language models.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">deep learning</div>
+                <div class="quarto-category">LLMs</div>
+                <div class="quarto-category">tokenization</div>
+              </div>
+                  </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page-left">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Augustas Macijauskas </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 16, 2024</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="LLMs">LLMs <span class="quarto-category-count">(1)</span></div><div class="category" data-category="deep learning">deep learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="numerical methods">numerical methods <span class="quarto-category-count">(1)</span></div><div class="category" data-category="scientific computing">scientific computing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="visualisation">visualisation <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#this-is-still-a-work-in-progress" id="toc-this-is-still-a-work-in-progress" class="nav-link active" data-scroll-target="#this-is-still-a-work-in-progress">This is still a work in progress!</a></li>
+  <li><a href="#good-tokenizers-is-all-you-need" id="toc-good-tokenizers-is-all-you-need" class="nav-link" data-scroll-target="#good-tokenizers-is-all-you-need">Good tokenizers is all you need</a>
+  <ul class="collapse">
+  <li><a href="#spelling" id="toc-spelling" class="nav-link" data-scroll-target="#spelling">Spelling</a></li>
+  <li><a href="#reversing-a-string" id="toc-reversing-a-string" class="nav-link" data-scroll-target="#reversing-a-string">Reversing a string</a></li>
+  <li><a href="#non-english-languages-and-code" id="toc-non-english-languages-and-code" class="nav-link" data-scroll-target="#non-english-languages-and-code">Non-English languages and code</a></li>
+  <li><a href="#arithmetic" id="toc-arithmetic" class="nav-link" data-scroll-target="#arithmetic">Arithmetic</a></li>
+  <li><a href="#special-data-formats" id="toc-special-data-formats" class="nav-link" data-scroll-target="#special-data-formats">Special data formats</a></li>
+  <li><a href="#other-problems" id="toc-other-problems" class="nav-link" data-scroll-target="#other-problems">Other problems</a></li>
+  <li><a href="#how-much-of-a-problem-is-it" id="toc-how-much-of-a-problem-is-it" class="nav-link" data-scroll-target="#how-much-of-a-problem-is-it">How much of a problem is it?</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
+<section id="this-is-still-a-work-in-progress" class="level1">
+<h1>This is still a work in progress!</h1>
+</section>
+<section id="good-tokenizers-is-all-you-need" class="level1">
+<h1>Good tokenizers is all you need</h1>
+<p>I apologise for giving in to the popular trends in naming things in the ML space, but the title is not actually that misleading. Tokenization is a crucial part of the whole language modelling pipeline. Yet, we will see in this post that there all sorts of problems that tokenization can cause that one might not be aware of.</p>
+<p>This post is inspired by the <a href="https://www.youtube.com/watch?v=zduSFxRajkE" target="_blank">amazing video</a> on LLM tokenizers by Andrej Karpathy.</p>
+<p>Karpathy’s list of problems (taken from the <a href="https://github.com/karpathy/minbpe/blob/master/lecture.md" target="_blank">following notes</a>):</p>
+<ul>
+<li>Why can’t LLM spell words? <strong>Tokenization.</strong></li>
+<li>Why can’t LLM do super simple string processing tasks like reversing a string? <strong>Tokenization.</strong></li>
+<li>Why is LLM worse at non-English languages (e.g.&nbsp;Japanese)? <strong>Tokenization.</strong></li>
+<li>Why is LLM bad at simple arithmetic? <strong>Tokenization.</strong></li>
+<li>Why did GPT-2 have more than necessary trouble coding in Python? <strong>Tokenization.</strong></li>
+<li>Why did my LLM abruptly halt when it sees the string “&lt;|endoftext|&gt;”? <strong>Tokenization.</strong></li>
+<li>What is this weird warning I get about a “trailing whitespace”? <strong>Tokenization.</strong></li>
+<li>Why did the LLM break if I ask it about “SolidGoldMagikarp”? <strong>Tokenization.</strong></li>
+<li>Why should I prefer to use YAML over JSON with LLMs? <strong>Tokenization.</strong></li>
+<li>Why is LLM not actually end-to-end language modeling? <strong>Tokenization.</strong></li>
+<li>What is the real root of suffering? <strong>Tokenization.</strong></li>
+</ul>
+<p>I will use the <a href="https://augustasmacijauskas.github.io/trailtoken/" target="_blank"><code>trailtoken</code></a> tool that I have recently built with a collaborator to inspect why these problems occur. I encourage you to play around with it, especially if you build tokenizers from scratch yourself. You might be surprised with how easily problems can occur if one is not careful enough!</p>
+<p>Let’s dive in!</p>
+<section id="spelling" class="level2">
+<h2 class="anchored" data-anchor-id="spelling">Spelling</h2>
+<p>Tokenization makes it hard for the LLMs to spell. For example, one of the best open-source LLMs, <a href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1" target="_blank"><code>Mistral-7B-Instruct</code></a>, has a very hard time spelling the word <code>antidisestablishmentarianism</code>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="mistral-instruct-spelling.png" class="img-fluid figure-img"></p>
+<figcaption>The mistralai/Mistral-7B-Instruct-v0.1 LLM misspelling the word antidisestablishmentarianism</figcaption>
+</figure>
+</div>
+<p>However, if we use <code>trailtoken</code> to inspect how the said word is tokenized by the <code>Mistral-7B</code> tokenizer, we see that it is actually split into 8 seemingly random tokens:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="mistral-trailtoken.png" class="img-fluid figure-img"></p>
+<figcaption>Visualisation of how the tokenizer of mistralai/Mistral-7B-Instruct-v0.1 tokenizes the word antidisestablishmentarianism</figcaption>
+</figure>
+</div>
+<p>It is unlikely that the model has seen them occurring together during training, so it no surprise that it finds it hard separating out the letters constituting each token.</p>
+<p>On the other hand, the OpenAI models seem to handle the task with ease (see these following links for <a href="https://chat.openai.com/share/f56ea3ff-7e5b-4a65-9611-18143d3e17bc" target="_blank"><code>gpt-3.5-turbo</code></a> and <a href="https://chat.openai.com/share/d33744ee-10a0-4a4f-b097-66ecad6019f8" target="_blank"><code>gpt-4-turbo</code></a>). Even then, this is mostly a result of the capabilities of these models, as the word is still tokenized into 6 tokens which are again more or less arbitrary:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gpt-3.5-turbo-trailtoken.png" class="img-fluid figure-img"></p>
+<figcaption>Visualisation of how the tokenizer of gpt-3.5-turbo tokenizes the word antidisestablishmentarianism</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Here and below I use the <code>Xenova/gpt-3.5-turbo</code> tokenizer on trailtoken because it is an open-source implementation of the <code>gpt-3.5-turbo</code> tokenizer.</p>
+</div>
+</div>
+</section>
+<section id="reversing-a-string" class="level2">
+<h2 class="anchored" data-anchor-id="reversing-a-string">Reversing a string</h2>
+<p>Similarly to spelling words, LLMs find it hard to to simple tasks, like reversing words. A well-known example is asking LLMs to reverse the word <code>lollipop</code>. <code>Mistral-7B</code> fails miserably on the task:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="mistral-lollipop-fail.png" class="img-fluid figure-img"></p>
+<figcaption>mistralai/Mistral-7B-Instruct-v0.1 LLM failing to reverse the word lollipop</figcaption>
+</figure>
+</div>
+<p>If we look at how the word is tokenized, we see that it ends up being only 4 tokens, so it is no wonder that the LLMs find it hard solving this task:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="mistral-instruct-reverse.png" class="img-fluid figure-img"></p>
+<figcaption>Visualisation of how the tokenizer of mistralai/Mistral-7B-Instruct-v0.1 tokenizes the word lollipop</figcaption>
+</figure>
+</div>
+<p>The screenshot above hints at a “hack” that can be used to help LLMs: separate out the letters so that they end up as separate tokens after tokenization. Even then, few-shot examples are required to make it work (and it also did not work when I separated the letters using dashes <code>-</code> or spaces <code></code>):</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="mistral-lollipop-success.png" class="img-fluid figure-img"></p>
+<figcaption>mistralai/Mistral-7B-Instruct-v0.1 LLM succeeding at reversing the word lollipop</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Caution
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Interestingly, <code>gpt-4</code> <a href="https://chat.openai.com/share/f79bf298-94b6-4ebc-9f44-cdc176bf1a7d" target="_blank">fails</a> reversing the string too, so it is truly a problem caused by tokenization!</p>
+</div>
+</div>
+</section>
+<section id="non-english-languages-and-code" class="level2">
+<h2 class="anchored" data-anchor-id="non-english-languages-and-code">Non-English languages and code</h2>
+<p>These two are similar in nature…</p>
+<div id="cell-9" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="bu">str</span> <span class="op">=</span> <span class="st">"만나서 반가워요. 저는 OpenAI에서 개발한 대규모 언어 모델인 ChatGPT입니다. 궁금한 것이 있으시면 무엇이든 물어보세요."</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="bu">len</span>(<span class="bu">str</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>72</code></pre>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gpt-3-code.png" class="img-fluid figure-img"></p>
+<figcaption>Visualisation of how the tokenizer of gpt-3 tokenizes code</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gpt-4-code.png" class="img-fluid figure-img"></p>
+<figcaption>Visualisation of how the tokenizer of gpt-4 tokenizes code</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gpt-3-korean.png" class="img-fluid figure-img"></p>
+<figcaption>Visualisation of how the tokenizer of gpt-3 tokenizes Korean</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gpt-4-korean.png" class="img-fluid figure-img"></p>
+<figcaption>Visualisation of how the tokenizer of gpt-4 tokenizes Korean</figcaption>
+</figure>
+</div>
+</section>
+<section id="arithmetic" class="level2">
+<h2 class="anchored" data-anchor-id="arithmetic">Arithmetic</h2>
+<p>This is going to be a brief one, but LLM tokenizers can do odd things when tokenizing numbers which can hinder their performance on simple arithmetic. For example, here is the <code>gpt2</code> tokenizer behaves on the following numbers:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gpt2-arithmetic.png" class="img-fluid figure-img"></p>
+<figcaption>Visualisation of how the tokenizer of gpt2 tokenizes numbers</figcaption>
+</figure>
+</div>
+<p>We find that in one case the decimal is one token, but becomes two tokens if an extra <code>0</code> is appended at the end. To humans, this would not cause any trouble, but could potentially confuse the LLM.</p>
+<p>However, most of the modern LLM tokenizers are quite robust at handling numbers.</p>
+</section>
+<section id="special-data-formats" class="level2">
+<h2 class="anchored" data-anchor-id="special-data-formats">Special data formats</h2>
+<p>How structured data tokenized is another source of peculiar behaviours in LLMs. For example the images below show how the <code>Mistral-7B</code> tokenizer handles <code>JSON</code> and <code>YAML</code> formats:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="mistral-json.png" class="img-fluid figure-img"></p>
+<figcaption>Visualisation of how the tokenizer of mistralai/Mistral-7B-Instruct-v0.1 tokenizes JSON</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="mistral-yaml.png" class="img-fluid figure-img"></p>
+<figcaption>Visualisation of how the tokenizer of mistralai/Mistral-7B-Instruct-v0.1 tokenizes YAML</figcaption>
+</figure>
+</div>
+<p>As we can see, we can save up on tokens (about 2x!) and overall complexity if we use <code>YAML</code> over <code>JSON</code>. Also, notice how using underscores in key names adds extra tokens, so being smart about how structured data is passed to the tokenizer can help reduce the number of tokens used and, therefore, the compute costs!</p>
+</section>
+<section id="other-problems" class="level2">
+<h2 class="anchored" data-anchor-id="other-problems">Other problems</h2>
+<ul>
+<li>Why did my LLM abruptly halt when it sees the string “&lt;|endoftext|&gt;”? <strong>Tokenization.</strong></li>
+<li>What is this weird warning I get about a “trailing whitespace”? <strong>Tokenization.</strong></li>
+<li>Why did the LLM break if I ask it about “SolidGoldMagikarp”? <strong>Tokenization.</strong></li>
+</ul>
+</section>
+<section id="how-much-of-a-problem-is-it" class="level2">
+<h2 class="anchored" data-anchor-id="how-much-of-a-problem-is-it">How much of a problem is it?</h2>
+<p>Thomas Wolfe video suggests that we are good as long as we are reasonably thoughtful about the tokenization process.</p>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="scientific computing,numerical methods" data-listing-date-sort="1712955600000" data-listing-file-modified-sort="1713161962483" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="89">
-<div class="thumbnail">
-<p><a href="./notes/cubic-spline-interpolation-exercise/cubic-spline-interpolation-exercise.html" class="no-external"></a></p><a href="./notes/cubic-spline-interpolation-exercise/cubic-spline-interpolation-exercise.html" class="no-external">
-<p><img src="./notes/cubic-spline-interpolation-exercise/dalle-3-cubic-spline-interpolation-exercise.webp" class="thumbnail-image" alt="Cubic spline interpolation as imaged by DALL-E 3"></p>
-</a><p><a href="./notes/cubic-spline-interpolation-exercise/cubic-spline-interpolation-exercise.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./notes/cubic-spline-interpolation-exercise/cubic-spline-interpolation-exercise.html" class="no-external">Cubic spline interpolation exercise</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./notes/cubic-spline-interpolation-exercise/cubic-spline-interpolation-exercise.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('scientific computing'); return false;">
-scientific computing
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('numerical methods'); return false;">
-numerical methods
-</div>
-</div>
-<div class="listing-description">
-<a href="./notes/cubic-spline-interpolation-exercise/cubic-spline-interpolation-exercise.html" class="no-external">Large language models (predictably) learn to represent the semantic meaning of sentences.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./notes/cubic-spline-interpolation-exercise/cubic-spline-interpolation-exercise.html" class="no-external">
-<div class="listing-date">
-Apr 13, 2024
-</div>
-<div class="listing-author">
-Augustas Macijauskas
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="deep learning,LLMs,visualisation" data-listing-date-sort="1712696400000" data-listing-file-modified-sort="1713019865760" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="39">
-<div class="thumbnail">
-<p><a href="./notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html" class="no-external"></a></p><a href="./notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html" class="no-external">
-<p><img src="./notes/contextualised-embedding-visualisation/dalle-3-contextualised-embedding-visualisation.webp" class="thumbnail-image" alt="Visualising contextualised LLM embeddings as imaged by DALL-E 3"></p>
-</a><p><a href="./notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html" class="no-external">Visualising contextualised large language model embeddings with context</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('deep learning'); return false;">
-deep learning
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('LLMs'); return false;">
-LLMs
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('visualisation'); return false;">
-visualisation
-</div>
-</div>
-<div class="listing-description">
-<a href="./notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html" class="no-external">Large language models (predictably) learn to represent the semantic meaning of sentences.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html" class="no-external">
-<div class="listing-date">
-Apr 10, 2024
-</div>
-<div class="listing-author">
-Augustas Macijauskas
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

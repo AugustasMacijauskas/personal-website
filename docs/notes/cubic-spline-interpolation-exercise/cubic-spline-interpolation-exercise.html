@@ -380,92 +380,95 @@ if (outputEl) {{
 <h2 class="anchored" data-anchor-id="custom-implementation-of-cubic-spline-interpolation">Custom implementation of cubic spline interpolation</h2>
 <div id="cell-11" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">def</span> tridiagonal_linear_system_solver(d_lower, d_main, d_upper, b):</span>
-<span id="cb6-2"><a href="#cb6-2"></a>    <span class="co">"""Solve a tridiagonal linear system given the main, lower, and upper diagonals, as well as the vector b"""</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a></span>
-<span id="cb6-4"><a href="#cb6-4"></a>    n <span class="op">=</span> <span class="bu">len</span>(d_main)</span>
-<span id="cb6-5"><a href="#cb6-5"></a></span>
-<span id="cb6-6"><a href="#cb6-6"></a>    <span class="co"># Forward sweep</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n):</span>
-<span id="cb6-8"><a href="#cb6-8"></a>        w <span class="op">=</span> d_lower[i <span class="op">-</span> <span class="dv">1</span>] <span class="op">/</span> d_main[i <span class="op">-</span> <span class="dv">1</span>]</span>
-<span id="cb6-9"><a href="#cb6-9"></a>        d_main[i] <span class="op">-=</span> w <span class="op">*</span> d_upper[i <span class="op">-</span> <span class="dv">1</span>]</span>
-<span id="cb6-10"><a href="#cb6-10"></a>        b[i] <span class="op">-=</span> w <span class="op">*</span> b[i <span class="op">-</span> <span class="dv">1</span>]</span>
-<span id="cb6-11"><a href="#cb6-11"></a></span>
-<span id="cb6-12"><a href="#cb6-12"></a>    <span class="co"># Back substitution</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a>    x <span class="op">=</span> np.zeros(n)</span>
-<span id="cb6-14"><a href="#cb6-14"></a>    x[<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> b[<span class="op">-</span><span class="dv">1</span>] <span class="op">/</span> d_main[<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="cb6-15"><a href="#cb6-15"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n <span class="op">-</span> <span class="dv">2</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>):</span>
-<span id="cb6-16"><a href="#cb6-16"></a>        x[i] <span class="op">=</span> (b[i] <span class="op">-</span> d_upper[i] <span class="op">*</span> x[i <span class="op">+</span> <span class="dv">1</span>]) <span class="op">/</span> d_main[i]</span>
-<span id="cb6-17"><a href="#cb6-17"></a></span>
-<span id="cb6-18"><a href="#cb6-18"></a>    <span class="cf">return</span> x</span>
-<span id="cb6-19"><a href="#cb6-19"></a></span>
+<span id="cb6-2"><a href="#cb6-2"></a>    <span class="co">"""</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">    Solve a tridiagonal linear system given the main, lower, and upper diagonals, as well as the vector b. The Thomas</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">    algorithm is used.</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">    """</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a>    n <span class="op">=</span> <span class="bu">len</span>(d_main)</span>
+<span id="cb6-8"><a href="#cb6-8"></a></span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="co"># Forward sweep</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n):</span>
+<span id="cb6-11"><a href="#cb6-11"></a>        w <span class="op">=</span> d_lower[i <span class="op">-</span> <span class="dv">1</span>] <span class="op">/</span> d_main[i <span class="op">-</span> <span class="dv">1</span>]</span>
+<span id="cb6-12"><a href="#cb6-12"></a>        d_main[i] <span class="op">-=</span> w <span class="op">*</span> d_upper[i <span class="op">-</span> <span class="dv">1</span>]</span>
+<span id="cb6-13"><a href="#cb6-13"></a>        b[i] <span class="op">-=</span> w <span class="op">*</span> b[i <span class="op">-</span> <span class="dv">1</span>]</span>
+<span id="cb6-14"><a href="#cb6-14"></a></span>
+<span id="cb6-15"><a href="#cb6-15"></a>    <span class="co"># Back substitution</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a>    x <span class="op">=</span> np.zeros(n)</span>
+<span id="cb6-17"><a href="#cb6-17"></a>    x[<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> b[<span class="op">-</span><span class="dv">1</span>] <span class="op">/</span> d_main[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb6-18"><a href="#cb6-18"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n <span class="op">-</span> <span class="dv">2</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>):</span>
+<span id="cb6-19"><a href="#cb6-19"></a>        x[i] <span class="op">=</span> (b[i] <span class="op">-</span> d_upper[i] <span class="op">*</span> x[i <span class="op">+</span> <span class="dv">1</span>]) <span class="op">/</span> d_main[i]</span>
 <span id="cb6-20"><a href="#cb6-20"></a></span>
-<span id="cb6-21"><a href="#cb6-21"></a><span class="kw">class</span> CubicSplineCustom:</span>
+<span id="cb6-21"><a href="#cb6-21"></a>    <span class="cf">return</span> x</span>
 <span id="cb6-22"><a href="#cb6-22"></a></span>
-<span id="cb6-23"><a href="#cb6-23"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, x, y):</span>
-<span id="cb6-24"><a href="#cb6-24"></a>        <span class="cf">if</span> <span class="kw">not</span> np.<span class="bu">all</span>(np.diff(x) <span class="op">&gt;</span> <span class="dv">0</span>):</span>
-<span id="cb6-25"><a href="#cb6-25"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"x values must be in ascending order."</span>)</span>
-<span id="cb6-26"><a href="#cb6-26"></a></span>
-<span id="cb6-27"><a href="#cb6-27"></a>        <span class="va">self</span>.x <span class="op">=</span> np.array(x)</span>
-<span id="cb6-28"><a href="#cb6-28"></a>        <span class="va">self</span>.y <span class="op">=</span> np.array(y)</span>
-<span id="cb6-29"><a href="#cb6-29"></a>        <span class="va">self</span>._find_coeffs()</span>
-<span id="cb6-30"><a href="#cb6-30"></a></span>
-<span id="cb6-31"><a href="#cb6-31"></a>    <span class="kw">def</span> _find_coeffs(<span class="va">self</span>):</span>
-<span id="cb6-32"><a href="#cb6-32"></a>        <span class="co"># Find the relevant diagonals and from self.x and self.y assuming natural boundary conditions</span></span>
-<span id="cb6-33"><a href="#cb6-33"></a>        d_lower, d_main, d_upper, b, h <span class="op">=</span> <span class="va">self</span>._compute_diagonals_and_b()</span>
-<span id="cb6-34"><a href="#cb6-34"></a></span>
-<span id="cb6-35"><a href="#cb6-35"></a>        <span class="co"># Compute the M_i's for i = 1, n-1 (since M_0 and M_n are assumed to be 0). This will require solving a</span></span>
-<span id="cb6-36"><a href="#cb6-36"></a>        <span class="co"># tridiagonal linear system</span></span>
-<span id="cb6-37"><a href="#cb6-37"></a>        ms <span class="op">=</span> tridiagonal_linear_system_solver(d_lower, d_main, d_upper, b)</span>
-<span id="cb6-38"><a href="#cb6-38"></a></span>
-<span id="cb6-39"><a href="#cb6-39"></a>        <span class="co"># Compute the coefficients of the cubic polynomials</span></span>
-<span id="cb6-40"><a href="#cb6-40"></a>        <span class="va">self</span>.c <span class="op">=</span> <span class="va">self</span>._compute_coefficients_from_second_derivatives(ms, h)</span>
+<span id="cb6-23"><a href="#cb6-23"></a></span>
+<span id="cb6-24"><a href="#cb6-24"></a><span class="kw">class</span> CubicSplineCustom:</span>
+<span id="cb6-25"><a href="#cb6-25"></a></span>
+<span id="cb6-26"><a href="#cb6-26"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, x, y):</span>
+<span id="cb6-27"><a href="#cb6-27"></a>        <span class="cf">if</span> <span class="kw">not</span> np.<span class="bu">all</span>(np.diff(x) <span class="op">&gt;</span> <span class="dv">0</span>):</span>
+<span id="cb6-28"><a href="#cb6-28"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"x values must be in ascending order."</span>)</span>
+<span id="cb6-29"><a href="#cb6-29"></a></span>
+<span id="cb6-30"><a href="#cb6-30"></a>        <span class="va">self</span>.x <span class="op">=</span> np.array(x)</span>
+<span id="cb6-31"><a href="#cb6-31"></a>        <span class="va">self</span>.y <span class="op">=</span> np.array(y)</span>
+<span id="cb6-32"><a href="#cb6-32"></a>        <span class="va">self</span>._find_coeffs()</span>
+<span id="cb6-33"><a href="#cb6-33"></a></span>
+<span id="cb6-34"><a href="#cb6-34"></a>    <span class="kw">def</span> _find_coeffs(<span class="va">self</span>):</span>
+<span id="cb6-35"><a href="#cb6-35"></a>        <span class="co"># Find the relevant diagonals and from self.x and self.y assuming natural boundary conditions</span></span>
+<span id="cb6-36"><a href="#cb6-36"></a>        d_lower, d_main, d_upper, b, h <span class="op">=</span> <span class="va">self</span>._compute_diagonals_and_b()</span>
+<span id="cb6-37"><a href="#cb6-37"></a></span>
+<span id="cb6-38"><a href="#cb6-38"></a>        <span class="co"># Compute the M_i's for i = 1, n-1 (since M_0 and M_n are assumed to be 0). This will require solving a</span></span>
+<span id="cb6-39"><a href="#cb6-39"></a>        <span class="co"># tridiagonal linear system</span></span>
+<span id="cb6-40"><a href="#cb6-40"></a>        ms <span class="op">=</span> tridiagonal_linear_system_solver(d_lower, d_main, d_upper, b)</span>
 <span id="cb6-41"><a href="#cb6-41"></a></span>
-<span id="cb6-42"><a href="#cb6-42"></a>    <span class="kw">def</span> _compute_diagonals_and_b(<span class="va">self</span>):</span>
-<span id="cb6-43"><a href="#cb6-43"></a>        x, y <span class="op">=</span> <span class="va">self</span>.x, <span class="va">self</span>.y</span>
-<span id="cb6-44"><a href="#cb6-44"></a>        h <span class="op">=</span> np.diff(x)</span>
-<span id="cb6-45"><a href="#cb6-45"></a></span>
-<span id="cb6-46"><a href="#cb6-46"></a>        <span class="co"># Compute the diagonals for the tridiagonal matrix</span></span>
-<span id="cb6-47"><a href="#cb6-47"></a>        d_lower <span class="op">=</span> h.copy()</span>
-<span id="cb6-48"><a href="#cb6-48"></a>        d_lower[<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> <span class="dv">0</span>  <span class="co"># one of the naturals BCs</span></span>
-<span id="cb6-49"><a href="#cb6-49"></a>        d_upper <span class="op">=</span> h.copy()</span>
-<span id="cb6-50"><a href="#cb6-50"></a>        d_upper[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb6-51"><a href="#cb6-51"></a></span>
-<span id="cb6-52"><a href="#cb6-52"></a>        d_main <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.ones(<span class="bu">len</span>(x))</span>
-<span id="cb6-53"><a href="#cb6-53"></a>        d_main[<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>] <span class="op">*=</span> h[:<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> h[<span class="dv">1</span>:]</span>
+<span id="cb6-42"><a href="#cb6-42"></a>        <span class="co"># Compute the coefficients of the cubic polynomials</span></span>
+<span id="cb6-43"><a href="#cb6-43"></a>        <span class="va">self</span>.c <span class="op">=</span> <span class="va">self</span>._compute_coefficients_from_second_derivatives(ms, h)</span>
+<span id="cb6-44"><a href="#cb6-44"></a></span>
+<span id="cb6-45"><a href="#cb6-45"></a>    <span class="kw">def</span> _compute_diagonals_and_b(<span class="va">self</span>):</span>
+<span id="cb6-46"><a href="#cb6-46"></a>        x, y <span class="op">=</span> <span class="va">self</span>.x, <span class="va">self</span>.y</span>
+<span id="cb6-47"><a href="#cb6-47"></a>        h <span class="op">=</span> np.diff(x)</span>
+<span id="cb6-48"><a href="#cb6-48"></a></span>
+<span id="cb6-49"><a href="#cb6-49"></a>        <span class="co"># Compute the diagonals for the tridiagonal matrix</span></span>
+<span id="cb6-50"><a href="#cb6-50"></a>        d_lower <span class="op">=</span> h.copy()</span>
+<span id="cb6-51"><a href="#cb6-51"></a>        d_lower[<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> <span class="dv">0</span>  <span class="co"># one of the naturals BCs</span></span>
+<span id="cb6-52"><a href="#cb6-52"></a>        d_upper <span class="op">=</span> h.copy()</span>
+<span id="cb6-53"><a href="#cb6-53"></a>        d_upper[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb6-54"><a href="#cb6-54"></a></span>
-<span id="cb6-55"><a href="#cb6-55"></a>        b <span class="op">=</span> np.zeros(<span class="bu">len</span>(x))</span>
-<span id="cb6-56"><a href="#cb6-56"></a>        y_diff <span class="op">=</span> np.diff(y)</span>
-<span id="cb6-57"><a href="#cb6-57"></a>        b[<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> <span class="dv">6</span> <span class="op">*</span> (y_diff[<span class="dv">1</span>:] <span class="op">/</span> h[<span class="dv">1</span>:] <span class="op">-</span> y_diff[:<span class="op">-</span><span class="dv">1</span>] <span class="op">/</span> h[:<span class="op">-</span><span class="dv">1</span>])</span>
-<span id="cb6-58"><a href="#cb6-58"></a></span>
-<span id="cb6-59"><a href="#cb6-59"></a>        <span class="cf">return</span> d_lower, d_main, d_upper, b, h</span>
-<span id="cb6-60"><a href="#cb6-60"></a></span>
-<span id="cb6-61"><a href="#cb6-61"></a>    <span class="kw">def</span> _compute_coefficients_from_second_derivatives(<span class="va">self</span>, ms, h):</span>
-<span id="cb6-62"><a href="#cb6-62"></a>        coeffs <span class="op">=</span> np.zeros((<span class="dv">4</span>, <span class="bu">len</span>(<span class="va">self</span>.x) <span class="op">-</span> <span class="dv">1</span>))</span>
-<span id="cb6-63"><a href="#cb6-63"></a>        coeffs[<span class="dv">0</span>, :] <span class="op">=</span> (ms[<span class="dv">1</span>:] <span class="op">-</span> ms[:<span class="op">-</span><span class="dv">1</span>]) <span class="op">/</span> (<span class="dv">6</span> <span class="op">*</span> h)</span>
-<span id="cb6-64"><a href="#cb6-64"></a>        coeffs[<span class="dv">1</span>, :] <span class="op">=</span> ms[:<span class="op">-</span><span class="dv">1</span>] <span class="op">/</span> <span class="dv">2</span></span>
-<span id="cb6-65"><a href="#cb6-65"></a>        coeffs[<span class="dv">2</span>, :] <span class="op">=</span> (<span class="va">self</span>.y[<span class="dv">1</span>:] <span class="op">-</span> <span class="va">self</span>.y[:<span class="op">-</span><span class="dv">1</span>]) <span class="op">/</span> h <span class="op">-</span> (ms[<span class="dv">1</span>:] <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> ms[:<span class="op">-</span><span class="dv">1</span>]) <span class="op">*</span> h <span class="op">/</span> <span class="dv">6</span></span>
-<span id="cb6-66"><a href="#cb6-66"></a>        coeffs[<span class="dv">3</span>, :] <span class="op">=</span> <span class="va">self</span>.y[:<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="cb6-67"><a href="#cb6-67"></a></span>
-<span id="cb6-68"><a href="#cb6-68"></a>        <span class="cf">return</span> coeffs</span>
-<span id="cb6-69"><a href="#cb6-69"></a></span>
-<span id="cb6-70"><a href="#cb6-70"></a>    <span class="kw">def</span> _get_index(<span class="va">self</span>, x):</span>
-<span id="cb6-71"><a href="#cb6-71"></a>        <span class="co">"""Performs binary search"""</span></span>
-<span id="cb6-72"><a href="#cb6-72"></a>        low, high <span class="op">=</span> <span class="dv">0</span>, <span class="bu">len</span>(<span class="va">self</span>.x) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb6-73"><a href="#cb6-73"></a></span>
-<span id="cb6-74"><a href="#cb6-74"></a>        <span class="cf">while</span> low <span class="op">&lt;</span> high:</span>
-<span id="cb6-75"><a href="#cb6-75"></a>            mid <span class="op">=</span> (low <span class="op">+</span> high) <span class="op">//</span> <span class="dv">2</span></span>
-<span id="cb6-76"><a href="#cb6-76"></a>            <span class="cf">if</span> <span class="va">self</span>.x[mid] <span class="op">&lt;=</span> x:</span>
-<span id="cb6-77"><a href="#cb6-77"></a>                low <span class="op">=</span> mid <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb6-78"><a href="#cb6-78"></a>            <span class="cf">else</span>:</span>
-<span id="cb6-79"><a href="#cb6-79"></a>                high <span class="op">=</span> mid</span>
-<span id="cb6-80"><a href="#cb6-80"></a></span>
-<span id="cb6-81"><a href="#cb6-81"></a>        <span class="cf">return</span> <span class="bu">min</span>(<span class="bu">max</span>(low <span class="op">-</span> <span class="dv">1</span>, <span class="dv">0</span>), <span class="bu">len</span>(<span class="va">self</span>.x) <span class="op">-</span> <span class="dv">2</span>)</span>
-<span id="cb6-82"><a href="#cb6-82"></a></span>
-<span id="cb6-83"><a href="#cb6-83"></a>    <span class="kw">def</span> interpolate(<span class="va">self</span>, x: <span class="bu">float</span>):</span>
-<span id="cb6-84"><a href="#cb6-84"></a>        <span class="co"># Find which polynomial is appropriate and evaluate at x</span></span>
-<span id="cb6-85"><a href="#cb6-85"></a>        idx <span class="op">=</span> <span class="va">self</span>._get_index(x)</span>
-<span id="cb6-86"><a href="#cb6-86"></a>        dx <span class="op">=</span> x <span class="op">-</span> <span class="va">self</span>.x[idx]</span>
-<span id="cb6-87"><a href="#cb6-87"></a>        <span class="cf">return</span> (<span class="va">self</span>.c[<span class="dv">0</span>, idx] <span class="op">*</span> dx <span class="op">+</span> <span class="va">self</span>.c[<span class="dv">1</span>, idx]) <span class="op">*</span> dx<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="va">self</span>.c[<span class="dv">2</span>, idx] <span class="op">*</span> dx <span class="op">+</span> <span class="va">self</span>.c[<span class="dv">3</span>, idx]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-55"><a href="#cb6-55"></a>        d_main <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.ones(<span class="bu">len</span>(x))</span>
+<span id="cb6-56"><a href="#cb6-56"></a>        d_main[<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>] <span class="op">*=</span> h[:<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> h[<span class="dv">1</span>:]</span>
+<span id="cb6-57"><a href="#cb6-57"></a></span>
+<span id="cb6-58"><a href="#cb6-58"></a>        b <span class="op">=</span> np.zeros(<span class="bu">len</span>(x))</span>
+<span id="cb6-59"><a href="#cb6-59"></a>        y_diff <span class="op">=</span> np.diff(y)</span>
+<span id="cb6-60"><a href="#cb6-60"></a>        b[<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> <span class="dv">6</span> <span class="op">*</span> (y_diff[<span class="dv">1</span>:] <span class="op">/</span> h[<span class="dv">1</span>:] <span class="op">-</span> y_diff[:<span class="op">-</span><span class="dv">1</span>] <span class="op">/</span> h[:<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb6-61"><a href="#cb6-61"></a></span>
+<span id="cb6-62"><a href="#cb6-62"></a>        <span class="cf">return</span> d_lower, d_main, d_upper, b, h</span>
+<span id="cb6-63"><a href="#cb6-63"></a></span>
+<span id="cb6-64"><a href="#cb6-64"></a>    <span class="kw">def</span> _compute_coefficients_from_second_derivatives(<span class="va">self</span>, ms, h):</span>
+<span id="cb6-65"><a href="#cb6-65"></a>        coeffs <span class="op">=</span> np.zeros((<span class="dv">4</span>, <span class="bu">len</span>(<span class="va">self</span>.x) <span class="op">-</span> <span class="dv">1</span>))</span>
+<span id="cb6-66"><a href="#cb6-66"></a>        coeffs[<span class="dv">0</span>, :] <span class="op">=</span> (ms[<span class="dv">1</span>:] <span class="op">-</span> ms[:<span class="op">-</span><span class="dv">1</span>]) <span class="op">/</span> (<span class="dv">6</span> <span class="op">*</span> h)</span>
+<span id="cb6-67"><a href="#cb6-67"></a>        coeffs[<span class="dv">1</span>, :] <span class="op">=</span> ms[:<span class="op">-</span><span class="dv">1</span>] <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb6-68"><a href="#cb6-68"></a>        coeffs[<span class="dv">2</span>, :] <span class="op">=</span> (<span class="va">self</span>.y[<span class="dv">1</span>:] <span class="op">-</span> <span class="va">self</span>.y[:<span class="op">-</span><span class="dv">1</span>]) <span class="op">/</span> h <span class="op">-</span> (ms[<span class="dv">1</span>:] <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> ms[:<span class="op">-</span><span class="dv">1</span>]) <span class="op">*</span> h <span class="op">/</span> <span class="dv">6</span></span>
+<span id="cb6-69"><a href="#cb6-69"></a>        coeffs[<span class="dv">3</span>, :] <span class="op">=</span> <span class="va">self</span>.y[:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb6-70"><a href="#cb6-70"></a></span>
+<span id="cb6-71"><a href="#cb6-71"></a>        <span class="cf">return</span> coeffs</span>
+<span id="cb6-72"><a href="#cb6-72"></a></span>
+<span id="cb6-73"><a href="#cb6-73"></a>    <span class="kw">def</span> _get_index(<span class="va">self</span>, x):</span>
+<span id="cb6-74"><a href="#cb6-74"></a>        <span class="co">"""Performs binary search"""</span></span>
+<span id="cb6-75"><a href="#cb6-75"></a>        low, high <span class="op">=</span> <span class="dv">0</span>, <span class="bu">len</span>(<span class="va">self</span>.x) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb6-76"><a href="#cb6-76"></a></span>
+<span id="cb6-77"><a href="#cb6-77"></a>        <span class="cf">while</span> low <span class="op">&lt;</span> high:</span>
+<span id="cb6-78"><a href="#cb6-78"></a>            mid <span class="op">=</span> (low <span class="op">+</span> high) <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb6-79"><a href="#cb6-79"></a>            <span class="cf">if</span> <span class="va">self</span>.x[mid] <span class="op">&lt;=</span> x:</span>
+<span id="cb6-80"><a href="#cb6-80"></a>                low <span class="op">=</span> mid <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb6-81"><a href="#cb6-81"></a>            <span class="cf">else</span>:</span>
+<span id="cb6-82"><a href="#cb6-82"></a>                high <span class="op">=</span> mid</span>
+<span id="cb6-83"><a href="#cb6-83"></a></span>
+<span id="cb6-84"><a href="#cb6-84"></a>        <span class="cf">return</span> <span class="bu">min</span>(<span class="bu">max</span>(low <span class="op">-</span> <span class="dv">1</span>, <span class="dv">0</span>), <span class="bu">len</span>(<span class="va">self</span>.x) <span class="op">-</span> <span class="dv">2</span>)</span>
+<span id="cb6-85"><a href="#cb6-85"></a></span>
+<span id="cb6-86"><a href="#cb6-86"></a>    <span class="kw">def</span> interpolate(<span class="va">self</span>, x: <span class="bu">float</span>):</span>
+<span id="cb6-87"><a href="#cb6-87"></a>        <span class="co"># Find which polynomial is appropriate and evaluate at x</span></span>
+<span id="cb6-88"><a href="#cb6-88"></a>        idx <span class="op">=</span> <span class="va">self</span>._get_index(x)</span>
+<span id="cb6-89"><a href="#cb6-89"></a>        dx <span class="op">=</span> x <span class="op">-</span> <span class="va">self</span>.x[idx]</span>
+<span id="cb6-90"><a href="#cb6-90"></a>        <span class="cf">return</span> (<span class="va">self</span>.c[<span class="dv">0</span>, idx] <span class="op">*</span> dx <span class="op">+</span> <span class="va">self</span>.c[<span class="dv">1</span>, idx]) <span class="op">*</span> dx<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="va">self</span>.c[<span class="dv">2</span>, idx] <span class="op">*</span> dx <span class="op">+</span> <span class="va">self</span>.c[<span class="dv">3</span>, idx]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-12" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>custom_spline <span class="op">=</span> CubicSplineCustom(x_train, y_train)</span>
