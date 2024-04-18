@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Augustas Macijauskas">
-<meta name="dcterms.date" content="2024-04-16">
-<meta name="description" content="Tokenization is (at least partially) the cause of a lot of the problems with large language models.">
+<meta name="dcterms.date" content="2024-04-10">
+<meta name="description" content="Large language models (predictably) learn to represent the semantic meaning of sentences.">
 
-<title>Augustas Macijauskas - Good tokenizers is all you need</title>
+<title>Augustas Macijauskas - Visualising contextualised large language model embeddings with context</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -147,13 +147,13 @@ cookieconsent.run({
 
 
 <link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="Augustas Macijauskas - Good tokenizers is all you need">
-<meta property="og:description" content="Tokenization is (at least partially) the cause of a lot of the problems with large language models.">
-<meta property="og:image" content="dalle-3-perplexed-robot.webp">
+<meta property="og:title" content="Augustas Macijauskas - Visualising contextualised large language model embeddings with context">
+<meta property="og:description" content="Large language models (predictably) learn to represent the semantic meaning of sentences.">
+<meta property="og:image" content="dalle-3-contextualised-embedding-visualisation.webp">
 <meta property="og:site_name" content="Augustas Macijauskas's blog">
-<meta name="twitter:title" content="Augustas Macijauskas - Good tokenizers is all you need">
-<meta name="twitter:description" content="Tokenization is (at least partially) the cause of a lot of the problems with large language models.">
-<meta name="twitter:image" content="dalle-3-perplexed-robot.webp">
+<meta name="twitter:title" content="Augustas Macijauskas - Visualising contextualised large language model embeddings with context">
+<meta name="twitter:description" content="Large language models (predictably) learn to represent the semantic meaning of sentences.">
+<meta name="twitter:image" content="dalle-3-contextualised-embedding-visualisation.webp">
 <meta name="twitter:creator" content="@augustasmac">
 <meta name="twitter:card" content="summary_large_image">
 </head>
@@ -161,7 +161,7 @@ cookieconsent.run({
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -206,45 +206,7 @@ cookieconsent.run({
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">Good tokenizers is all you need</h1>
-                  <div>
-        <div class="description">
-          Tokenization is (at least partially) the cause of a lot of the problems with large language models.
-        </div>
-      </div>
-                          <div class="quarto-categories">
-                <div class="quarto-category">deep learning</div>
-                <div class="quarto-category">LLMs</div>
-                <div class="quarto-category">tokenization</div>
-              </div>
-                  </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Augustas Macijauskas </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">April 16, 2024</p>
-      </div>
-    </div>
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -252,231 +214,233 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#this-is-still-a-work-in-progress" id="toc-this-is-still-a-work-in-progress" class="nav-link active" data-scroll-target="#this-is-still-a-work-in-progress">This is still a work in progress!</a></li>
-  <li><a href="#good-tokenizers-is-all-you-need" id="toc-good-tokenizers-is-all-you-need" class="nav-link" data-scroll-target="#good-tokenizers-is-all-you-need">Good tokenizers is all you need</a>
+  <li><a href="#visualising-contextualised-large-language-model-embeddings-with-context" id="toc-visualising-contextualised-large-language-model-embeddings-with-context" class="nav-link active" data-scroll-target="#visualising-contextualised-large-language-model-embeddings-with-context">Visualising contextualised large language model embeddings with context</a>
   <ul class="collapse">
-  <li><a href="#spelling" id="toc-spelling" class="nav-link" data-scroll-target="#spelling">Spelling</a></li>
-  <li><a href="#reversing-a-string" id="toc-reversing-a-string" class="nav-link" data-scroll-target="#reversing-a-string">Reversing a string</a></li>
-  <li><a href="#non-english-languages-and-code" id="toc-non-english-languages-and-code" class="nav-link" data-scroll-target="#non-english-languages-and-code">Non-English languages and code</a></li>
-  <li><a href="#arithmetic" id="toc-arithmetic" class="nav-link" data-scroll-target="#arithmetic">Arithmetic</a></li>
-  <li><a href="#special-data-formats" id="toc-special-data-formats" class="nav-link" data-scroll-target="#special-data-formats">Special data formats</a></li>
-  <li><a href="#other-problems" id="toc-other-problems" class="nav-link" data-scroll-target="#other-problems">Other problems</a></li>
-  <li><a href="#how-much-of-a-problem-is-it" id="toc-how-much-of-a-problem-is-it" class="nav-link" data-scroll-target="#how-much-of-a-problem-is-it">How much of a problem is it?</a></li>
+  <li><a href="#imports" id="toc-imports" class="nav-link" data-scroll-target="#imports">Imports</a></li>
+  <li><a href="#utils" id="toc-utils" class="nav-link" data-scroll-target="#utils">Utils</a></li>
+  <li><a href="#easier-example" id="toc-easier-example" class="nav-link" data-scroll-target="#easier-example">Easier example</a></li>
+  <li><a href="#harder-example" id="toc-harder-example" class="nav-link" data-scroll-target="#harder-example">Harder example</a></li>
+  <li><a href="#try-the-same-with-a-text-embedding-model" id="toc-try-the-same-with-a-text-embedding-model" class="nav-link" data-scroll-target="#try-the-same-with-a-text-embedding-model">Try the same with a text embedding model</a></li>
   </ul></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Visualising contextualised large language model embeddings with context</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">deep learning</div>
+    <div class="quarto-category">LLMs</div>
+    <div class="quarto-category">visualisation</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Large language models (predictably) learn to represent the semantic meaning of sentences.
+  </div>
+</div>
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Augustas Macijauskas </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 10, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
-
-<section id="this-is-still-a-work-in-progress" class="level1">
-<h1>This is still a work in progress!</h1>
-</section>
-<section id="good-tokenizers-is-all-you-need" class="level1">
-<h1>Good tokenizers is all you need</h1>
-<p>Although it might seem like the title is just me giving in to the popular trends in naming things in the ML space, it is not actually that misleading. Tokenization is a crucial part of the whole language modelling pipeline. Yet, we will see in this blog post that there all sorts of problems that tokenization can cause that one might not be aware of.</p>
-<p>This post is inspired by the <a href="https://www.youtube.com/watch?v=zduSFxRajkE" target="_blank">amazing video</a> on LLM tokenizers by Andrej Karpathy.</p>
-<p>Karpathy’s list of problems (taken from the <a href="https://github.com/karpathy/minbpe/blob/master/lecture.md" target="_blank">following notes</a>):</p>
-<ul>
-<li>Why can’t LLM spell words? <strong>Tokenization.</strong></li>
-<li>Why can’t LLM do super simple string processing tasks like reversing a string? <strong>Tokenization.</strong></li>
-<li>Why is LLM worse at non-English languages (e.g.&nbsp;Japanese)? <strong>Tokenization.</strong></li>
-<li>Why is LLM bad at simple arithmetic? <strong>Tokenization.</strong></li>
-<li>Why did GPT-2 have more than necessary trouble coding in Python? <strong>Tokenization.</strong></li>
-<li>Why did my LLM abruptly halt when it sees the string “&lt;|endoftext|&gt;”? <strong>Tokenization.</strong></li>
-<li>What is this weird warning I get about a “trailing whitespace”? <strong>Tokenization.</strong></li>
-<li>Why did the LLM break if I ask it about “SolidGoldMagikarp”? <strong>Tokenization.</strong></li>
-<li>Why should I prefer to use YAML over JSON with LLMs? <strong>Tokenization.</strong></li>
-<li>Why is LLM not actually end-to-end language modeling? <strong>Tokenization.</strong></li>
-<li>What is the real root of suffering? <strong>Tokenization.</strong></li>
-</ul>
-<p>I will use the <a href="https://augustasmacijauskas.github.io/trailtoken/" target="_blank"><code>trailtoken</code></a> tool that I have recently built with a collaborator to inspect why these problems occur. I encourage you to play around with it, especially if you build tokenizers from scratch yourself. You might be surprised with how easily problems can occur if one is not careful enough!</p>
-<p>Let’s dive in!</p>
-<section id="spelling" class="level2">
-<h2 class="anchored" data-anchor-id="spelling">Spelling</h2>
-<p>Tokenization makes it hard for the LLMs to spell. For example, one of the best open-source LLMs, <a href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1" target="_blank"><code>Mistral-7B-Instruct</code></a>, has a very hard time spelling the word <code>antidisestablishmentarianism</code>:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="mistral-instruct-spelling.png" class="img-fluid figure-img"></p>
-<figcaption>The mistralai/Mistral-7B-Instruct-v0.1 LLM misspelling the word antidisestablishmentarianism</figcaption>
-</figure>
-</div>
-<p>However, if we use <code>trailtoken</code> to inspect how the said word is tokenized by the <code>Mistral-7B</code> tokenizer, we see that it is actually split into 8 seemingly random tokens:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="mistral-trailtoken.png" class="img-fluid figure-img"></p>
-<figcaption>Visualisation of how the tokenizer of mistralai/Mistral-7B-Instruct-v0.1 tokenizes the word antidisestablishmentarianism</figcaption>
-</figure>
-</div>
-<p>It is unlikely that the model has seen them occurring together during training, so it no surprise that it finds it hard separating out the letters constituting each token.</p>
-<p>On the other hand, the OpenAI models seem to handle the task with ease (see these following links for <a href="https://chat.openai.com/share/f56ea3ff-7e5b-4a65-9611-18143d3e17bc" target="_blank"><code>gpt-3.5-turbo</code></a> and <a href="https://chat.openai.com/share/d33744ee-10a0-4a4f-b097-66ecad6019f8" target="_blank"><code>gpt-4-turbo</code></a>). Even then, this is mostly a result of the capabilities of these models, as the word is still tokenized into 6 tokens which are again more or less arbitrary:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="gpt-3.5-turbo-trailtoken.png" class="img-fluid figure-img"></p>
-<figcaption>Visualisation of how the tokenizer of gpt-3.5-turbo tokenizes the word antidisestablishmentarianism</figcaption>
-</figure>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Here and below I use the <code>Xenova/gpt-3.5-turbo</code> tokenizer on trailtoken because it is an open-source implementation of the <code>gpt-3.5-turbo</code> tokenizer.</p>
-</div>
-</div>
-</section>
-<section id="reversing-a-string" class="level2">
-<h2 class="anchored" data-anchor-id="reversing-a-string">Reversing a string</h2>
-<p>Similarly to spelling words, LLMs find it hard to to simple tasks, like reversing words. A well-known example is asking LLMs to reverse the word <code>lollipop</code>. <code>Mistral-7B</code> fails miserably on the task:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="mistral-lollipop-fail.png" class="img-fluid figure-img"></p>
-<figcaption>mistralai/Mistral-7B-Instruct-v0.1 LLM failing to reverse the word lollipop</figcaption>
-</figure>
-</div>
-<p>If we look at how the word is tokenized, we see that it ends up being only 4 tokens, so it is no wonder that the LLMs find it hard solving this task:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="mistral-instruct-reverse.png" class="img-fluid figure-img"></p>
-<figcaption>Visualisation of how the tokenizer of mistralai/Mistral-7B-Instruct-v0.1 tokenizes the word lollipop</figcaption>
-</figure>
-</div>
-<p>The screenshot above hints at a “hack” that can be used to help LLMs: separate out the letters so that they end up as separate tokens after tokenization. Even then, few-shot examples are required to make it work (and it also did not work when I separated the letters using dashes <code>-</code> or spaces <code></code>):</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="mistral-lollipop-success.png" class="img-fluid figure-img"></p>
-<figcaption>mistralai/Mistral-7B-Instruct-v0.1 LLM succeeding at reversing the word lollipop</figcaption>
-</figure>
-</div>
-<div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Caution
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Interestingly, <code>gpt-4</code> <a href="https://chat.openai.com/share/f79bf298-94b6-4ebc-9f44-cdc176bf1a7d" target="_blank">fails</a> reversing the string too, so it is truly a problem caused by tokenization!</p>
-</div>
-</div>
-</section>
-<section id="non-english-languages-and-code" class="level2">
-<h2 class="anchored" data-anchor-id="non-english-languages-and-code">Non-English languages and code</h2>
-<p>It turns out that not all tokenizers are equally good at tokenizing non-English text, be it materials in foreign languages or code. I put these two together because they are very similar in nature, which is that training tokenizers on unbalanced text corpuses makes them worse at tokenizing the under-represented pieces of text (I might write a separate post on this, so stay tuned!).</p>
-<p>Let’s see this in action. The following piece of text is taken from Karpathy’s video on tokenizers that I mentioned above. The text states something like <em>“Nice to meet you, I’m ChatGPT, a large-scale language model developed by OpenAI. If you have any questions, feel free to ask.”</em> in Korean.</p>
-<div id="cell-9" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="bu">str</span> <span class="op">=</span> <span class="st">"만나서 반가워요. 저는 OpenAI에서 개발한 대규모 언어 모델인 ChatGPT입니다. 궁금한 것이 있으시면 무엇이든 물어보세요."</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="bu">len</span>(<span class="bu">str</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="2">
-<pre><code>72</code></pre>
-</div>
-</div>
-<p>We can see that the string is made up of 72 characters. Let’s see how the older <code>GPT-3</code> tokenizer would handle this:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="gpt-3-korean.png" class="img-fluid figure-img"></p>
-<figcaption>Visualisation of how the tokenizer of gpt-3 tokenizes Korean</figcaption>
-</figure>
-</div>
-<p>We find that the resulting number of tokens is 132, much more than the original length of the string! This is because the tokenizer probably did not see much Korean during training, so it did not learn to represent the Hanguls (Korean “letters”) in the Korean alphabet efficiently (we see that the first Hangul is represented by three tokens).</p>
-<p>On the other hand, the <code>GPT-4</code> tokenizer is much better at Korean, the resulting number of tokens is 61 (more 2x less!), meaning that the Korean Hanguls are more represented in the larger tokenizer vocabulary:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="gpt-4-korean.png" class="img-fluid figure-img"></p>
-<figcaption>Visualisation of how the tokenizer of gpt-4 tokenizes Korean</figcaption>
-</figure>
-</div>
-<p>Same thing goes for code. We find that the original code string is 197 characters:</p>
-<div id="cell-12" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>code_str <span class="op">=</span> <span class="st">'''for i in range(1, 101):</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="st">    if i % 3 == 0 and i % 5 == 0:</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="st">        print("FizzBuzz")</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="st">    elif i % 3 == 0:</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="st">        print("Fizz")</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="st">    elif i % 5 == 0:</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="st">        print("Buzz")</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="st">    else:</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="st">        print(i)</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="st">'''</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="bu">len</span>(code_str)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>197</code></pre>
-</div>
-</div>
-<p>The <code>GPT-3</code> tokenizer compresses the string reasonably well, but there are a few areas for improvement. For instance, we see that every space of indentation is a separate token, so we waste a lof of tokens. Similarly, keywords like <code>elif</code> are broken into two tokens which is not ideal.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="gpt-3-code.png" class="img-fluid figure-img"></p>
-<figcaption>Visualisation of how the tokenizer of gpt-3 tokenizes code</figcaption>
-</figure>
-</div>
-<p>Just as before, the <code>GPT-4</code> tokenizer is much better at this, as we see in the image below. The indentation spaces are now grouped into a single token, and the <code>elif</code> keyword is a single token as well. The resulting tokenization saves about 30 tokens for the given piece of code. Imagine what the savings would be for a very large codebase!</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="gpt-4-code.png" class="img-fluid figure-img"></p>
-<figcaption>Visualisation of how the tokenizer of gpt-4 tokenizes code</figcaption>
-</figure>
-</div>
-<p>There is no doubt that these improvements in the tokenizer have contributed to the much improved coding and multilingual performance of the <code>GPT-4</code> model.</p>
-</section>
-<section id="arithmetic" class="level2">
-<h2 class="anchored" data-anchor-id="arithmetic">Arithmetic</h2>
-<p>This is going to be a brief one, but LLM tokenizers can do odd things when tokenizing numbers which can hinder their performance on simple arithmetic. For example, here is the <code>gpt2</code> tokenizer behaves on the following numbers:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="gpt2-arithmetic.png" class="img-fluid figure-img"></p>
-<figcaption>Visualisation of how the tokenizer of gpt2 tokenizes numbers</figcaption>
-</figure>
-</div>
-<p>We find that in one case the decimal is one token, but becomes two tokens if an extra <code>0</code> is appended at the end. This would not cause any trouble to us humans, but could potentially confuse the LLM.</p>
-<p>However, most of the modern LLM tokenizers are quite robust at handling numbers.</p>
-</section>
-<section id="special-data-formats" class="level2">
-<h2 class="anchored" data-anchor-id="special-data-formats">Special data formats</h2>
-<p>How structured data tokenized is another source of peculiar behaviours in LLMs. For example the images below show how the <code>Mistral-7B</code> tokenizer handles <code>JSON</code> and <code>YAML</code> formats:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="mistral-json.png" class="img-fluid figure-img"></p>
-<figcaption>Visualisation of how the tokenizer of mistralai/Mistral-7B-Instruct-v0.1 tokenizes JSON</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="mistral-yaml.png" class="img-fluid figure-img"></p>
-<figcaption>Visualisation of how the tokenizer of mistralai/Mistral-7B-Instruct-v0.1 tokenizes YAML</figcaption>
-</figure>
-</div>
-<p>As we can see, we can save up on tokens (about 2x!) and overall complexity if we use <code>YAML</code> over <code>JSON</code>. Also, notice how using underscores in key names adds extra tokens, so being smart about how structured data is passed to the tokenizer can help reduce the number of tokens used and, therefore, the compute costs!</p>
-</section>
-<section id="other-problems" class="level2">
-<h2 class="anchored" data-anchor-id="other-problems">Other problems</h2>
-<ul>
-<li>Why did my LLM abruptly halt when it sees the string “&lt;|endoftext|&gt;”? <strong>Tokenization.</strong></li>
-<li>What is this weird warning I get about a “trailing whitespace”? <strong>Tokenization.</strong></li>
-<li>Why did the LLM break if I ask it about “SolidGoldMagikarp”? <strong>Tokenization.</strong></li>
-</ul>
-</section>
-<section id="how-much-of-a-problem-is-it" class="level2">
-<h2 class="anchored" data-anchor-id="how-much-of-a-problem-is-it">How much of a problem is it?</h2>
-<p>Thomas Wolfe video suggests that we are good as long as we are reasonably thoughtful about the tokenization process.</p>
-</section>
-</section>
-<section id="conclusion" class="level1">
-<h1>Conclusion</h1>
+</header>
 
 
+<section id="visualising-contextualised-large-language-model-embeddings-with-context" class="level1">
+<h1>Visualising contextualised large language model embeddings with context</h1>
+<p>A follow up on <a href="https://x.com/augustasmac/status/1775980024245444758" target="_blank">this</a> post.</p>
+<section id="imports" class="level2">
+<h2 class="anchored" data-anchor-id="imports">Imports</h2>
+<p>Toggle cells below if you want to see what imports are being made.</p>
+<div id="cell-3" class="cell" data-execution_count="43">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">%</span>load_ext autoreload</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload</code></pre>
+</div>
+</div>
+<div id="cell-4" class="cell" data-execution_count="44">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">import</span> torch</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="im">from</span> transformers <span class="im">import</span> AutoModel, AutoTokenizer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="utils" class="level2">
+<h2 class="anchored" data-anchor-id="utils">Utils</h2>
+<p>Use <code>[CLS]</code> pooling according to <a href="https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1">this</a>:</p>
+<div id="cell-7" class="cell" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">def</span> compute_sentence_embedding(sentence: <span class="bu">str</span>, model, tokenizer):</span>
+<span id="cb4-2"><a href="#cb4-2"></a>    sentence_tokenized <span class="op">=</span> tokenizer(sentence, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a>    <span class="bu">print</span>(<span class="ss">f"Num tokens: </span><span class="sc">{</span>sentence_tokenized[<span class="st">"input_ids"</span>]<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a></span>
+<span id="cb4-6"><a href="#cb4-6"></a>    <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb4-7"><a href="#cb4-7"></a>        <span class="cf">return</span> model(<span class="op">**</span>sentence_tokenized).last_hidden_state[<span class="dv">0</span>, <span class="dv">0</span>, :]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-8" class="cell" data-execution_count="46">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">def</span> perform_distance_comparison(s1, s2, s3):</span>
+<span id="cb5-2"><a href="#cb5-2"></a>    euclidean_dist_1 <span class="op">=</span> torch.linalg.vector_norm(s1 <span class="op">-</span> s2).item()</span>
+<span id="cb5-3"><a href="#cb5-3"></a>    euclidean_dist_2 <span class="op">=</span> torch.linalg.vector_norm(s1 <span class="op">-</span> s3).item()</span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a>    <span class="bu">print</span>(<span class="ss">f"|s1 - s2| = </span><span class="sc">{</span>euclidean_dist_1<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6"></a>    <span class="bu">print</span>(<span class="ss">f"|s1 - s3| = </span><span class="sc">{</span>euclidean_dist_2<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7"></a>    <span class="bu">print</span>(<span class="ss">f"|s1 - s2| &lt; |s1 - s3| = </span><span class="sc">{</span>euclidean_dist_1 <span class="op">&lt;</span> euclidean_dist_2<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8"></a></span>
+<span id="cb5-9"><a href="#cb5-9"></a>    cosine_sim_1 <span class="op">=</span> F.cosine_similarity(s1[<span class="va">None</span>, :], s2[<span class="va">None</span>, :])[<span class="dv">0</span>].item()</span>
+<span id="cb5-10"><a href="#cb5-10"></a>    cosine_sim_2 <span class="op">=</span> F.cosine_similarity(s1[<span class="va">None</span>, :], s3[<span class="va">None</span>, :])[<span class="dv">0</span>].item()</span>
+<span id="cb5-11"><a href="#cb5-11"></a></span>
+<span id="cb5-12"><a href="#cb5-12"></a>    <span class="bu">print</span>(<span class="ss">f"sim(s1, s2) = </span><span class="sc">{</span>cosine_sim_1<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb5-13"><a href="#cb5-13"></a>    <span class="bu">print</span>(<span class="ss">f"sim(s1, s3) = </span><span class="sc">{</span>cosine_sim_2<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb5-14"><a href="#cb5-14"></a>    <span class="bu">print</span>(<span class="ss">f"sim(s1, s2) &gt; sim(s1, s3) = </span><span class="sc">{</span>cosine_sim_1 <span class="op">&gt;</span> cosine_sim_2<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="easier-example" class="level2">
+<h2 class="anchored" data-anchor-id="easier-example">Easier example</h2>
+<div id="cell-10" class="cell" data-execution_count="47">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>model_name <span class="op">=</span> <span class="st">"google-bert/bert-base-cased"</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>model <span class="op">=</span> AutoModel.from_pretrained(model_name)</span>
+<span id="cb6-3"><a href="#cb6-3"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(model_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-11" class="cell" data-execution_count="48">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>sentence_1 <span class="op">=</span> <span class="st">"sensitive information"</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>sentence_2 <span class="op">=</span> <span class="st">"confidential details"</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>sentence_3 <span class="op">=</span> <span class="st">"sensitive individual"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-12" class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>sentence_1_transformers <span class="op">=</span> compute_sentence_embedding(sentence_1, model, tokenizer)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>sentence_2_transformers <span class="op">=</span> compute_sentence_embedding(sentence_2, model, tokenizer)</span>
+<span id="cb8-3"><a href="#cb8-3"></a>sentence_3_transformers <span class="op">=</span> compute_sentence_embedding(sentence_3, model, tokenizer)</span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a>sentence_1_transformers.shape, sentence_2_transformers.shape, sentence_3_transformers.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Num tokens: 4
+Num tokens: 4
+Num tokens: 4</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="49">
+<pre><code>(torch.Size([768]), torch.Size([768]), torch.Size([768]))</code></pre>
+</div>
+</div>
+<div id="cell-13" class="cell" data-execution_count="50">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Both should be true</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>perform_distance_comparison(</span>
+<span id="cb11-3"><a href="#cb11-3"></a>    sentence_1_transformers, sentence_2_transformers, sentence_3_transformers</span>
+<span id="cb11-4"><a href="#cb11-4"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>|s1 - s2| = 4.981
+|s1 - s3| = 6.788
+|s1 - s2| &lt; |s1 - s3| = True
+sim(s1, s2) = 0.955
+sim(s1, s3) = 0.900
+sim(s1, s2) &gt; sim(s1, s3) = True</code></pre>
+</div>
+</div>
+</section>
+<section id="harder-example" class="level2">
+<h2 class="anchored" data-anchor-id="harder-example">Harder example</h2>
+<div id="cell-15" class="cell" data-execution_count="51">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>sentence_1 <span class="op">=</span> <span class="st">"your data removal request has been reviewed and concluded"</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>sentence_2 <span class="op">=</span> <span class="st">"the sensitive personal information has been deleted"</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a>sentence_3 <span class="op">=</span> <span class="st">"she has been a sensitive person"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-16" class="cell" data-execution_count="52">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>sentence_1_transformers <span class="op">=</span> compute_sentence_embedding(sentence_1, model, tokenizer)</span>
+<span id="cb14-2"><a href="#cb14-2"></a>sentence_2_transformers <span class="op">=</span> compute_sentence_embedding(sentence_2, model, tokenizer)</span>
+<span id="cb14-3"><a href="#cb14-3"></a>sentence_3_transformers <span class="op">=</span> compute_sentence_embedding(sentence_3, model, tokenizer)</span>
+<span id="cb14-4"><a href="#cb14-4"></a></span>
+<span id="cb14-5"><a href="#cb14-5"></a>sentence_1_transformers.shape, sentence_2_transformers.shape, sentence_3_transformers.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Num tokens: 11
+Num tokens: 9
+Num tokens: 8</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="52">
+<pre><code>(torch.Size([768]), torch.Size([768]), torch.Size([768]))</code></pre>
+</div>
+</div>
+<div id="cell-17" class="cell" data-execution_count="53">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># Both should be true</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>perform_distance_comparison(</span>
+<span id="cb17-3"><a href="#cb17-3"></a>    sentence_1_transformers, sentence_2_transformers, sentence_3_transformers</span>
+<span id="cb17-4"><a href="#cb17-4"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>|s1 - s2| = 5.626
+|s1 - s3| = 7.529
+|s1 - s2| &lt; |s1 - s3| = True
+sim(s1, s2) = 0.941
+sim(s1, s3) = 0.893
+sim(s1, s2) &gt; sim(s1, s3) = True</code></pre>
+</div>
+</div>
+</section>
+<section id="try-the-same-with-a-text-embedding-model" class="level2">
+<h2 class="anchored" data-anchor-id="try-the-same-with-a-text-embedding-model">Try the same with a text embedding model</h2>
+<div id="cell-19" class="cell" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a>model_name <span class="op">=</span> <span class="st">"mixedbread-ai/mxbai-embed-large-v1"</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>model <span class="op">=</span> AutoModel.from_pretrained(model_name)</span>
+<span id="cb19-3"><a href="#cb19-3"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(model_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-20" class="cell" data-execution_count="55">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a>sentence_1_transformers <span class="op">=</span> compute_sentence_embedding(sentence_1, model, tokenizer)</span>
+<span id="cb20-2"><a href="#cb20-2"></a>sentence_2_transformers <span class="op">=</span> compute_sentence_embedding(sentence_2, model, tokenizer)</span>
+<span id="cb20-3"><a href="#cb20-3"></a>sentence_3_transformers <span class="op">=</span> compute_sentence_embedding(sentence_3, model, tokenizer)</span>
+<span id="cb20-4"><a href="#cb20-4"></a></span>
+<span id="cb20-5"><a href="#cb20-5"></a>sentence_1_transformers.shape, sentence_2_transformers.shape, sentence_3_transformers.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Num tokens: 11
+Num tokens: 9
+Num tokens: 8</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="55">
+<pre><code>(torch.Size([1024]), torch.Size([1024]), torch.Size([1024]))</code></pre>
+</div>
+</div>
+<div id="cell-21" class="cell" data-execution_count="56">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a>perform_distance_comparison(</span>
+<span id="cb23-2"><a href="#cb23-2"></a>    sentence_1_transformers, sentence_2_transformers, sentence_3_transformers</span>
+<span id="cb23-3"><a href="#cb23-3"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>|s1 - s2| = 14.404
+|s1 - s3| = 19.134
+|s1 - s2| &lt; |s1 - s3| = True
+sim(s1, s2) = 0.672
+sim(s1, s3) = 0.372
+sim(s1, s2) &gt; sim(s1, s3) = True</code></pre>
+</div>
+</div>
+
+
+</section>
 </section>
 
 </main> <!-- /main -->

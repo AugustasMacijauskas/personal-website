@@ -1,5 +1,12 @@
 [
   {
+    "listing": "/notes.html",
+    "items": [
+      "/notes/cubic-spline-interpolation-exercise/cubic-spline-interpolation-exercise.html",
+      "/notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html"
+    ]
+  },
+  {
     "listing": "/index.html",
     "items": [
       "/posts/tokenizer-problems/tokenizer-problems.html",
@@ -10,13 +17,6 @@
       "/posts/optimization-algorithms/optimisation-algorithms.html",
       "/posts/captcha-fastai/captcha-fastai.html",
       "/posts/elegant-naive-bayes/elegant-naive-bayes.html"
-    ]
-  },
-  {
-    "listing": "/notes.html",
-    "items": [
-      "/notes/cubic-spline-interpolation-exercise/cubic-spline-interpolation-exercise.html",
-      "/notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html"
     ]
   }
 ]
