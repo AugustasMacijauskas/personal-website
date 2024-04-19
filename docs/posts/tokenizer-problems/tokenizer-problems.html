@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Augustas Macijauskas">
-<meta name="dcterms.date" content="2024-04-16">
+<meta name="dcterms.date" content="2024-04-19">
 <meta name="description" content="Tokenization is (at least partially) the cause of a lot of the problems with large language models.">
 
 <title>Augustas Macijauskas - Good tokenizers is all you need</title>
@@ -236,7 +236,7 @@ cookieconsent.run({
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 16, 2024</p>
+        <p class="date">April 19, 2024</p>
       </div>
     </div>
     
@@ -252,18 +252,18 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#this-is-still-a-work-in-progress" id="toc-this-is-still-a-work-in-progress" class="nav-link active" data-scroll-target="#this-is-still-a-work-in-progress">This is still a work in progress!</a></li>
-  <li><a href="#good-tokenizers-is-all-you-need" id="toc-good-tokenizers-is-all-you-need" class="nav-link" data-scroll-target="#good-tokenizers-is-all-you-need">Good tokenizers is all you need</a>
+  <li><a href="#good-tokenizers-is-all-you-need" id="toc-good-tokenizers-is-all-you-need" class="nav-link active" data-scroll-target="#good-tokenizers-is-all-you-need">Good tokenizers is all you need</a></li>
+  <li><a href="#tokenizer-problems" id="toc-tokenizer-problems" class="nav-link" data-scroll-target="#tokenizer-problems">Tokenizer problems</a>
   <ul class="collapse">
   <li><a href="#spelling" id="toc-spelling" class="nav-link" data-scroll-target="#spelling">Spelling</a></li>
-  <li><a href="#reversing-a-string" id="toc-reversing-a-string" class="nav-link" data-scroll-target="#reversing-a-string">Reversing a string</a></li>
+  <li><a href="#string-operations" id="toc-string-operations" class="nav-link" data-scroll-target="#string-operations">String operations</a></li>
   <li><a href="#non-english-languages-and-code" id="toc-non-english-languages-and-code" class="nav-link" data-scroll-target="#non-english-languages-and-code">Non-English languages and code</a></li>
   <li><a href="#arithmetic" id="toc-arithmetic" class="nav-link" data-scroll-target="#arithmetic">Arithmetic</a></li>
   <li><a href="#special-data-formats" id="toc-special-data-formats" class="nav-link" data-scroll-target="#special-data-formats">Special data formats</a></li>
   <li><a href="#other-problems" id="toc-other-problems" class="nav-link" data-scroll-target="#other-problems">Other problems</a></li>
-  <li><a href="#how-much-of-a-problem-is-it" id="toc-how-much-of-a-problem-is-it" class="nav-link" data-scroll-target="#how-much-of-a-problem-is-it">How much of a problem is it?</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading">Further reading</a></li>
   </ul>
 </nav>
     </div>
@@ -274,9 +274,6 @@ cookieconsent.run({
 
 
 
-<section id="this-is-still-a-work-in-progress" class="level1">
-<h1>This is still a work in progress!</h1>
-</section>
 <section id="good-tokenizers-is-all-you-need" class="level1">
 <h1>Good tokenizers is all you need</h1>
 <p>Although it might seem like the title is just me giving in to the popular trends in naming things in the ML space, it is not actually that misleading. Tokenization is a crucial part of the whole language modelling pipeline. Yet, we will see in this blog post that there all sorts of problems that tokenization can cause that one might not be aware of.</p>
@@ -288,15 +285,18 @@ cookieconsent.run({
 <li>Why is LLM worse at non-English languages (e.g.&nbsp;Japanese)? <strong>Tokenization.</strong></li>
 <li>Why is LLM bad at simple arithmetic? <strong>Tokenization.</strong></li>
 <li>Why did GPT-2 have more than necessary trouble coding in Python? <strong>Tokenization.</strong></li>
-<li>Why did my LLM abruptly halt when it sees the string “&lt;|endoftext|&gt;”? <strong>Tokenization.</strong></li>
-<li>What is this weird warning I get about a “trailing whitespace”? <strong>Tokenization.</strong></li>
-<li>Why did the LLM break if I ask it about “SolidGoldMagikarp”? <strong>Tokenization.</strong></li>
+<li>Why did my LLM abruptly halt when it sees the string <code>&lt;|endoftext|&gt;</code>? <strong>Tokenization.</strong></li>
+<li>What is this weird warning I get about a <code>trailing whitespace</code>? <strong>Tokenization.</strong></li>
+<li>Why did the LLM break if I ask it about <code>SolidGoldMagikarp</code>? <strong>Tokenization.</strong></li>
 <li>Why should I prefer to use YAML over JSON with LLMs? <strong>Tokenization.</strong></li>
 <li>Why is LLM not actually end-to-end language modeling? <strong>Tokenization.</strong></li>
 <li>What is the real root of suffering? <strong>Tokenization.</strong></li>
 </ul>
 <p>I will use the <a href="https://augustasmacijauskas.github.io/trailtoken/" target="_blank"><code>trailtoken</code></a> tool that I have recently built with a collaborator to inspect why these problems occur. I encourage you to play around with it, especially if you build tokenizers from scratch yourself. You might be surprised with how easily problems can occur if one is not careful enough!</p>
 <p>Let’s dive in!</p>
+</section>
+<section id="tokenizer-problems" class="level1">
+<h1>Tokenizer problems</h1>
 <section id="spelling" class="level2">
 <h2 class="anchored" data-anchor-id="spelling">Spelling</h2>
 <p>Tokenization makes it hard for the LLMs to spell. For example, one of the best open-source LLMs, <a href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1" target="_blank"><code>Mistral-7B-Instruct</code></a>, has a very hard time spelling the word <code>antidisestablishmentarianism</code>:</p>
@@ -335,9 +335,9 @@ Note
 </div>
 </div>
 </section>
-<section id="reversing-a-string" class="level2">
-<h2 class="anchored" data-anchor-id="reversing-a-string">Reversing a string</h2>
-<p>Similarly to spelling words, LLMs find it hard to to simple tasks, like reversing words. A well-known example is asking LLMs to reverse the word <code>lollipop</code>. <code>Mistral-7B</code> fails miserably on the task:</p>
+<section id="string-operations" class="level2">
+<h2 class="anchored" data-anchor-id="string-operations">String operations</h2>
+<p>Similarly to spelling words, LLMs find it hard to to simple string operations, such as reversing words. A well-known example is asking LLMs to reverse the word <code>lollipop</code>. <code>Mistral-7B</code> fails miserably on the task:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="mistral-lollipop-fail.png" class="img-fluid figure-img"></p>
@@ -351,7 +351,7 @@ Note
 <figcaption>Visualisation of how the tokenizer of mistralai/Mistral-7B-Instruct-v0.1 tokenizes the word lollipop</figcaption>
 </figure>
 </div>
-<p>The screenshot above hints at a “hack” that can be used to help LLMs: separate out the letters so that they end up as separate tokens after tokenization. Even then, few-shot examples are required to make it work (and it also did not work when I separated the letters using dashes <code>-</code> or spaces <code></code>):</p>
+<p>The screenshot above hints at a “hack” that can be used to help LLMs: separate out the letters so that they end up as separate tokens after tokenization. Even then, few-shot examples are required to make it work (and it also did not work when I separated the letters using dashes <code>'-'</code> or spaces <code>' '</code>):</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="mistral-lollipop-success.png" class="img-fluid figure-img"></p>
@@ -371,12 +371,20 @@ Caution
 <p>Interestingly, <code>gpt-4</code> <a href="https://chat.openai.com/share/f79bf298-94b6-4ebc-9f44-cdc176bf1a7d" target="_blank">fails</a> reversing the string too, so it is truly a problem caused by tokenization!</p>
 </div>
 </div>
+<p>For the curious reader, there are many other seemingly “simple” operations that LLMs struggle with. One such example is try to count the number of letter in a word:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gpt-4-count-letters.png" class="img-fluid figure-img"></p>
+<figcaption>GPT-4 LLM failing to count the number of letters in words</figcaption>
+</figure>
+</div>
+<p>Can you think of any other tasks where LLMs might struggle?</p>
 </section>
 <section id="non-english-languages-and-code" class="level2">
 <h2 class="anchored" data-anchor-id="non-english-languages-and-code">Non-English languages and code</h2>
 <p>It turns out that not all tokenizers are equally good at tokenizing non-English text, be it materials in foreign languages or code. I put these two together because they are very similar in nature, which is that training tokenizers on unbalanced text corpuses makes them worse at tokenizing the under-represented pieces of text (I might write a separate post on this, so stay tuned!).</p>
-<p>Let’s see this in action. The following piece of text is taken from Karpathy’s video on tokenizers that I mentioned above. The text states something like <em>“Nice to meet you, I’m ChatGPT, a large-scale language model developed by OpenAI. If you have any questions, feel free to ask.”</em> in Korean.</p>
-<div id="cell-9" class="cell" data-execution_count="2">
+<p>Let’s see this in action. The following piece of text is taken from Karpathy’s video referenced above. The text states something like <em>“Nice to meet you, I’m ChatGPT, a large-scale language model developed by OpenAI. If you have any questions, feel free to ask.”</em> in Korean.</p>
+<div id="cell-10" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="bu">str</span> <span class="op">=</span> <span class="st">"만나서 반가워요. 저는 OpenAI에서 개발한 대규모 언어 모델인 ChatGPT입니다. 궁금한 것이 있으시면 무엇이든 물어보세요."</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="bu">len</span>(<span class="bu">str</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
@@ -391,15 +399,23 @@ Caution
 </figure>
 </div>
 <p>We find that the resulting number of tokens is 132, much more than the original length of the string! This is because the tokenizer probably did not see much Korean during training, so it did not learn to represent the Hanguls (Korean “letters”) in the Korean alphabet efficiently (we see that the first Hangul is represented by three tokens).</p>
-<p>On the other hand, the <code>GPT-4</code> tokenizer is much better at Korean, the resulting number of tokens is 61 (more 2x less!), meaning that the Korean Hanguls are more represented in the larger tokenizer vocabulary:</p>
+<p>On the other hand, the <code>GPT-4</code> tokenizer is much better at Korean, the resulting number of tokens is 61 (more 2x less!), meaning that the Korean Hanguls are better represented in the larger tokenizer vocabulary:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="gpt-4-korean.png" class="img-fluid figure-img"></p>
 <figcaption>Visualisation of how the tokenizer of gpt-4 tokenizes Korean</figcaption>
 </figure>
 </div>
+<p>However, the problem still remains. If we inspect how the English version of the same phrase is tokenizer, we find another 2x reduction in the number of tokens:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gpt-4-english.png" class="img-fluid figure-img"></p>
+<figcaption>Visualisation of how the tokenizer of gpt-4 tokenizes English</figcaption>
+</figure>
+</div>
+<p>Therefore, poor tokenization means that the “information density” of non-English tokens is much lower, so LLMs have to attend to longer sequences to process the same amount of information, though the fact that they have probably seen much less non-English data during training also significantly contributes to the problem.</p>
 <p>Same thing goes for code. We find that the original code string is 197 characters:</p>
-<div id="cell-12" class="cell" data-execution_count="3">
+<div id="cell-13" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>code_str <span class="op">=</span> <span class="st">'''for i in range(1, 101):</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="st">    if i % 3 == 0 and i % 5 == 0:</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="st">        print("FizzBuzz")</span></span>
@@ -433,7 +449,7 @@ Caution
 </section>
 <section id="arithmetic" class="level2">
 <h2 class="anchored" data-anchor-id="arithmetic">Arithmetic</h2>
-<p>This is going to be a brief one, but LLM tokenizers can do odd things when tokenizing numbers which can hinder their performance on simple arithmetic. For example, here is the <code>gpt2</code> tokenizer behaves on the following numbers:</p>
+<p>This is going to be a brief one, but LLM tokenizers can do odd things when tokenizing numbers which can hinder their performance on simple arithmetic. For example, here is the <code>GPT-2</code> tokenizer behaves on the following numbers:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="gpt2-arithmetic.png" class="img-fluid figure-img"></p>
@@ -462,19 +478,54 @@ Caution
 </section>
 <section id="other-problems" class="level2">
 <h2 class="anchored" data-anchor-id="other-problems">Other problems</h2>
-<ul>
-<li>Why did my LLM abruptly halt when it sees the string “&lt;|endoftext|&gt;”? <strong>Tokenization.</strong></li>
-<li>What is this weird warning I get about a “trailing whitespace”? <strong>Tokenization.</strong></li>
-<li>Why did the LLM break if I ask it about “SolidGoldMagikarp”? <strong>Tokenization.</strong></li>
-</ul>
-</section>
-<section id="how-much-of-a-problem-is-it" class="level2">
-<h2 class="anchored" data-anchor-id="how-much-of-a-problem-is-it">How much of a problem is it?</h2>
-<p>Thomas Wolfe video suggests that we are good as long as we are reasonably thoughtful about the tokenization process.</p>
+<p>Finally, I want to briefly touch upon the few remaining problems on Karpathy’s list which have either been solved completely or are very rare if one is careful enough.</p>
+<p><strong>Why did my LLM abruptly halt when it sees the string <code>&lt;|endoftext|&gt;</code>?</strong></p>
+<p><code>&lt;|endoftext|&gt;</code> is a special tokens which hints LLMs that they should stop generating text, so if you accidentally put that into the model, it might halt abruptly. Simple string processing techniques can help deal with such edge cases most of the time, though that sometimes leads to undesired behaviours, such as the one below which likely happens because OpenAI’s tokenizers remove special tokens from the input string during pre-processing:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gpt-4-end-of-text.png" class="img-fluid figure-img"></p>
+<figcaption>gpt-4 tokenizers remove special tokens from the input string during pre-processing</figcaption>
+</figure>
+</div>
+<p><strong>What is this weird warning I get about a <code>trailing whitespace</code>?</strong></p>
+<p>The two images below will help us better understand what’s going on:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gpt-4-trailing-whitespace.png" class="img-fluid figure-img"></p>
+<figcaption>gpt-4 tokenizer trailing whitespace issue</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gpt-4-trailing-whitespace-2.png" class="img-fluid figure-img"></p>
+<figcaption>gpt-4 tokenizer without trailing whitespace issue</figcaption>
+</figure>
+</div>
+<p>We can see that in the first image, the trailing space becomes a separate token. However, the tokenizers often concatenate words the the spaces before them, just like the for word <code>once</code> in the second image. Since models are trained to predict the next token, during training the learn to predict the token <code>once</code> from the tokens that go before it up to the colon <code>:</code>, so the case where they have to predict the token <code>once</code> following a space <code>' '</code> is completely out of distrubution for them and can lead to all kinds of peculiar behaviours.</p>
+<p><strong>Why did the LLM break if I ask it about <code>SolidGoldMagikarp</code>?</strong></p>
+<p>This problem was quite hilarious, but the researchers at OpenAI trained their olders tokenizers on Reddit data and <code>SolidGoldMagikarp</code> is a Reddit user with lots of posts, so their username became a separate token in the LLMs vocabulary, but the same data did not make it into the training data, so the models behave more or less <strong>randomly</strong> if they ever see this token because they have never been trained to handle them.</p>
 </section>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
+<p>To summarize, the tokenization process of the language modelling pipeline should not be neglected and can lead to poor LLMs performance, undesired behaviours or even safety issues. However, I would like to challenge a few of Andrej Karpathy’s statements from the conclusion of the video. In particular:</p>
+<ul>
+<li>He suggested using OpenAI’s <code>tiktoken</code> library and use the <code>GPT-4</code> tokenizer. While this is true, I believe that there are also a lot of great tokenizers in the open-source realm, e.g.&nbsp;the new <a href="https://huggingface.co/meta-llama/Meta-Llama-3-8B" target="_blank"><code>LLaMA 3</code></a> tokenizer seems to take most of the consideration from this post into account.</li>
+<li>If one would like to train their own tokenizer, Andrej suggested using BPE with sentencepiece from Google. However, I think this neglects the amazing work by the Hugging Face team on their <code>tokenizers</code> library. It has functionality to both train tokenizers and run them in inference mode, it is super fast because it is written in Rust, and the documentation is also rather approachable in my opinion. In fact, I plan to do a deep dive on tokenization using this library where the end goal would be to replicate the <code>LLaMA 3</code> tokenizer as closely as possible.</li>
+</ul>
+<p><strong>Quick footnote:</strong> in his video on <a href="https://www.youtube.com/watch?v=2-SPH9hIKT8" target="_blank">on building LLMs in 2024</a> Thomas Wolfe video suggests that things are not as hopeless as they might seem and argues that as long as we are reasonably thoughtful about the tokenization process, the problems above can be avoided for the most part. He also adds that one should not spend too much time on this step of building a language model as it is not something that can bring one to building AGI 😅.</p>
+</section>
+<section id="further-reading" class="level1">
+<h1>Further reading</h1>
+<p>I just want to highlight some resources that I read in more or less detail while writing this article (they are also mentioned in Andrej Karpathy’s video):</p>
+<ul>
+<li>Wikipedia page on <a href="https://en.wikipedia.org/wiki/Byte_pair_encoding" target="_blank">byte pair encoding</a>.</li>
+<li><a href="https://www.beren.io/2023-02-04-Integer-tokenization-is-insane/" target="_blank">Integer tokenization is insane</a>.</li>
+<li><a href="https://www.lesswrong.com/posts/aPeJE8bSo6rAFoLqg/solidgoldmagikarp-plus-prompt-generation" target="_blank">SolidGoldMagikarp (plus, prompt generation)</a>.
+<ul>
+<li>I really like the very simple yet powerful idea of clustering the embeddings for each token learnt during LLM pre-training which allowed to find the various edge cases in model behaviour. I explore the underlying ideas in some detail myself in the following: <a href="../../posts/embedding-visualisation/embedding-visualisation.html" target="_blank">following</a> blog post.</li>
+</ul></li>
+</ul>
 
 
 </section>
