@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Augustas Macijauskas">
-<meta name="dcterms.date" content="2023-10-04">
-<meta name="description" content="Blog post about my master’s research project at the University of Cambridge.">
+<meta name="dcterms.date" content="2024-04-19">
+<meta name="description" content="Deep dive into understanding and building tokenizers with an end goal of replicating the LLaMA 3 tokenizer.">
 
-<title>Augustas Macijauskas - Eliciting latent knowledge from language reward models</title>
+<title>Augustas Macijauskas - Tokenizers deep dive - Part 1</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -145,44 +145,15 @@ cookieconsent.run({
   });
 </script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="Augustas Macijauskas - Eliciting latent knowledge from language reward models">
-<meta property="og:description" content="Blog post about my master’s research project at the University of Cambridge.">
-<meta property="og:image" content="cambridge.jpg">
+<meta property="og:title" content="Augustas Macijauskas - Tokenizers deep dive - Part 1">
+<meta property="og:description" content="Deep dive into understanding and building tokenizers with an end goal of replicating the LLaMA 3 tokenizer.">
+<meta property="og:image" content="dalle-3-tokenization-process.webp">
 <meta property="og:site_name" content="Augustas Macijauskas's blog">
-<meta name="twitter:title" content="Augustas Macijauskas - Eliciting latent knowledge from language reward models">
-<meta name="twitter:description" content="Blog post about my master’s research project at the University of Cambridge.">
-<meta name="twitter:image" content="cambridge.jpg">
+<meta name="twitter:title" content="Augustas Macijauskas - Tokenizers deep dive - Part 1">
+<meta name="twitter:description" content="Deep dive into understanding and building tokenizers with an end goal of replicating the LLaMA 3 tokenizer.">
+<meta name="twitter:image" content="dalle-3-tokenization-process.webp">
 <meta name="twitter:creator" content="@augustasmac">
 <meta name="twitter:card" content="summary_large_image">
 </head>
@@ -238,17 +209,16 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Eliciting latent knowledge from language reward models</h1>
+      <h1 class="title">Tokenizers deep dive - Part 1</h1>
                   <div>
         <div class="description">
-          Blog post about my master’s research project at the University of Cambridge.
+          Deep dive into understanding and building tokenizers with an end goal of replicating the LLaMA 3 tokenizer.
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">machine learning</div>
                 <div class="quarto-category">deep learning</div>
                 <div class="quarto-category">LLMs</div>
-                <div class="quarto-category">cambridge</div>
+                <div class="quarto-category">tokenization</div>
               </div>
                   </div>
   </div>
@@ -266,7 +236,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">October 4, 2023</p>
+        <p class="date">April 19, 2024</p>
       </div>
     </div>
     
@@ -282,10 +252,11 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#main-steps" id="toc-main-steps" class="nav-link active" data-scroll-target="#main-steps">Main steps</a></li>
-  <li><a href="#reward-model-training" id="toc-reward-model-training" class="nav-link" data-scroll-target="#reward-model-training">Reward model training</a></li>
-  <li><a href="#rl-fine-tuning" id="toc-rl-fine-tuning" class="nav-link" data-scroll-target="#rl-fine-tuning">RL fine-tuning</a></li>
+  <li><a href="#warm-up-basics-of-tokenization" id="toc-warm-up-basics-of-tokenization" class="nav-link active" data-scroll-target="#warm-up-basics-of-tokenization">Warm-up: basics of tokenization</a></li>
+  <li><a href="#training-a-llama-3-tokenizer" id="toc-training-a-llama-3-tokenizer" class="nav-link" data-scroll-target="#training-a-llama-3-tokenizer">Training a Llama 3 tokenizer</a></li>
+  <li><a href="#sec-next-steps" id="toc-sec-next-steps" class="nav-link" data-scroll-target="#sec-next-steps">Next steps (for the curious reader)</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
   </ul>
 </nav>
     </div>
@@ -296,123 +267,164 @@ window.Quarto = {
 
 
 
-<p>Hello, World!</p>
-<p>This blog post discusses the main ideas behind my thesis for the MPhil in Machine Learning and Machine Intelligence degree at the University of Cambridge. You can read the full thesis <a href="mlmi-thesis.pdf" target="_blank">here</a>, or check the associated <a href="https://github.com/AugustasMacijauskas/mlmi-thesis" target="_blank">GitHub repository</a>.</p>
-<p>The main idea behind the project is trying to build a reward models that reward “truthfulness” in a scalable fashion, which current state-of-the-art methods, such as <em>reinforcement learning from human feedback</em> (RLHF), are not capable of (note that we use quatations because we defined “truthfulness” in a narrow sense and mean only the performance on binary question-aswering tasks, see the thesis pdf for more details). Specifically, methods that <em>discover latent knowledge</em>, such as <a href="https://arxiv.org/abs/2212.03827" target="_blank">CCS</a>, are used to determine whether a piece of input text is truthful or not. Such linear <em>probes</em> are then combined with pre-trained language models to make up reward models, which are used in <em>reinforcement learning</em> RL fine-tuning to improve the “truthfulness” of <em>large language models</em> (LLMs).</p>
-<p>These reward models can be trained by using transformed versions of existing datasets, thus relaxing the requirement to collect large numbers of human preference data, as is usual in RLHF. We find that using our reward models along with a few regularization techniques (discussed below) can already be used to improve the “truthfulness” of pre-trained LLMs by <strong>up to 1.6%</strong>, as measured on the TruthfulQA benchmark. Importantly, such an improvement is achieved without sacrificing the models’ performance on more general NLP tasks (we evaluate on the <a href="https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard" target="_blank"><em>Open LLM Leaderboard</em></a> tasks).</p>
-<p>Although our method serves as a proof of concept on how hallucinations in LLMs could be tackled in the future, it still has many limitations. For one, the current best DLK methods still have a long way to go in terms of robustness. Moreover, our method only tackles the narrow definition of “truthfulness”, and even though the accuracy on TruthfulQA improves too, many would argue that it is still not a very good proxy for actually reducing levels of hallucination in LLMs. Finally, we found that the pre-trained models that we would fine-tune using RL had to be already quite capable, otherwise our method would not work.</p>
-<section id="main-steps" class="level2">
-<h2 class="anchored" data-anchor-id="main-steps">Main steps</h2>
-<p>There are four main steps to run the method on new data: 1. Split the dataset and prepare it for reward model training and RL fine-tuning. 1. Train a reward model. 1. Performing RL fine-tuning on some pre-trained LLM. 1. Evaluate the fine-tuned LLM on both target and general NLP tasks.</p>
-<p>Steps 1 and 4 are mostly boring and you can find more details about them in the README of the GitHub repository, so we are going to focus on the theory and main code bits for steps 2 and 3.</p>
-</section>
-<section id="reward-model-training" class="level2">
-<h2 class="anchored" data-anchor-id="reward-model-training">Reward model training</h2>
-<p>As discussed in more detail in chapter 3 of the thesis, the reward model is made up of a pre-trained language model with a probe attached at the end.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="reward_model.png" class="img-fluid figure-img"></p>
-<figcaption>The architecture of the reward model</figcaption>
-</figure>
-</div>
-<p>The reward model takes as an input a question <span class="math inline">\(q_i\)</span> with a binary answer (e.g.&nbsp;“Yes”/“No”), creates a contrastive pair from it and then this contrastive pair <span class="math inline">\((x_i^+, x_i^-)\)</span> is used to compute a reward (a number between 0 and 1). The reward is computed by recording activations of the last token in a layer of a language model, denoted <span class="math inline">\(\mathrm{\textbf{emb}}(x_i^+)\)</span> and <span class="math inline">\(\mathrm{\textbf{emb}}(x_i^-)\)</span>. We would try all layers of a language model and pick the one that worked the best. Finally, the embeddings are passed to a logistic classificer which is of the form: <span class="math display">\[p(q_i) = \sigma(\textbf{w}^\mathrm{T}(\mathrm{\textbf{emb}}(x_i^+) - \mathrm{\textbf{emb}}(x_i^-)))\]</span> which is the only module with trainable parameters, the vector <span class="math inline">\(\textbf{w}\)</span>. Here, <span class="math inline">\(\sigma\)</span> is the sigmoid activation function. This output probability denotes the probability that the question <span class="math inline">\(q_i\)</span> is “truthful” which is what we use as the reward.</p>
-<p>There are a few other intricacies, such as how to prompt for “truthfulness” (custom prompts are needed), or how to actually find the optimal parameters vector <span class="math inline">\(\textbf{w}\)</span>, but I will sugeest interested readers to refer to the thesis pdf.</p>
-</section>
-<section id="rl-fine-tuning" class="level2">
-<h2 class="anchored" data-anchor-id="rl-fine-tuning">RL fine-tuning</h2>
-<p>Once we have a reward model, we can plug into an RL algorithm to perform fine-tuning. We used the <em>proximal policy optimization</em> algorithm, as implement in the <em>Transformer Reinforcement Learning</em> (<a href="https://github.com/huggingface/trl" target="_blank">TRL</a>) library from Hugging Face. We found that a few pieces of regularization had to be applied to stabilize the training process. The tricks are:</p>
+<p>In the conclusion of my recent blog post I argued that I disagree with Andrej Karpathy’s claims about the current state of tokenizer availability and tooling. In particular:</p>
+<ul>
+<li>I do not agree that there are no good alternatives to OpenAI’s GPT-4 tokenizer and their <code>tiktoken</code> library, especially since the <a href="https://ai.meta.com/blog/meta-llama-3/" target="_blank">release of Llama 3</a>.</li>
+<li>Also, it is not the case that there are no good tools to train tokenizers from scratch fast, as the <code>tokenizers</code> library from Hugging Face has the functionality for both training and running tokenizers in inference mode. It is built in Rust, so it is extremely fast, and has reasonably approachable documentation.</li>
+</ul>
+<p>This prompted me to do a deep dive into tokenizers and how one could build one would go about building one from scratch. Inspired by the <a href="https://www.fast.ai/posts/2016-10-08-teaching-philosophy.html#good-education-starts-with-the-whole-game" target="_blank">top-down approach</a> from Jeremy Howard, whose courses I used to enjoy a lot, this blog post will focus on the very basics of tokenizers and on how to train a Llama 3-like tokenizer on your own data with as little code as possible. We will also explore what influence different proportions of English/non-English/code data have on the final vocabulary learnt by the tokenizer.</p>
+<p>In the second part, we will dig into the internals of how tokenizers work and will replicate the Llama tokenizer from scratch using the Hugging Face <code>tokenizers</code> library, so stay tuned! But now, let’s jump right in!</p>
+<section id="warm-up-basics-of-tokenization" class="level1">
+<h1>Warm-up: basics of tokenization</h1>
+<p>I am mostly assuming that if you found and opened this article, you have at least a basic understanding of what tokenization is and what its purpose is, but let’s do a quick revision just to make sure we are all on the same page.</p>
+<p><strong>Why do we need tokenization in the first place?</strong></p>
 <ol type="1">
-<li><strong>Prompting</strong> - we found that a specialized prompt had to be devised for each model for the method to work (we mostly focused on the 7B <a href="https://lmsys.org/blog/2023-03-30-vicuna/" target="_blank">Vicuna</a> models).</li>
-<li><strong>Maximum number of new tokens</strong> - we found that setting the number of new tokens to two was enough in our case since answers to our binary questions were short. Additionally, we applied output post-processing to strip any undesirable tokens (see the code below).</li>
-<li><strong>Encouraging the models to only output in the desired format</strong> - we want the models to only respond with “Yes”/“No”, but even with specialized prompts the models would still sometimes generate different responses. To tackle this, we tweaked the reward to be -1 if the model does not respond in the desired format, and we would give the usual score from the reward model if the output was what the model was asked for. This encouraged the model to converge to only responding with the required format over time.</li>
+<li>Majority of machine learning models operate on numbers and (large) language models are no exception.</li>
+<li>Whether it is natural language, code, or something else, we want to be able to input strings into the language models.</li>
+<li>This is where tokenization comes in, it is a <strong>process of converting strings of text into numbers</strong> that can then be fed into language models.</li>
 </ol>
-<p>To illustrate these concepts, the finel RL training loop looked roughly like the following:</p>
-<div id="cell-6" class="cell" data-vscode="{&quot;languageId&quot;:&quot;plaintext&quot;}">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> torch</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> string</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a></span>
-<span id="cb1-5"><a href="#cb1-5"></a>CHARACTERS_TO_FILTER <span class="op">=</span> string.punctuation <span class="op">+</span> <span class="st">" </span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">def</span> is_answer_yes_no(answer):</span>
-<span id="cb1-9"><a href="#cb1-9"></a>    <span class="cf">return</span> answer <span class="kw">in</span> [<span class="st">"Yes"</span>, <span class="st">"No"</span>]</span>
-<span id="cb1-10"><a href="#cb1-10"></a></span>
-<span id="cb1-11"><a href="#cb1-11"></a></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="kw">def</span> postprocess_response(response):</span>
-<span id="cb1-13"><a href="#cb1-13"></a>    <span class="cf">while</span> response <span class="kw">and</span> response[<span class="op">-</span><span class="dv">1</span>] <span class="kw">in</span> CHARACTERS_TO_FILTER:</span>
-<span id="cb1-14"><a href="#cb1-14"></a>        response <span class="op">=</span> response[:<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="cb1-15"><a href="#cb1-15"></a>    <span class="cf">return</span> response</span>
-<span id="cb1-16"><a href="#cb1-16"></a></span>
-<span id="cb1-17"><a href="#cb1-17"></a></span>
-<span id="cb1-18"><a href="#cb1-18"></a><span class="kw">def</span> train(</span>
-<span id="cb1-19"><a href="#cb1-19"></a>    ppo_trainer,</span>
-<span id="cb1-20"><a href="#cb1-20"></a>    tokenizer,</span>
-<span id="cb1-21"><a href="#cb1-21"></a>    generation_kwargs,</span>
-<span id="cb1-22"><a href="#cb1-22"></a>    get_rewards,</span>
-<span id="cb1-23"><a href="#cb1-23"></a>    script_args, config,</span>
-<span id="cb1-24"><a href="#cb1-24"></a>):</span>
-<span id="cb1-25"><a href="#cb1-25"></a>    n_epochs <span class="op">=</span> config.steps <span class="op">//</span> <span class="bu">len</span>(ppo_trainer.dataloader)</span>
-<span id="cb1-26"><a href="#cb1-26"></a></span>
-<span id="cb1-27"><a href="#cb1-27"></a>    <span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n_epochs <span class="op">+</span> <span class="dv">1</span>):</span>
-<span id="cb1-28"><a href="#cb1-28"></a>        loop <span class="op">=</span> tqdm(</span>
-<span id="cb1-29"><a href="#cb1-29"></a>            <span class="bu">enumerate</span>(ppo_trainer.dataloader, <span class="dv">1</span>),</span>
-<span id="cb1-30"><a href="#cb1-30"></a>            total<span class="op">=</span><span class="bu">len</span>(ppo_trainer.dataloader), leave<span class="op">=</span><span class="va">False</span></span>
-<span id="cb1-31"><a href="#cb1-31"></a>        )</span>
-<span id="cb1-32"><a href="#cb1-32"></a>        <span class="cf">for</span> batch_idx, batch <span class="kw">in</span> loop:</span>
-<span id="cb1-33"><a href="#cb1-33"></a>            <span class="co"># Get the input tensors</span></span>
-<span id="cb1-34"><a href="#cb1-34"></a>            question_tensors <span class="op">=</span> batch[<span class="st">"input_ids"</span>]</span>
-<span id="cb1-35"><a href="#cb1-35"></a></span>
-<span id="cb1-36"><a href="#cb1-36"></a>            <span class="co"># Get the generations</span></span>
-<span id="cb1-37"><a href="#cb1-37"></a>            response_tensors <span class="op">=</span> ppo_trainer.generate(</span>
-<span id="cb1-38"><a href="#cb1-38"></a>                question_tensors,</span>
-<span id="cb1-39"><a href="#cb1-39"></a>                return_prompt<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-40"><a href="#cb1-40"></a>                batch_size<span class="op">=</span>script_args.generator_batch_size,</span>
-<span id="cb1-41"><a href="#cb1-41"></a>                <span class="op">**</span>generation_kwargs,</span>
-<span id="cb1-42"><a href="#cb1-42"></a>            )</span>
-<span id="cb1-43"><a href="#cb1-43"></a>            responses <span class="op">=</span> tokenizer.batch_decode(</span>
-<span id="cb1-44"><a href="#cb1-44"></a>                response_tensors, skip_special_tokens<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb1-45"><a href="#cb1-45"></a>                spaces_between_special_tokens<span class="op">=</span><span class="va">False</span></span>
-<span id="cb1-46"><a href="#cb1-46"></a>            )</span>
-<span id="cb1-47"><a href="#cb1-47"></a></span>
-<span id="cb1-48"><a href="#cb1-48"></a>            <span class="co"># Postprocess the responses</span></span>
-<span id="cb1-49"><a href="#cb1-49"></a>            <span class="cf">if</span> script_args.postprocess_responses:</span>
-<span id="cb1-50"><a href="#cb1-50"></a>                responses <span class="op">=</span> [postprocess_response(x) <span class="cf">for</span> x <span class="kw">in</span> responses]</span>
-<span id="cb1-51"><a href="#cb1-51"></a>            batch[<span class="st">"response"</span>] <span class="op">=</span> responses</span>
-<span id="cb1-52"><a href="#cb1-52"></a></span>
-<span id="cb1-53"><a href="#cb1-53"></a>            <span class="co"># Compute the rewards (scores)</span></span>
-<span id="cb1-54"><a href="#cb1-54"></a>            texts <span class="op">=</span> [q <span class="op">+</span> <span class="st">" "</span> <span class="op">+</span> r <span class="cf">for</span> q, r <span class="kw">in</span> <span class="bu">zip</span>(batch[<span class="st">"query"</span>], batch[<span class="st">"response"</span>])]</span>
-<span id="cb1-55"><a href="#cb1-55"></a>            rewards <span class="op">=</span> get_rewards(texts)</span>
-<span id="cb1-56"><a href="#cb1-56"></a></span>
-<span id="cb1-57"><a href="#cb1-57"></a>            <span class="co"># Replace reward for undesired answers to -1</span></span>
-<span id="cb1-58"><a href="#cb1-58"></a>            mask <span class="op">=</span> [<span class="kw">not</span> is_answer_yes_no(x) <span class="cf">for</span> x <span class="kw">in</span> batch[<span class="st">"response"</span>]]</span>
-<span id="cb1-59"><a href="#cb1-59"></a>            mask <span class="op">=</span> torch.tensor(mask, dtype<span class="op">=</span>torch.<span class="bu">bool</span>) <span class="co"># cast to tensor</span></span>
-<span id="cb1-60"><a href="#cb1-60"></a>            rewards[mask] <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
-<span id="cb1-61"><a href="#cb1-61"></a></span>
-<span id="cb1-62"><a href="#cb1-62"></a>            <span class="co"># Make the rewards a list of tensors</span></span>
-<span id="cb1-63"><a href="#cb1-63"></a>            rewards <span class="op">=</span> [x <span class="cf">for</span> x <span class="kw">in</span> rewards]</span>
-<span id="cb1-64"><a href="#cb1-64"></a></span>
-<span id="cb1-65"><a href="#cb1-65"></a>            <span class="co"># Run PPO step</span></span>
-<span id="cb1-66"><a href="#cb1-66"></a>            stats <span class="op">=</span> ppo_trainer.step(question_tensors, response_tensors, rewards)</span>
-<span id="cb1-67"><a href="#cb1-67"></a>            ppo_trainer.log_stats(stats, batch, rewards)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>(This last point is actually the reason why the current state-of-the-art language models are not actually end-to-end systems.)</p>
+<p><strong>How do tokenizers work on a high level?</strong></p>
+<p>First, the long input string is split into smaller chunks called <em>tokens</em>. Then, tokenizers use their <em>vocabulary</em>, which is a mapping from known tokens to integers, to convert the tokens to integer ids. These ids can be fed as input into language models.</p>
+<p><strong>What are some qualities that we want our tokenizers to have?</strong></p>
+<p>We want our tokenizers to be able to process various kinds of inputs. In this article, we will not be able to fully dig into the various design choices made when building tokenizers to achieve this, but here is a (likely non-exhaustive) list of qualities that we want the tokenizers to have:</p>
+<ol type="1">
+<li>They should work on both English and non-English texts, both uppercase and lowercase, both Latin and non-Latin alphabet.</li>
+<li>They should be able to handle various kinds of special characters that we might find in the wild, such as emojis 🤗.</li>
+<li>They should be able to handle code.</li>
+<li>(Optional) They should be able to tokenize unseen words without the need to include a special <code>&lt;unk&gt;</code> token in their vocabulary.</li>
+</ol>
+<p><strong>How does this look in code?</strong></p>
+<p>Before diving into training a tokenizer, let’s illustrate some of the aspects described above in code. We will find that all of the above is very simple to do by using the <code>tokenizers</code> library!</p>
+<div id="cell-4" class="cell" data-execution_count="56">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">%</span>load_ext autoreload</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<p>And the <code>generation_kwargs</code> look like the following:</p>
-<div id="cell-8" class="cell" data-vscode="{&quot;languageId&quot;:&quot;plaintext&quot;}">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>generation_kwargs <span class="op">=</span> {</span>
-<span id="cb2-2"><a href="#cb2-2"></a>    <span class="st">"top_k"</span>: <span class="dv">0</span>,</span>
-<span id="cb2-3"><a href="#cb2-3"></a>    <span class="st">"top_p"</span>: <span class="fl">1.0</span>,</span>
-<span id="cb2-4"><a href="#cb2-4"></a>    <span class="st">"do_sample"</span>: <span class="va">True</span>,</span>
-<span id="cb2-5"><a href="#cb2-5"></a>    <span class="st">"pad_token_id"</span>: tokenizer.pad_token_id,</span>
-<span id="cb2-6"><a href="#cb2-6"></a>    <span class="st">"eos_token_id"</span>: <span class="dv">100_000</span>,</span>
-<span id="cb2-7"><a href="#cb2-7"></a>    <span class="st">"pad_to_multiple_of"</span>: <span class="dv">8</span>,</span>
-<span id="cb2-8"><a href="#cb2-8"></a>    <span class="st">"max_new_tokens"</span>: <span class="dv">2</span>,</span>
-<span id="cb2-9"><a href="#cb2-9"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-5" class="cell" data-execution_count="73">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> pprint <span class="im">import</span> pprint</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="im">from</span> transformers <span class="im">import</span> AutoTokenizer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-6" class="cell" data-execution_count="58">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>model_id <span class="op">=</span> <span class="st">"meta-llama/Meta-Llama-3-8B-Instruct"</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(model_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that we have a tokenizer defined, let’s see how we can tokenizer a piece of text:</p>
+<div id="cell-8" class="cell" data-execution_count="59">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>text <span class="op">=</span> <span class="st">"Some text to be tokenized"</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>tokens <span class="op">=</span> tokenizer.tokenize(text)</span>
+<span id="cb4-3"><a href="#cb4-3"></a>tokens</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="59">
+<pre><code>['Some', 'Ġtext', 'Ġto', 'Ġbe', 'Ġtoken', 'ized']</code></pre>
+</div>
+</div>
+<p>We can see that the string was split into smaller tokens. The <code>Ġ</code> is how the Llama 3 tokenizers represent spaces in their vocabulary, so you can actually think of the tokens as <code>text</code>, <code>to</code>, etc.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This is a consequence of the <a href="https://en.wikipedia.org/wiki/Byte_pair_encoding" target="_blank"><em>byte pair encoding</em> (BPE)</a> algorithm that is used behind the scenes. Interestingly, I was not able to find why the <code>Ġ</code> token was chosen in particular and whether it is a historical artifact or a fundamental requirement to do such a pre-processing step nowadays. See <a href="#sec-next-steps" class="quarto-xref">Section&nbsp;3</a> for more.</p>
+</div>
+</div>
+<p>Next, let’s turn these tokens into ids:</p>
+<div id="cell-10" class="cell" data-execution_count="60">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>token_ids <span class="op">=</span> tokenizer.convert_tokens_to_ids(tokens)</span>
+<span id="cb6-2"><a href="#cb6-2"></a>token_ids</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="60">
+<pre><code>[8538, 1495, 311, 387, 4037, 1534]</code></pre>
+</div>
+</div>
+<p>As simple as that! We could now feed these <code>token_ids</code> into a language model, though it is important to note that in practice we would perform everything in one step:</p>
+<div id="cell-12" class="cell" data-execution_count="74">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>inputs <span class="op">=</span> tokenizer(text, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>pprint(inputs, sort_dicts<span class="op">=</span><span class="va">False</span>)  <span class="co"># pprint stands for pretty print</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'input_ids': tensor([[8538, 1495,  311,  387, 4037, 1534]]),
+ 'attention_mask': tensor([[1, 1, 1, 1, 1, 1]])}</code></pre>
+</div>
+</div>
+<p>We would then call a Hugging Face-compatible model like so:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Define the model before this row</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>outputs <span class="op">=</span> model(<span class="op">**</span>inputs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the sake of completeness, it is worth noting that one would only tokenize a single string on its own during inference. During training, one would either tokenize the whole dataset in batches before training or tokenize a batch of data on the fly. The former is usually more reliable and allows to restart training more easily if a crash occurs (see Thomas Wolf’s <a href="https://www.youtube.com/watch?v=2-SPH9hIKT8" target="_blank">video</a>).</p>
+</div>
 </div>
 </section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>I hope you found this blog as interesting as it was for me to work on this project. I feel like I have learnt a lot during it, for example, I joined multiple ML communities and got involved in discussions with very smart and ambitious people. Perhaps my proudest achievement is making my first open-source contribution to the <code>elk</code> library (<a href="https://github.com/EleutherAI/elk" target="_blank">link</a>), as well as reported multiple bugs to the <em>big-refactor</em> branch of <em>Language Model Evaluation Harness</em> (<a href="https://github.com/EleutherAI/lm-evaluation-harness/tree/big-refactor" target="_blank">link</a>).</p>
-<p>I am excited to dive deeper into LLMs-related topics in the future. Feel free to reach out if you have any opportunities on offer!</p>
+<section id="training-a-llama-3-tokenizer" class="level1">
+<h1>Training a Llama 3 tokenizer</h1>
+<div id="cell-15" class="cell" data-execution_count="110">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="im">from</span> datasets <span class="im">import</span> load_dataset</span>
+<span id="cb11-2"><a href="#cb11-2"></a></span>
+<span id="cb11-3"><a href="#cb11-3"></a>dataset <span class="op">=</span> load_dataset(<span class="st">"wikitext"</span>, <span class="st">"wikitext-103-raw-v1"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="co"># dataset = load_dataset("code_search_net", "python")</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="co"># dataset = load_dataset("PleIAs/Middle-English-PD")</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a><span class="bu">len</span>(dataset[<span class="st">"train"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-16" class="cell" data-execution_count="111">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># Define an iterator over the training split of the dataset</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="kw">def</span> batch_iterator(batch_size<span class="op">=</span><span class="dv">1000</span>):</span>
+<span id="cb12-3"><a href="#cb12-3"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(dataset), batch_size):</span>
+<span id="cb12-4"><a href="#cb12-4"></a>        <span class="cf">yield</span> dataset[<span class="st">"train"</span>][i : i <span class="op">+</span> batch_size][<span class="st">"text"</span>]</span>
+<span id="cb12-5"><a href="#cb12-5"></a>        <span class="co"># yield dataset["train"][i : i + batch_size]["whole_func_string"]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-17" class="cell" data-execution_count="112">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a><span class="op">%%</span>time</span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="co"># new_tokenizer = tokenizer.train_new_from_iterator(batch_iterator(), len(tokenizer.get_vocab()))</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a>new_tokenizer.save_pretrained(<span class="st">"new-llama-tokenizer-v1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+
+CPU times: user 587 ms, sys: 713 ms, total: 1.3 s
+Wall time: 519 ms</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="112">
+<pre><code>('new-llama-tokenizer-v1/tokenizer_config.json',
+ 'new-llama-tokenizer-v1/special_tokens_map.json',
+ 'new-llama-tokenizer-v1/tokenizer.json')</code></pre>
+</div>
+</div>
+</section>
+<section id="sec-next-steps" class="level1">
+<h1>Next steps (for the curious reader)</h1>
+<p>I leave here some questions arose while writing this article that I could not find simple answers to. I hope to come back to them at some point in the future, but if you end up going down the rabbit holes to find the answers, I would be curious to know the answers! Here is the list:</p>
+<ol type="1">
+<li>Why are spaces replaced with the <code>Ġ</code> special character in BPE-based tokenizer? The same Thomas Wolf <a href="https://discuss.huggingface.co/t/bpe-tokenizers-and-spaces-before-words/475" target="_blank">argues</a> that this was done do avoid digesting spaces which are used in the standard BPE algorithm. However, it is unclear whether we could get by without doing this nowadays. Answering this question would probably require diving deeper into how the BPE algorithm works. Sounds like a fun direction to explore in the future!</li>
+<li>The <a href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct/raw/main/tokenizer.json" target="_blank"><code>Llama-3-8B-Instruct</code></a> and <a href="https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct/raw/main/tokenizer.json" target="_blank"><code>Llama-3-70B-Instruct</code></a> tokenizers are almost identical apart from one setting: the former has the <code>model.ignore_merges</code> key specified as <code>true</code>, while the latter does not have such a key specified. The question is simple, what difference does this make? A good starting point to answer this question could be <a href="https://github.com/huggingface/tokenizers/blob/71c2a8d01a56cd7bd28148c309e210c47dac78e7/tokenizers/src/models/bpe/model.rs#L466" target="_blank">this</a> piece of code.</li>
+<li>Why does it not fill all tokens?</li>
+<li>Why do training speeds differ so much?</li>
+<li>How do download a subset of the Common Corpus?</li>
+</ol>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+</section>
+<section id="sources" class="level1">
+<h1>Sources</h1>
+<ol type="1">
+<li>Let’s build the GPT Tokenizer (<a href="https://www.youtube.com/watch?v=zduSFxRajkE" target="_blank">video</a>) by Andrej Karpathy.</li>
+<li>A little guide to building Large Language Models in 2024 (<a href="https://www.youtube.com/watch?v=2-SPH9hIKT8" target="_blank">video</a>) by Thomas Wolf.</li>
+<li>Training a new tokenizer from an old one (<a href="https://huggingface.co/learn/nlp-course/en/chapter6/2" target="_blank">article</a>) on the Hugging Face course.</li>
+</ol>
 
 
 </section>
