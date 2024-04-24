@@ -126,15 +126,15 @@
     "text": "Cubic spline interpolation exercise\n\n\n\n\n\n\nscientific computing\n\n\nnumerical methods\n\n\n\nLarge language models (predictably) learn to represent the semantic meaning of sentences.\n\n\n\n\n\nApr 13, 2024\n\n\nAugustas Macijauskas\n\n\n\n\n\n\n\n\n\n\n\n\nVisualising contextualised large language model embeddings with context\n\n\n\n\n\n\ndeep learning\n\n\nLLMs\n\n\nvisualisation\n\n\n\nLarge language models (predictably) learn to represent the semantic meaning of sentences.\n\n\n\n\n\nApr 10, 2024\n\n\nAugustas Macijauskas\n\n\n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "posts/tokenizers-why-weird-space/dalle-3-why-weird-space.html",
-    "href": "posts/tokenizers-why-weird-space/dalle-3-why-weird-space.html",
+    "objectID": "posts/tokenizers-why-weird-space/why-weird-space.html",
+    "href": "posts/tokenizers-why-weird-space/why-weird-space.html",
     "title": "Why is the Ġ Unicode character all over the place in LLM tokenizers?",
     "section": "",
     "text": "TLDR: WHY do tokenizers represent spaces \" \" with the Unicode character Ġ?\nHello, World!\nWhile working on a different blog post where I plan to dive deeper into training LLM tokenizers using the Hugging Face tokenizers library, I could not help but notice the Ġ Unicode character being omnipresent in the vocabularies of seemingly all tokenizers based on the byte pair encoding (BPE) algorithm. I also noticed that it has something to do with replacing the space \" \" character, for example, a Llama 3 8B Instruct tokenizer would produce the following outputs:\nI have tried looking for an answer online, but found out that people were as confused as I was, below are a few issues on GitHub only:\nThere are many other similar questions, but all of the answers seem to simply suggest that it is a feature of the BPE algorithm, but neither of the discussions answered why should such a feature exists in the first place.\nThis blog post is my attempt at finding a more satisfying answer which (spoiler alert!) seems to be that replacing spaces with the character Ġ could well be a historical artifact and not at all a strict design requirement. Read on to see what I came up with!"
   },
   {
-    "objectID": "posts/tokenizers-why-weird-space/dalle-3-why-weird-space.html#test-on-a-more-diverse-dataset",
-    "href": "posts/tokenizers-why-weird-space/dalle-3-why-weird-space.html#test-on-a-more-diverse-dataset",
+    "objectID": "posts/tokenizers-why-weird-space/why-weird-space.html#test-on-a-more-diverse-dataset",
+    "href": "posts/tokenizers-why-weird-space/why-weird-space.html#test-on-a-more-diverse-dataset",
     "title": "Why is the Ġ Unicode character all over the place in LLM tokenizers?",
     "section": "Test on a more diverse dataset",
     "text": "Test on a more diverse dataset\n\nfrom datasets import load_dataset\n\nsplit = \"train\"\nenglish_dataset = load_dataset(\"wikitext\", \"wikitext-103-raw-v1\", split=split)\nkorean_dataset = load_dataset(\"lcw99/wikipedia-korean-20221001\", split=split)\ncode_dataset = load_dataset(\"code_search_net\", \"python\", split=split, trust_remote_code=True)\ncode_dataset = code_dataset.rename_column(\"whole_func_string\", \"text\")  # Rename whole_func_string to text\n\nn = 10000\nfinal_dataset = (\n    english_dataset.shuffle(42).select(range(n))[\"text\"] +\n    korean_dataset.shuffle(42).select(range(n))[\"text\"] +\n    code_dataset.shuffle(42).select(range(n))[\"text\"]\n)\nprint(f\"{len(final_dataset)=}\")\n\nlen(final_dataset)=30000\n\n\nLet’s make sure that the Korean data is in there somewhere:\n\nfinal_dataset[10001][:50]\n\n'김혜리(1969년 12월 23일 ~ )는 대한민국의 배우이며, 1988년 미스코리아 선 출'\n\n\nNow run the tests!\n\nfor idx, test_string in tqdm(enumerate(final_dataset), total=len(final_dataset)):\n    expected_output = tokenizer_original.encode(test_string)\n    output = tokenizer_custom.encode(test_string)\n\n    if output != expected_output:\n        print(f\"{idx=}\")"
