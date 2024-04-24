@@ -9,6 +9,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/tokenizers-why-weird-space/dalle-3-why-weird-space.html",
       "/posts/tokenizer-problems/tokenizer-problems.html",
       "/posts/embedding-visualisation/embedding-visualisation.html",
       "/posts/thesis/thesis.html",
