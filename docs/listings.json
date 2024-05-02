@@ -9,6 +9,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/tokenizers-deep-dive-part-1/tokenizers-deep-dive-1.html",
+      "/posts/tokenizers-deep-dive-part-2/tokenizers-deep-dive-2.html",
       "/posts/tokenizers-why-weird-space/why-weird-space.html",
       "/posts/tokenizer-problems/tokenizer-problems.html",
       "/posts/embedding-visualisation/embedding-visualisation.html",
