@@ -1,17 +1,8 @@
 [
   {
-    "listing": "/notes.html",
-    "items": [
-      "/notes/cubic-spline-interpolation-exercise/cubic-spline-interpolation-exercise.html",
-      "/notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html"
-    ]
-  },
-  {
     "listing": "/index.html",
     "items": [
       "/posts/tokenizers-deep-dive-part-1/tokenizers-deep-dive-1.html",
-      "/posts/tokenizers-deep-dive-part-2/tokenizers-deep-dive-2.html",
-      "/posts/tokenizers-why-weird-space/why-weird-space.html",
       "/posts/tokenizer-problems/tokenizer-problems.html",
       "/posts/embedding-visualisation/embedding-visualisation.html",
       "/posts/thesis/thesis.html",
@@ -20,6 +11,14 @@
       "/posts/optimization-algorithms/optimisation-algorithms.html",
       "/posts/captcha-fastai/captcha-fastai.html",
       "/posts/elegant-naive-bayes/elegant-naive-bayes.html"
+    ]
+  },
+  {
+    "listing": "/notes.html",
+    "items": [
+      "/notes/tokenizers-why-weird-space/why-weird-space.html",
+      "/notes/cubic-spline-interpolation-exercise/cubic-spline-interpolation-exercise.html",
+      "/notes/contextualised-embedding-visualisation/contextualised-embedding-visualisation.html"
     ]
   }
 ]

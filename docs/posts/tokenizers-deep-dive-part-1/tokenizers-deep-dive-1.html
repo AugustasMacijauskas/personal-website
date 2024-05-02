@@ -149,11 +149,11 @@ cookieconsent.run({
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="Augustas Macijauskas - Tokenizers deep dive - Part 1">
 <meta property="og:description" content="Deep dive into understanding and building tokenizers with an end goal of replicating the LLaMA 3 tokenizer.">
-<meta property="og:image" content="dalle-3-tokenization-process.webp">
+<meta property="og:image" content="dalle-3-tokenization-process-1.webp">
 <meta property="og:site_name" content="Augustas Macijauskas's blog">
 <meta name="twitter:title" content="Augustas Macijauskas - Tokenizers deep dive - Part 1">
 <meta name="twitter:description" content="Deep dive into understanding and building tokenizers with an end goal of replicating the LLaMA 3 tokenizer.">
-<meta name="twitter:image" content="dalle-3-tokenization-process.webp">
+<meta name="twitter:image" content="dalle-3-tokenization-process-1.webp">
 <meta name="twitter:creator" content="@augustasmac">
 <meta name="twitter:card" content="summary_large_image">
 </head>
@@ -255,7 +255,7 @@ cookieconsent.run({
   <li><a href="#warm-up-basics-of-tokenization" id="toc-warm-up-basics-of-tokenization" class="nav-link active" data-scroll-target="#warm-up-basics-of-tokenization">Warm-up: basics of tokenization</a></li>
   <li><a href="#training-a-llama-3-tokenizer" id="toc-training-a-llama-3-tokenizer" class="nav-link" data-scroll-target="#training-a-llama-3-tokenizer">Training a Llama 3 tokenizer</a>
   <ul class="collapse">
-  <li><a href="#add-some-korean-and-code-data" id="toc-add-some-korean-and-code-data" class="nav-link" data-scroll-target="#add-some-korean-and-code-data">Add some Korean and code data</a></li>
+  <li><a href="#assembling-a-llama-3-tokenizer-ourselves" id="toc-assembling-a-llama-3-tokenizer-ourselves" class="nav-link" data-scroll-target="#assembling-a-llama-3-tokenizer-ourselves">Assembling a Llama 3 tokenizer ourselves</a></li>
   </ul></li>
   <li><a href="#final-notes" id="toc-final-notes" class="nav-link" data-scroll-target="#final-notes">Final notes</a></li>
   <li><a href="#sec-next-steps" id="toc-sec-next-steps" class="nav-link" data-scroll-target="#sec-next-steps">Next steps (for the curious reader)</a></li>
@@ -316,33 +316,41 @@ Note
 </ol>
 <p><strong>How does this look in code?</strong></p>
 <p>Before diving into training a tokenizer, let’s illustrate some of the aspects described above in code. We will find that all of the above is very simple to do by using the <code>tokenizers</code> library!</p>
-<div id="cell-4" class="cell" data-execution_count="17">
+<div id="cell-4" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">%</span>load_ext autoreload</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-5" class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> pprint <span class="im">import</span> pprint</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="im">from</span> transformers <span class="im">import</span> AutoTokenizer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-5" class="cell" data-execution_count="84">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">import</span> json</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="im">from</span> pprint <span class="im">import</span> pprint</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="im">from</span> tokenizers <span class="im">import</span> (</span>
+<span id="cb2-4"><a href="#cb2-4"></a>    Tokenizer, Regex, models, pre_tokenizers, processors, decoders</span>
+<span id="cb2-5"><a href="#cb2-5"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="im">from</span> transformers <span class="im">import</span> AutoTokenizer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-6" class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">from</span> datasets <span class="im">import</span> load_dataset</span>
-<span id="cb3-2"><a href="#cb3-2"></a></span>
-<span id="cb3-3"><a href="#cb3-3"></a>dataset <span class="op">=</span> load_dataset(<span class="st">"wikitext"</span>, <span class="st">"wikitext-103-raw-v1"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="bu">len</span>(dataset[<span class="st">"train"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-6" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># This code will only be used later when training a tokenizer</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="im">from</span> datasets <span class="im">import</span> load_dataset</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>dataset <span class="op">=</span> load_dataset(<span class="st">"wikitext"</span>, <span class="st">"wikitext-103-raw-v1"</span>, split<span class="op">=</span><span class="st">"train"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="bu">len</span>(dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<div id="cell-7" class="cell" data-execution_count="20">
+<div id="cell-7" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>model_id <span class="op">=</span> <span class="st">"meta-llama/Meta-Llama-3-8B-Instruct"</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(model_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now that we have a tokenizer defined, let’s see how we can tokenizer a piece of text:</p>
-<div id="cell-9" class="cell" data-execution_count="21">
+<div id="cell-9" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>text <span class="op">=</span> <span class="st">"Some text to be tokenized"</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>tokens <span class="op">=</span> tokenizer.tokenize(text)</span>
 <span id="cb5-3"><a href="#cb5-3"></a>tokens</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="21">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>['Some', 'Ġtext', 'Ġto', 'Ġbe', 'Ġtoken', 'ized']</code></pre>
 </div>
 </div>
@@ -361,24 +369,24 @@ Note
 </div>
 </div>
 <p>Next, let’s turn these tokens into ids:</p>
-<div id="cell-11" class="cell" data-execution_count="6">
+<div id="cell-11" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>token_ids <span class="op">=</span> tokenizer.convert_tokens_to_ids(tokens)</span>
 <span id="cb7-2"><a href="#cb7-2"></a>token_ids</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>[8538, 1495, 311, 387, 4037, 1534]</code></pre>
 </div>
 </div>
 <p>As simple as that! We could now feed these <code>token_ids</code> into a language model, though it is important to note that in practice we would perform everything in one step:</p>
-<div id="cell-13" class="cell" data-execution_count="7">
+<div id="cell-13" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>inputs <span class="op">=</span> tokenizer(text, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2"></a>pprint(inputs, sort_dicts<span class="op">=</span><span class="va">False</span>)  <span class="co"># pprint stands for pretty print</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-2"><a href="#cb9-2"></a>pprint(inputs, sort_dicts<span class="op">=</span><span class="va">False</span>)  <span class="co"># pprint stands for "pretty print"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'input_ids': tensor([[8538, 1495,  311,  387, 4037, 1534]]),
- 'attention_mask': tensor([[1, 1, 1, 1, 1, 1]])}</code></pre>
+<pre><code>{'input_ids': tensor([[128000,   8538,   1495,    311,    387,   4037,   1534]]),
+ 'attention_mask': tensor([[1, 1, 1, 1, 1, 1, 1]])}</code></pre>
 </div>
 </div>
 <p>We would then call a Hugging Face-compatible model like so:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Define the model before this row</span></span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Define the model before this line</span></span>
 <span id="cb11-2"><a href="#cb11-2"></a>outputs <span class="op">=</span> model(<span class="op">**</span>inputs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -396,121 +404,112 @@ Note
 </section>
 <section id="training-a-llama-3-tokenizer" class="level1">
 <h1>Training a Llama 3 tokenizer</h1>
-<div id="cell-16" class="cell" data-execution_count="8">
+<p>This section discusses the code needed to train a new tokenizer from an old one using the <code>tokenizers</code> library. For now, we will assume that we already have a dataset to train on, and we will simply reuse the architecture of <code>Llama 3</code> tokenizer, so that we do not have to worry about the different tokenizer design choices.</p>
+<p>First, we define a function that takes a Hugging Face datasets and return a batched iterator over it:</p>
+<div id="cell-17" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># Define an iterator over the training split of the dataset</span></span>
 <span id="cb12-2"><a href="#cb12-2"></a><span class="kw">def</span> batch_iterator(dataset, batch_size<span class="op">=</span><span class="dv">1000</span>, verbose<span class="op">=</span><span class="va">False</span>):</span>
 <span id="cb12-3"><a href="#cb12-3"></a>    <span class="cf">if</span> verbose:</span>
 <span id="cb12-4"><a href="#cb12-4"></a>        <span class="bu">print</span>(<span class="ss">f"Dataset size: </span><span class="sc">{</span><span class="bu">len</span>(dataset)<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb12-5"><a href="#cb12-5"></a></span>
 <span id="cb12-6"><a href="#cb12-6"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(dataset), batch_size):</span>
-<span id="cb12-7"><a href="#cb12-7"></a>        <span class="cf">yield</span> dataset[i : i <span class="op">+</span> batch_size][<span class="st">"text"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-7"><a href="#cb12-7"></a>        <span class="cf">yield</span> dataset[i:i<span class="op">+</span>batch_size][<span class="st">"text"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-17" class="cell" data-execution_count="9">
+<p>With that, we can go ahead and use it to train a new tokenizer:</p>
+<div id="cell-19" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>new_tokenizer <span class="op">=</span> tokenizer.train_new_from_iterator(</span>
-<span id="cb13-2"><a href="#cb13-2"></a>    batch_iterator(dataset[<span class="st">"train"</span>], verbose<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb13-2"><a href="#cb13-2"></a>    batch_iterator(dataset, verbose<span class="op">=</span><span class="va">False</span>),</span>
 <span id="cb13-3"><a href="#cb13-3"></a>    <span class="bu">len</span>(tokenizer.get_vocab()),</span>
-<span id="cb13-4"><a href="#cb13-4"></a>)</span>
-<span id="cb13-5"><a href="#cb13-5"></a></span>
-<span id="cb13-6"><a href="#cb13-6"></a><span class="bu">print</span>(<span class="ss">f"Vocab length=</span><span class="sc">{</span><span class="bu">len</span>(new_tokenizer.get_vocab())<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb13-7"><a href="#cb13-7"></a>new_tokenizer.save_pretrained(<span class="st">"new-llama-tokenizer-english-only"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-4"><a href="#cb13-4"></a>    initial_alphabet<span class="op">=</span>pre_tokenizers.ByteLevel.alphabet(),</span>
+<span id="cb13-5"><a href="#cb13-5"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-20" class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>new_tokenizer.add_tokens(<span class="bu">list</span>(tokenizer.get_added_vocab().keys()))</span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="bu">print</span>(<span class="ss">f"Vocab length=</span><span class="sc">{</span><span class="bu">len</span>(new_tokenizer.get_vocab())<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4"></a></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="co"># Save the new tokenizer</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a>new_tokenizer.save_pretrained(<span class="st">"new-llama-tokenizer-english-only"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Dataset size: 1801350
-
-
-
-Vocab length=128256</code></pre>
+<pre><code>Vocab length=128256</code></pre>
 </div>
 </div>
-<p>Let’s now create some test data which we will use as a proxy for how efficient tokenizers trained with different data are in tokenizing various kinds of texts. We will have an English phrase, the same phrase in Korean, and a piece of code in our test set:</p>
-<div id="cell-19" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a>code_string <span class="op">=</span> <span class="st">"""for i in range(1, 101):</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="st">    if i % 3 == 0 and i % 5 == 0:</span></span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="st">        print("FizzBuzz")</span></span>
-<span id="cb15-4"><a href="#cb15-4"></a><span class="st">    elif i % 3 == 0:</span></span>
-<span id="cb15-5"><a href="#cb15-5"></a><span class="st">        print("Fizz")</span></span>
-<span id="cb15-6"><a href="#cb15-6"></a><span class="st">    elif i % 5 == 0:</span></span>
-<span id="cb15-7"><a href="#cb15-7"></a><span class="st">        print("Buzz")</span></span>
-<span id="cb15-8"><a href="#cb15-8"></a><span class="st">    else:</span></span>
-<span id="cb15-9"><a href="#cb15-9"></a><span class="st">        print(i)"""</span></span>
-<span id="cb15-10"><a href="#cb15-10"></a></span>
-<span id="cb15-11"><a href="#cb15-11"></a>test_strings <span class="op">=</span> {</span>
-<span id="cb15-12"><a href="#cb15-12"></a>    <span class="st">"english"</span>: <span class="st">"Nice to meet you, I'm ChatGPT, a large-scale language model developed by OpenAI. If you have any questions, feel free to ask."</span>,</span>
-<span id="cb15-13"><a href="#cb15-13"></a>    <span class="st">"korean"</span>: <span class="st">"만나서 반가워요. 저는 OpenAI에서 개발한 대규모 언어 모델인 ChatGPT입니다. 궁금한 것이 있으시면 무엇이든 물어보세요."</span>,</span>
-<span id="cb15-14"><a href="#cb15-14"></a>    <span class="st">"code"</span>: code_string,</span>
-<span id="cb15-15"><a href="#cb15-15"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This takes some time (about 1 minute on my machine), but the result is a working tokenizer, as easy as that!</p>
+<section id="assembling-a-llama-3-tokenizer-ourselves" class="level2">
+<h2 class="anchored" data-anchor-id="assembling-a-llama-3-tokenizer-ourselves">Assembling a Llama 3 tokenizer ourselves</h2>
+<p>Let’s now dive a bit deeper and see how we could construct the tokenizer ourselves. This is where the different design decisions come into play.</p>
+<p>Essentially, there are up to five components (most of them being optional) that have to be specified to have a working tokenizer. We will cover them briefly here, but I encourage reading <a href="https://huggingface.co/docs/tokenizers/en/components" target="_blank">this</a> great piece of documentation to learn more about the various components available in the <code>tokenizers</code> library that can be used to assemble a tokenizer.</p>
+<p>The 5 components are:</p>
+<ol type="1">
+<li><strong>Normalizer</strong> (optional): pre-process the input string for a given use case, e.g.&nbsp;strip accents (<code>é -&gt; e</code>) or make the strings lowercase.</li>
+<li><strong>Pre-tokenizer</strong> (optional): performs some initial splitting with the main intent being to prevent the existence of tokens that are too long, e.g.&nbsp;ones that connect multiple common words. We could avoid this by having a pre-tokenizer that splits across spaces.</li>
+<li><strong>Model</strong>: an algorithm that performs the tokenization (i.e.&nbsp;takes strings, splits them an converts into tokens).</li>
+<li><strong>Post-processor</strong> (optional): used for post-processing the tokenized string, e.g.&nbsp;we could add special tokens or apply some other template.</li>
+<li><strong>Decoder</strong> (optional): helps using the tokenizer in the opposite directiom. i.e.&nbsp;mapping a list of token ids into readable text. In the simplest case, just the model’s vocabulary is enough to perform the reversal, but certain normalizers or pre-tokenizers add special characters which are removed by the decoder.</li>
+</ol>
+<p>Let’s now build our own <code>Llama 3</code> tokenizer! We can check <a href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct/blob/main/tokenizer.json" target="_blank">this</a> file to learn what the hyperparamaters are and just copy them over. <font color="red">It turns out that Llama 3 uses…</font> These are the design choices that have to be made if we were to build a <em>completely</em> new tokenizer from scratch, <font color="red">but it turns out that, in practice, it is enough to simply use a BPE model and only tune dataset used for training, the vocabulary size and the regular expression used to split strings during pre-tokenization.</font></p>
+<div id="cell-25" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a>tokenizer_custom <span class="op">=</span> Tokenizer(models.BPE(ignore_merges<span class="op">=</span><span class="va">True</span>))</span>
+<span id="cb16-2"><a href="#cb16-2"></a>tokenizer_custom.pre_tokenizer <span class="op">=</span> pre_tokenizers.Sequence([</span>
+<span id="cb16-3"><a href="#cb16-3"></a>    pre_tokenizers.Split(</span>
+<span id="cb16-4"><a href="#cb16-4"></a>        pattern<span class="op">=</span>Regex(</span>
+<span id="cb16-5"><a href="#cb16-5"></a>            <span class="st">"(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^</span><span class="ch">\\</span><span class="st">r</span><span class="ch">\\</span><span class="st">n</span><span class="ch">\\</span><span class="st">p</span><span class="sc">{L}</span><span class="ch">\\</span><span class="st">p</span><span class="sc">{N}</span><span class="st">]?</span><span class="ch">\\</span><span class="st">p</span><span class="sc">{L}</span><span class="st">+|</span><span class="ch">\\</span><span class="st">p</span><span class="sc">{N}</span><span class="st">{1,3}| ?[^</span><span class="ch">\\</span><span class="st">s</span><span class="ch">\\</span><span class="st">p</span><span class="sc">{L}</span><span class="ch">\\</span><span class="st">p</span><span class="sc">{N}</span><span class="st">]+[</span><span class="ch">\\</span><span class="st">r</span><span class="ch">\\</span><span class="st">n]*|</span><span class="ch">\\</span><span class="st">s*[</span><span class="ch">\\</span><span class="st">r</span><span class="ch">\\</span><span class="st">n]+|</span><span class="ch">\\</span><span class="st">s+(?!</span><span class="ch">\\</span><span class="st">S)|</span><span class="ch">\\</span><span class="st">s+"</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a>        ),</span>
+<span id="cb16-7"><a href="#cb16-7"></a>        behavior<span class="op">=</span><span class="st">"isolated"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8"></a>        invert<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb16-9"><a href="#cb16-9"></a>    ),</span>
+<span id="cb16-10"><a href="#cb16-10"></a>    pre_tokenizers.ByteLevel(</span>
+<span id="cb16-11"><a href="#cb16-11"></a>        add_prefix_space<span class="op">=</span><span class="va">False</span>, trim_offsets<span class="op">=</span><span class="va">True</span>, use_regex<span class="op">=</span><span class="va">False</span></span>
+<span id="cb16-12"><a href="#cb16-12"></a>    )</span>
+<span id="cb16-13"><a href="#cb16-13"></a>])</span>
+<span id="cb16-14"><a href="#cb16-14"></a><span class="co"># tokenizer_custom.pre_tokenizer = reference_tokenizer._tokenizer.pre_tokenizer</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a>tokenizer_custom.post_processor <span class="op">=</span> processors.Sequence([</span>
+<span id="cb16-16"><a href="#cb16-16"></a>    processors.ByteLevel(</span>
+<span id="cb16-17"><a href="#cb16-17"></a>        add_prefix_space<span class="op">=</span><span class="va">True</span>, trim_offsets<span class="op">=</span><span class="va">False</span>, use_regex<span class="op">=</span><span class="va">True</span></span>
+<span id="cb16-18"><a href="#cb16-18"></a>    ),</span>
+<span id="cb16-19"><a href="#cb16-19"></a>    processors.TemplateProcessing(</span>
+<span id="cb16-20"><a href="#cb16-20"></a>        single<span class="op">=</span><span class="st">"&lt;|begin_of_text|&gt; $A"</span>,</span>
+<span id="cb16-21"><a href="#cb16-21"></a>        pair<span class="op">=</span><span class="st">"&lt;|begin_of_text|&gt; $A &lt;|begin_of_text|&gt;:1 $B:1"</span>,</span>
+<span id="cb16-22"><a href="#cb16-22"></a>        special_tokens<span class="op">=</span>[(<span class="st">"&lt;|begin_of_text|&gt;"</span>, <span class="dv">128000</span>)],</span>
+<span id="cb16-23"><a href="#cb16-23"></a>    ),</span>
+<span id="cb16-24"><a href="#cb16-24"></a>])</span>
+<span id="cb16-25"><a href="#cb16-25"></a>tokenizer_custom.decoder <span class="op">=</span> decoders.ByteLevel()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-20" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="im">from</span> collections <span class="im">import</span> defaultdict</span>
-<span id="cb16-2"><a href="#cb16-2"></a></span>
-<span id="cb16-3"><a href="#cb16-3"></a></span>
-<span id="cb16-4"><a href="#cb16-4"></a>results <span class="op">=</span> defaultdict(<span class="bu">dict</span>)</span>
-<span id="cb16-5"><a href="#cb16-5"></a></span>
-<span id="cb16-6"><a href="#cb16-6"></a><span class="cf">for</span> language, test_str <span class="kw">in</span> test_strings.items():</span>
-<span id="cb16-7"><a href="#cb16-7"></a>    results[<span class="st">"english_only"</span>][language] <span class="op">=</span> new_tokenizer(test_str, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>].shape[<span class="dv">1</span>]</span>
-<span id="cb16-8"><a href="#cb16-8"></a></span>
-<span id="cb16-9"><a href="#cb16-9"></a></span>
-<span id="cb16-10"><a href="#cb16-10"></a>pprint(<span class="bu">dict</span>(results))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-26" class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="im">from</span> tokenizers <span class="im">import</span> trainers</span>
+<span id="cb17-2"><a href="#cb17-2"></a></span>
+<span id="cb17-3"><a href="#cb17-3"></a>trainer <span class="op">=</span> trainers.BpeTrainer(</span>
+<span id="cb17-4"><a href="#cb17-4"></a>    vocab_size<span class="op">=</span><span class="bu">len</span>(tokenizer.get_vocab()) <span class="op">-</span> <span class="bu">len</span>(pre_tokenizers.ByteLevel.alphabet()),</span>
+<span id="cb17-5"><a href="#cb17-5"></a>    initial_alphabet<span class="op">=</span>pre_tokenizers.ByteLevel.alphabet()</span>
+<span id="cb17-6"><a href="#cb17-6"></a>)</span>
+<span id="cb17-7"><a href="#cb17-7"></a></span>
+<span id="cb17-8"><a href="#cb17-8"></a>tokenizer_custom.train_from_iterator(</span>
+<span id="cb17-9"><a href="#cb17-9"></a>    batch_iterator(dataset, verbose<span class="op">=</span><span class="va">False</span>), trainer<span class="op">=</span>trainer</span>
+<span id="cb17-10"><a href="#cb17-10"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-27" class="cell" data-execution_count="83">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>tokenizer_custom.add_tokens(<span class="bu">list</span>(tokenizer.get_added_vocab().keys()))</span>
+<span id="cb18-2"><a href="#cb18-2"></a></span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="bu">print</span>(<span class="ss">f"Vocab length=</span><span class="sc">{</span><span class="bu">len</span>(tokenizer_custom.get_vocab())<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4"></a></span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="co"># Save the new tokenizer</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a>tokenizer_custom.save(<span class="st">"new-llama-tokenizer-custom-english-only/tokenizer.json"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'english_only': {'code': 129, 'english': 36, 'korean': 136}}</code></pre>
+<pre><code>Vocab length=128256</code></pre>
 </div>
 </div>
-<section id="add-some-korean-and-code-data" class="level2">
-<h2 class="anchored" data-anchor-id="add-some-korean-and-code-data">Add some Korean and code data</h2>
-<div id="cell-22" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a><span class="im">from</span> datasets <span class="im">import</span> concatenate_datasets</span>
-<span id="cb18-2"><a href="#cb18-2"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb18-3"><a href="#cb18-3"></a></span>
-<span id="cb18-4"><a href="#cb18-4"></a>korean_dataset <span class="op">=</span> load_dataset(<span class="st">"lcw99/wikipedia-korean-20221001"</span>)</span>
-<span id="cb18-5"><a href="#cb18-5"></a>code_dataset <span class="op">=</span> load_dataset(<span class="st">"code_search_net"</span>, <span class="st">"python"</span>, trust_remote_code<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb18-6"><a href="#cb18-6"></a>code_dataset <span class="op">=</span> code_dataset.rename_column(<span class="st">"whole_func_string"</span>, <span class="st">"text"</span>)  <span class="co"># Rename whole_func_string to text</span></span>
-<span id="cb18-7"><a href="#cb18-7"></a><span class="bu">print</span>(<span class="bu">len</span>(korean_dataset[<span class="st">"train"</span>]), <span class="bu">len</span>(code_dataset[<span class="st">"train"</span>]))</span>
-<span id="cb18-8"><a href="#cb18-8"></a></span>
-<span id="cb18-9"><a href="#cb18-9"></a><span class="co"># This is only a rough estimate</span></span>
-<span id="cb18-10"><a href="#cb18-10"></a><span class="co"># [0.38661505 0.45621601 0.15716893]</span></span>
-<span id="cb18-11"><a href="#cb18-11"></a><span class="co"># proportions = np.array(</span></span>
-<span id="cb18-12"><a href="#cb18-12"></a>    <span class="co"># [sum(len(x.split()) for x in ds["train"]["text"]) for ds in [dataset, korean_dataset, code_dataset]]</span></span>
-<span id="cb18-13"><a href="#cb18-13"></a><span class="co"># )</span></span>
-<span id="cb18-14"><a href="#cb18-14"></a><span class="co"># print(proportions / proportions.sum())</span></span>
-<span id="cb18-15"><a href="#cb18-15"></a></span>
-<span id="cb18-16"><a href="#cb18-16"></a>final_dataset <span class="op">=</span> concatenate_datasets(</span>
-<span id="cb18-17"><a href="#cb18-17"></a>    [dataset[<span class="st">"train"</span>], korean_dataset[<span class="st">"train"</span>], code_dataset[<span class="st">"train"</span>]]</span>
-<span id="cb18-18"><a href="#cb18-18"></a>)</span>
-<span id="cb18-19"><a href="#cb18-19"></a>final_dataset <span class="op">=</span> final_dataset.shuffle(seed<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb18-20"><a href="#cb18-20"></a><span class="bu">len</span>(final_dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>607256 412178</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="12">
-<pre><code>2820784</code></pre>
+<div id="cell-28" class="cell" data-execution_count="85">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"new-llama-tokenizer-english-only/tokenizer.json"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb20-2"><a href="#cb20-2"></a>    new_tokenizer_config <span class="op">=</span> json.load(f)</span>
+<span id="cb20-3"><a href="#cb20-3"></a></span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"new-llama-tokenizer-custom-english-only/tokenizer.json"</span>, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb20-5"><a href="#cb20-5"></a>    custom_tokenizer_config <span class="op">=</span> json.load(f)</span>
+<span id="cb20-6"><a href="#cb20-6"></a></span>
+<span id="cb20-7"><a href="#cb20-7"></a>custom_tokenizer_config[<span class="st">"model"</span>][<span class="st">"merges"</span>] <span class="op">==</span> new_tokenizer_config[<span class="st">"model"</span>][<span class="st">"merges"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="85">
+<pre><code>True</code></pre>
 </div>
 </div>
-<div id="cell-23" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># new_tokenizer_2 = tokenizer.train_new_from_iterator(</span></span>
-<span id="cb21-2"><a href="#cb21-2"></a><span class="co">#     batch_iterator(final_dataset, verbose=True),</span></span>
-<span id="cb21-3"><a href="#cb21-3"></a><span class="co">#     len(tokenizer.get_vocabx()),</span></span>
-<span id="cb21-4"><a href="#cb21-4"></a><span class="co"># )</span></span>
-<span id="cb21-5"><a href="#cb21-5"></a></span>
-<span id="cb21-6"><a href="#cb21-6"></a><span class="co"># print(f"Vocab length={len(new_tokenizer_2.get_vocab())}")</span></span>
-<span id="cb21-7"><a href="#cb21-7"></a><span class="co"># new_tokenizer_2.save_pretrained("new-llama-tokenizer-english-korean-code");</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Dataset size: 2820784</code></pre>
-</div>
-</div>
-<div id="cell-24" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a>new_tokenizer_2 <span class="op">=</span> AutoTokenizer.from_pretrained(<span class="st">"new-llama-tokenizer-all"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div id="cell-25" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1"></a><span class="cf">for</span> language, test_str <span class="kw">in</span> test_strings.items():</span>
-<span id="cb24-2"><a href="#cb24-2"></a>    results[<span class="st">"all"</span>][language] <span class="op">=</span> new_tokenizer_2(test_str, return_tensors<span class="op">=</span><span class="st">"pt"</span>)[<span class="st">"input_ids"</span>].shape[<span class="dv">1</span>]</span>
-<span id="cb24-3"><a href="#cb24-3"></a></span>
-<span id="cb24-4"><a href="#cb24-4"></a></span>
-<span id="cb24-5"><a href="#cb24-5"></a>pprint(<span class="bu">dict</span>(results))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>{'all': {'code': 75, 'english': 34, 'korean': 30},
- 'english_only': {'code': 129, 'english': 36, 'korean': 136}}</code></pre>
-</div>
-</div>
-<p><font color="red">For those who would like to dig deeper into training their own tokenizers in a similar setting (English + Code + Multilingual) and what metrics to follow, I suggest the following paper: https://arxiv.org/pdf/2402.01035.pdf</font></p>
 </section>
 </section>
 <section id="final-notes" class="level1">
@@ -518,12 +517,6 @@ Vocab length=128256</code></pre>
 <ol type="1">
 <li>Normalization is not used to make tokenization process reversible</li>
 </ol>
-<div id="cell-28" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1"></a>tokenizer._tokenizer.normalizer <span class="kw">is</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="16">
-<pre><code>True</code></pre>
-</div>
-</div>
 </section>
 <section id="sec-next-steps" class="level1">
 <h1>Next steps (for the curious reader)</h1>
