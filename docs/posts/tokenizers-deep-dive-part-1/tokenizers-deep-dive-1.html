@@ -316,14 +316,14 @@ Note
 </ol>
 <p><strong>How does this look in code?</strong></p>
 <p>Before diving into training a tokenizer, let’s illustrate some of the aspects described above in code. We will find that all of the above is very simple to do by using the <code>tokenizers</code> library!</p>
-<div id="cell-4" class="cell" data-execution_count="2">
+<div id="cell-4" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">%</span>load_ext autoreload</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-5" class="cell" data-execution_count="3">
+<div id="cell-5" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">import</span> json</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="im">from</span> pprint <span class="im">import</span> pprint</span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="im">from</span> tokenizers <span class="im">import</span> (</span>
@@ -331,7 +331,7 @@ Note
 <span id="cb2-5"><a href="#cb2-5"></a>)</span>
 <span id="cb2-6"><a href="#cb2-6"></a><span class="im">from</span> transformers <span class="im">import</span> AutoTokenizer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-6" class="cell" data-execution_count="4">
+<div id="cell-6" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># This code will only be used later when training a tokenizer</span></span>
@@ -341,16 +341,16 @@ Note
 <span id="cb3-5"><a href="#cb3-5"></a><span class="bu">len</span>(dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-7" class="cell" data-execution_count="5">
+<div id="cell-7" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>model_id <span class="op">=</span> <span class="st">"meta-llama/Meta-Llama-3-8B-Instruct"</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(model_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now that we have a tokenizer defined, let’s see how we can tokenizer a piece of text:</p>
-<div id="cell-9" class="cell" data-execution_count="50">
+<div id="cell-9" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>text <span class="op">=</span> <span class="st">"Hello world, we're live 🤗."</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>tokens <span class="op">=</span> tokenizer.tokenize(text)</span>
 <span id="cb5-3"><a href="#cb5-3"></a>tokens</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="50">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>['Hello', 'Ġworld', ',', 'Ġwe', "'re", 'Ġlive', 'ĠðŁ', '¤', 'Ĺ', '.']</code></pre>
 </div>
 </div>
@@ -369,20 +369,21 @@ Note
 </div>
 </div>
 <p>Next, let’s turn these tokens into ids:</p>
-<div id="cell-11" class="cell" data-execution_count="10">
+<div id="cell-11" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>token_ids <span class="op">=</span> tokenizer.convert_tokens_to_ids(tokens)</span>
 <span id="cb7-2"><a href="#cb7-2"></a>token_ids</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
-<pre><code>[8538, 1495, 311, 387, 4037, 1534]</code></pre>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>[9906, 1917, 11, 584, 2351, 3974, 11410, 97, 245, 13]</code></pre>
 </div>
 </div>
 <p>As simple as that! We could now feed these <code>token_ids</code> into a language model, though it is important to note that in practice we would perform everything in one step:</p>
-<div id="cell-13" class="cell" data-execution_count="11">
+<div id="cell-13" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>inputs <span class="op">=</span> tokenizer(text, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
 <span id="cb9-2"><a href="#cb9-2"></a>pprint(inputs, sort_dicts<span class="op">=</span><span class="va">False</span>)  <span class="co"># pprint stands for "pretty print"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'input_ids': tensor([[128000,   8538,   1495,    311,    387,   4037,   1534]]),
- 'attention_mask': tensor([[1, 1, 1, 1, 1, 1, 1]])}</code></pre>
+<pre><code>{'input_ids': tensor([[128000,   9906,   1917,     11,    584,   2351,   3974,  11410,     97,
+            245,     13]]),
+ 'attention_mask': tensor([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]])}</code></pre>
 </div>
 </div>
 <p>We would then call a Hugging Face-compatible model like so:</p>
@@ -462,7 +463,7 @@ Note
 </div>
 </div>
 <p>Before jumping further into the model and decoder used by <code>Llama 3</code>, let’s quickly see these concepts in action.</p>
-<div id="cell-25" class="cell" data-execution_count="51">
+<div id="cell-25" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="im">import</span> regex <span class="im">as</span> re</span>
 <span id="cb16-2"><a href="#cb16-2"></a>gpt_4_pat <span class="op">=</span> re.<span class="bu">compile</span>(<span class="vs">r"""'(?i:[sdmt]|ll|ve|re)|[^\r\n\p</span><span class="sc">{L}</span><span class="vs">\p</span><span class="sc">{N}</span><span class="vs">]?+\p</span><span class="sc">{L}</span><span class="vs">+|\p</span><span class="sc">{N}</span><span class="vs">{1,3}| ?[^\s\p</span><span class="sc">{L}</span><span class="vs">\p</span><span class="sc">{N}</span><span class="vs">]++[\r\n]*|\s*[\r\n]|\s+(?!\S)|\s+"""</span>)</span>
 <span id="cb16-3"><a href="#cb16-3"></a></span>
@@ -473,13 +474,13 @@ Note
 </div>
 </div>
 <p>We can see that the regex splits by whitespace, numbers are no longer than 3 digits, and apostrophe abbreviations and punctuation are also separated out (the list is non-exhaustive). As the for <code>ByteLevel</code> pre-tokenizer, we can see that ordinary English characters remain unchanged, spaces are indeed replaced by the <code>Ġ</code> Unicode character, and the emoji is completely replace by a combination of multiple bytes:</p>
-<div id="cell-27" class="cell" data-execution_count="52">
+<div id="cell-27" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>pre_tokenizer <span class="op">=</span> pre_tokenizers.ByteLevel(</span>
 <span id="cb18-2"><a href="#cb18-2"></a>    add_prefix_space<span class="op">=</span><span class="va">False</span>, trim_offsets<span class="op">=</span><span class="va">True</span>, use_regex<span class="op">=</span><span class="va">False</span></span>
 <span id="cb18-3"><a href="#cb18-3"></a>)</span>
 <span id="cb18-4"><a href="#cb18-4"></a>pre_tokenization_result <span class="op">=</span> pre_tokenizer.pre_tokenize_str(some_text)[<span class="dv">0</span>][<span class="dv">0</span>]</span>
 <span id="cb18-5"><a href="#cb18-5"></a>pre_tokenization_result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="52">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>"HelloĠworld,Ġwe'reĠliveĠðŁ¤Ĺ.ĠTheĠnumberĠisĠ1234.ĠHow'sĠitĠgoing!!!?"</code></pre>
 </div>
 </div>
@@ -537,13 +538,14 @@ Note
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a><span class="im">from</span> tokenizers <span class="im">import</span> trainers</span>
 <span id="cb21-2"><a href="#cb21-2"></a></span>
 <span id="cb21-3"><a href="#cb21-3"></a>trainer <span class="op">=</span> trainers.BpeTrainer(</span>
-<span id="cb21-4"><a href="#cb21-4"></a>    vocab_size<span class="op">=</span><span class="bu">len</span>(tokenizer.get_vocab()) <span class="op">-</span> <span class="bu">len</span>(pre_tokenizers.ByteLevel.alphabet()),</span>
-<span id="cb21-5"><a href="#cb21-5"></a>    initial_alphabet<span class="op">=</span>pre_tokenizers.ByteLevel.alphabet()</span>
-<span id="cb21-6"><a href="#cb21-6"></a>)</span>
-<span id="cb21-7"><a href="#cb21-7"></a></span>
-<span id="cb21-8"><a href="#cb21-8"></a>tokenizer_custom.train_from_iterator(</span>
-<span id="cb21-9"><a href="#cb21-9"></a>    batch_iterator(dataset, verbose<span class="op">=</span><span class="va">False</span>), trainer<span class="op">=</span>trainer</span>
-<span id="cb21-10"><a href="#cb21-10"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-4"><a href="#cb21-4"></a>    <span class="co"># the `vocab_size` here actually means the number of merges</span></span>
+<span id="cb21-5"><a href="#cb21-5"></a>    vocab_size<span class="op">=</span><span class="bu">len</span>(tokenizer.get_vocab()) <span class="op">-</span> <span class="bu">len</span>(pre_tokenizers.ByteLevel.alphabet()),</span>
+<span id="cb21-6"><a href="#cb21-6"></a>    initial_alphabet<span class="op">=</span>pre_tokenizers.ByteLevel.alphabet()</span>
+<span id="cb21-7"><a href="#cb21-7"></a>)</span>
+<span id="cb21-8"><a href="#cb21-8"></a></span>
+<span id="cb21-9"><a href="#cb21-9"></a>tokenizer_custom.train_from_iterator(</span>
+<span id="cb21-10"><a href="#cb21-10"></a>    batch_iterator(dataset, verbose<span class="op">=</span><span class="va">False</span>), trainer<span class="op">=</span>trainer</span>
+<span id="cb21-11"><a href="#cb21-11"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-33" class="cell" data-execution_count="83">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a>tokenizer_custom.add_tokens(<span class="bu">list</span>(tokenizer.get_added_vocab().keys()))</span>
@@ -579,39 +581,48 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Upon inspecting the corresponding tokenizer configuration files you might notice that the two vocabularies are not exactly the same which is because a tokenizer trained from an old one has all the <em>added tokens</em> prepended at the start of the vocabulary. This is why above we check that the merges (i.e.&nbsp;which tokens where merged and in what sequence) are the same for the two tokenizers, which they are.</p>
+<p>Upon inspecting the corresponding tokenizer configuration files (<a href="./new-llama-tokenizer-english-only/tokenizer.json" target="_blank">file 1</a> and <a href="./new-llama-tokenizer-custom-english-only/tokenizer.json" target="_blank">file 2</a>) you might notice that the two vocabularies are not exactly the same which is because a tokenizer trained from an old one has all the <em>added tokens</em> prepended at the start of the vocabulary. This is why above we check that the merges (i.e.&nbsp;which tokens where merged and in what sequence) are the same for the two tokenizers, which they are.</p>
 </div>
 </div>
 </section>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
-<p>And that is it, we have succesfully replicated the structure of the <code>Llama 3</code> tokenizer using the <code>tokenizers</code> library!</p>
+<p>And that is it, we have succesfully replicated the structure of the <code>Llama 3</code> tokenizer using the <code>tokenizers</code> library! As we can see, it is not that hard if we familiarize ourselves with the API of the <code>tokenizers</code> library and know where to find the configuration parameters.</p>
 </section>
 <section id="next-steps" class="level1">
 <h1>Next steps</h1>
+<p>There are many things that did not make it into this article which I briefly discuss here.</p>
 <ol type="1">
-<li>Part 2 on design choices + practical implementation</li>
-<li>The working of the BPE algorithm not covered -&gt; check available resources
+<li><strong>How are the design choices actually made and implemented in practice?</strong> Above we just copied the configuration parameters, but how would we go about implementing a state-of-the-art tokenizer ourselves? <em>See part 2 of the series</em></li>
+<li><strong>The inner workings of the BPE algorithm itself, as well as how one would go about implementing it.</strong> For a proper deep dive, looking into the internals of the BPE algorithm and its implementation would seem like a must, but I think that there are already plenty great resources on the topic. Here are some of them that helped me build good intuitions for what is going on:
 <ul>
-<li>Tiktoken educational</li>
-<li>Karpathy’s video</li>
+<li>The aforementioned Karpathy’s video is a must-see for every LLM practitioner.</li>
+<li>The implementation of the <code>GPT-2</code> tokenizer (<a href="https://github.com/openai/gpt-2/blob/master/src/encoder.py">link</a>)</li>
+<li>The <a href="https://github.com/openai/tiktoken/blob/main/tiktoken/_educational.py" target="_blank">educational version</a> of the <code>tiktoken</code> library (note that it is meant to be easy to understand, but is not actually very efficient).</li>
+<li>[Much harder] <strong>The sources code of <a href="https://github.com/openai/tiktoken" target="_blank"><code>tiktoken</code></a> and <a href="https://github.com/huggingface/tokenizers" target="_blank"><code>tokenizers</code></a> libraries.</strong> Both of them are written in Rust 🥲.</li>
+</ul></li>
+<li><strong>Tokenizer parameters used during the inference stage.</strong> These mainly include <code>truncation</code> and <code>padding</code>, they are not inherently complex concepts, so I decided to exclude them here.
+<ul>
+<li>Consult the Hugging Face documentation and various blog posts to learn more about them.</li>
 </ul></li>
 </ol>
+<p>I strongly encourage you to check out these resources to get a better sense of what the BPE algorithm is doing and other aspects of tokenizers!</p>
 </section>
 <section id="sec-next-steps" class="level1">
 <h1>Open questions (for the curious reader)</h1>
-<p>I leave here some questions arose while writing this article that I could not find simple answers to. I hope to come back to them at some point in the future, but if you end up going down the rabbit holes to find the answers, I would be curious to know the answers! Here is the list:</p>
+<p>I leave here some interesting questions and observations which arose to me while writing this article. I hope to come back to (at least some of) them at some point in the future, but if you end up going down the rabbit holes to find the answers, I would be curious to know them too! Here is the list:</p>
 <ol type="1">
-<li>Why are spaces replaced with the <code>Ġ</code> special character in BPE-based tokenizer? The same Thomas Wolf <a href="https://discuss.huggingface.co/t/bpe-tokenizers-and-spaces-before-words/475" target="_blank">argues</a> that this was done do avoid digesting spaces which are used in the standard BPE algorithm. However, it is unclear whether we could get by without doing this nowadays. Answering this question would probably require diving deeper into how the BPE algorithm works. Sounds like a fun direction to explore in the future!
+<li><strong>Replacing spaces with the <code>Ġ</code> Unicode character in BPE-based tokenizers is not necessary.</strong> The evidence for this is that the <code>GPT-4</code> tokenizer no longer uses them, so there is a high chance that it is just a historical artifact that people got used to since the release of <code>GPT-2</code> code and never questioned it afterwards.
 <ul>
-<li><font color="red">Another source <a href="https://github.com/openai/gpt-2/blob/master/src/encoder.py#L9" target="_blank">on G dot</a></font></li>
+<li>Unless there is something that I am missing here, I believe that the community should ideally get rid of them over time.</li>
 </ul></li>
 <li>The <a href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct/raw/main/tokenizer.json" target="_blank"><code>Llama-3-8B-Instruct</code></a> and <a href="https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct/raw/main/tokenizer.json" target="_blank"><code>Llama-3-70B-Instruct</code></a> tokenizers are almost identical apart from one setting: the former has the <code>model.ignore_merges</code> key specified as <code>true</code>, while the latter does not have such a key specified. The question is simple, what difference does this make? A good starting point to answer this question could be <a href="https://github.com/huggingface/tokenizers/blob/71c2a8d01a56cd7bd28148c309e210c47dac78e7/tokenizers/src/models/bpe/model.rs#L466" target="_blank">this</a> piece of code.</li>
-<li>What are some metrics to track to evaluate the quality of a trained tokenizer?</li>
-<li><font color="red">The regex used for splitting is not ideal (unicode aposthrophe)</font></li>
-<li><font color="red">Original BPE: https://github.com/rsennrich/subword-nmt and https://aclanthology.org/P16-1162.pdf</font></li>
-<li><font color="red">FastBPE https://github.com/Yikai-Liao/efficient_bpe</font></li>
+<li>Running inference using the <code>tiktoken</code> library is <strong>much</strong> faster than with the <code>tokenizers</code> library.</li>
+<li>The first 100256 (256 initial + 100k merges) tokens of the <code>GPT-4</code> and <code>Llama 3</code> tokenizers are the same.
+<ul>
+<li>OpenAI never released their training code, so how could Meta know?</li>
+</ul></li>
 </ol>
 </section>
 <section id="sources" class="level1">
@@ -620,8 +631,7 @@ Note
 <li>Let’s build the GPT Tokenizer (<a href="https://www.youtube.com/watch?v=zduSFxRajkE" target="_blank">video</a>) by Andrej Karpathy.</li>
 <li>A little guide to building Large Language Models in 2024 (<a href="https://www.youtube.com/watch?v=2-SPH9hIKT8" target="_blank">video</a>) by Thomas Wolf.</li>
 <li>Training a new tokenizer from an old one (<a href="https://huggingface.co/learn/nlp-course/en/chapter6/2" target="_blank">article</a>) on the Hugging Face course.</li>
-<li>Another Implementation (faster and more effecient) of BPE Training Algorithm (<a href="https://github.com/huggingface/tokenizers/issues/1400" target="_blank">GitHub issue</a>)</li>
-<li>Getting the most out of your tokenizer for pre-training and domain adaptation (<a href="https://arxiv.org/pdf/2402.01035.pdf" target="_blank">arXiv PDF</a>)</li>
+<li>Training from memory (part of <a href="https://huggingface.co/docs/tokenizers/en/training_from_memory" target="_blank">Hugging Face docs</a>).</li>
 </ol>
 
 
