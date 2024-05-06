@@ -628,7 +628,7 @@ Note
 </ul></li>
 <li>The <a href="https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct/raw/main/tokenizer.json" target="_blank"><code>Llama-3-8B-Instruct</code></a> and <a href="https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct/raw/main/tokenizer.json" target="_blank"><code>Llama-3-70B-Instruct</code></a> tokenizers are almost identical apart from one setting: the former has the <code>model.ignore_merges</code> key specified as <code>true</code>, while the latter does not have such a key specified. The question is simple, what difference does this make? A good starting point to answer this question could be <a href="https://github.com/huggingface/tokenizers/blob/71c2a8d01a56cd7bd28148c309e210c47dac78e7/tokenizers/src/models/bpe/model.rs#L466" target="_blank">this</a> piece of code.</li>
 <li>Running inference using the <code>tiktoken</code> library is <strong>much</strong> faster than with the <code>tokenizers</code> library.</li>
-<li>The first 100256 (256 initial + 100k merges) tokens of the <code>GPT-4</code> and <code>Llama 3</code> tokenizers are the same.
+<li>The first 100256 (256 initial + 100k merges) tokens of the <code>GPT-4</code> and <code>Llama 3</code> tokenizers are the same (see <a href="../../notes/llama-3-vs-gpt-4-tokenizer/llama-3-vs-gpt-4-tokenizer.html" target="_blank">this</a> note).
 <ul>
 <li>OpenAI never released their training code, so how could Meta know?</li>
 </ul></li>
