@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2024-05-03">
 <meta name="description" content="Deep dive into understanding and building tokenizers with an end goal of replicating the LLaMA 3 tokenizer.">
 
-<title>Augustas Macijauskas - Tokenizers deep dive - Part 1</title>
+<title>Augustas Macijauskas - Tokenizers deep dive</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -147,11 +147,11 @@ cookieconsent.run({
 
 
 <link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="Augustas Macijauskas - Tokenizers deep dive - Part 1">
+<meta property="og:title" content="Augustas Macijauskas - Tokenizers deep dive">
 <meta property="og:description" content="Deep dive into understanding and building tokenizers with an end goal of replicating the LLaMA 3 tokenizer.">
 <meta property="og:image" content="dalle-3-tokenization-process-1.webp">
 <meta property="og:site_name" content="Augustas Macijauskas's blog">
-<meta name="twitter:title" content="Augustas Macijauskas - Tokenizers deep dive - Part 1">
+<meta name="twitter:title" content="Augustas Macijauskas - Tokenizers deep dive">
 <meta name="twitter:description" content="Deep dive into understanding and building tokenizers with an end goal of replicating the LLaMA 3 tokenizer.">
 <meta name="twitter:image" content="dalle-3-tokenization-process-1.webp">
 <meta name="twitter:creator" content="@augustasmac">
@@ -209,7 +209,7 @@ cookieconsent.run({
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Tokenizers deep dive - Part 1</h1>
+      <h1 class="title">Tokenizers deep dive</h1>
                   <div>
         <div class="description">
           Deep dive into understanding and building tokenizers with an end goal of replicating the LLaMA 3 tokenizer.
@@ -594,7 +594,16 @@ Note
 <h1>Next steps</h1>
 <p>There are many things that did not make it into this article which I briefly discuss here.</p>
 <ol type="1">
-<li><strong>How are the design choices actually made and implemented in practice?</strong> Above we just copied the configuration parameters, but how would we go about implementing a state-of-the-art tokenizer ourselves? <em>See part 2 of the series</em></li>
+<li><strong>How are the design choices actually made and implemented in practice?</strong> Above we just copied the configuration parameters, but how would we go about implementing a state-of-the-art tokenizer ourselves?
+<ul>
+<li>I enjoyed the <em>Getting the most out of your tokenizer for pre-training and domain adaptation</em> paper which discusses these topics (<a href="https://arxiv.org/abs/2402.01035" target="_blank">link</a>).</li>
+<li>My takeaways are that one should:
+<ol type="1">
+<li>Use BPE.</li>
+<li>Use a diverse training set that is large enough to cover different languages and code well.</li>
+<li>Choose vocabulary size to trade off text compression and memory overhead well (check the paper to understand what this means). A vocabulary size of 100k seems to be a good starting point, especially for smaller models.</li>
+</ol></li>
+</ul></li>
 <li><strong>The inner workings of the BPE algorithm itself, as well as how one would go about implementing it.</strong> For a proper deep dive, looking into the internals of the BPE algorithm and its implementation would seem like a must, but I think that there are already plenty great resources on the topic. Here are some of them that helped me build good intuitions for what is going on:
 <ul>
 <li>The aforementioned Karpathy’s video is a must-see for every LLM practitioner.</li>
