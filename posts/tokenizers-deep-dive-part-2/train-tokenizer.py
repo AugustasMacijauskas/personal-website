@@ -27,15 +27,26 @@ def main():
     print(len(english_dataset), len(korean_dataset), len(code_dataset))
 
     final_dataset = concatenate_datasets([english_dataset, korean_dataset, code_dataset])
-    final_dataset = final_dataset.shuffle(seed=42)
-    print(f"{len(final_dataset)=}")
-    final_dataset = final_dataset.select(range(10000))
+    # final_dataset = final_dataset.shuffle(seed=42)
+    final_dataset = final_dataset["text"]
     print(f"{len(final_dataset)=}")
 
-    # Write dataset to file as txt line by line
-    with open(Path(__file__).parent / "final_dataset.txt", "w") as f:
-        for data in final_dataset:
-            f.write(data["text"] + "\n")
+    # Dataset size in bytes
+    num_bytes = sum(tqdm(map(len, map(str.encode, final_dataset)), total=len(final_dataset)))
+    print(f"Dataset size: {num_bytes / 1024 ** 3:.2f} GB")
+
+    # Dataset len in characters
+    num_chars = sum(tqdm(map(len, final_dataset)))
+    print(f"Dataset len: {num_chars / 1e9:.2f} B")
+
+    # Subsample the dataset
+    # final_dataset = final_dataset.select(range(10000))
+    # print(f"{len(final_dataset)=}")
+
+    # # Write dataset to file as txt line by line
+    # with open(Path(__file__).parent / "final_dataset.txt", "w") as f:
+    #     for data in final_dataset:
+    #         f.write(data["text"] + "\n")
 
     return
 

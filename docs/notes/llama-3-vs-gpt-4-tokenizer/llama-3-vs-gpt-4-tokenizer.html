@@ -266,12 +266,12 @@ cookieconsent.run({
 </header>
 
 
-<div id="cell-1" class="cell" data-execution_count="1">
+<div id="cell-1" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Autoreload modules</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="op">%</span>load_ext autoreload</span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-2" class="cell" data-execution_count="2">
+<div id="cell-2" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">from</span> concurrent.futures <span class="im">import</span> ThreadPoolExecutor</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="im">import</span> multiprocessing <span class="im">as</span> mp</span>
 <span id="cb2-3"><a href="#cb2-3"></a></span>
@@ -281,7 +281,7 @@ cookieconsent.run({
 <span id="cb2-7"><a href="#cb2-7"></a><span class="co"># Number of parallel threads (adjust as needed)</span></span>
 <span id="cb2-8"><a href="#cb2-8"></a>NUM_CPUS <span class="op">=</span> mp.cpu_count()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-3" class="cell" data-execution_count="3">
+<div id="cell-3" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>llama_tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(<span class="st">"meta-llama/Meta-Llama-3-8B-Instruct"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2"></a>gpt_4_tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(<span class="st">"Xenova/gpt-4"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3"></a></span>
@@ -293,72 +293,50 @@ cookieconsent.run({
 <pre><code>Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
 Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>(128256, 100263)</code></pre>
 </div>
 </div>
-<div id="cell-4" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Iterate vocabs and print out the differences</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>llama_only <span class="op">=</span> []</span>
-<span id="cb6-3"><a href="#cb6-3"></a>gpt_4_only <span class="op">=</span> []</span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="cf">for</span> key <span class="kw">in</span> llama_vocab:</span>
-<span id="cb6-5"><a href="#cb6-5"></a>    <span class="cf">if</span> key <span class="kw">not</span> <span class="kw">in</span> gpt_4_vocab:</span>
-<span id="cb6-6"><a href="#cb6-6"></a>        llama_only.append(key)</span>
-<span id="cb6-7"><a href="#cb6-7"></a>    </span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="cf">for</span> key <span class="kw">in</span> gpt_4_vocab:</span>
-<span id="cb6-9"><a href="#cb6-9"></a>    <span class="cf">if</span> key <span class="kw">not</span> <span class="kw">in</span> llama_vocab:</span>
-<span id="cb6-10"><a href="#cb6-10"></a>        gpt_4_only.append(key)</span>
-<span id="cb6-11"><a href="#cb6-11"></a></span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="bu">print</span>(<span class="ss">f"LLAMA only: </span><span class="sc">{</span><span class="bu">len</span>(llama_only)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="bu">print</span>(<span class="ss">f"GPT-4 only: </span><span class="sc">{</span><span class="bu">len</span>(gpt_4_only)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-4" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Check exactly equal</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>vocab_1 <span class="op">=</span> [x[<span class="dv">0</span>] <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">sorted</span>(llama_vocab.items(), key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>])]</span>
+<span id="cb6-3"><a href="#cb6-3"></a>vocab_2 <span class="op">=</span> [x[<span class="dv">0</span>] <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">sorted</span>(gpt_4_vocab.items(), key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>])]</span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="bu">print</span>(<span class="bu">len</span>(vocab_1), <span class="bu">len</span>(vocab_2))</span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="cf">for</span> idx, (token_1, token_2) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(vocab_1, vocab_2)):</span>
+<span id="cb6-7"><a href="#cb6-7"></a>    <span class="cf">if</span> token_1 <span class="op">!=</span> token_2:</span>
+<span id="cb6-8"><a href="#cb6-8"></a>        <span class="bu">print</span>(<span class="ss">f"Token mismatch at </span><span class="sc">{</span>idx<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>token_1<span class="sc">}</span><span class="ss"> != </span><span class="sc">{</span>token_2<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>LLAMA only: 28000
-GPT-4 only: 7</code></pre>
-</div>
-</div>
-<div id="cell-5" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>gpt_4_only, gpt_4_tokenizer.special_tokens_map_extended</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
-<pre><code>(['&lt;|im_end|&gt;',
-  '&lt;|fim_middle|&gt;',
-  '&lt;|endoftext|&gt;',
-  '&lt;|fim_suffix|&gt;',
-  '&lt;|fim_prefix|&gt;',
-  '&lt;|im_start|&gt;',
-  '&lt;|endofprompt|&gt;'],
- {'bos_token': AddedToken("&lt;|endoftext|&gt;", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-  'eos_token': AddedToken("&lt;|endoftext|&gt;", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-  'unk_token': AddedToken("&lt;|endoftext|&gt;", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True)})</code></pre>
-</div>
-</div>
-<div id="cell-6" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Calculate the intersection</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a>intersection <span class="op">=</span> <span class="bu">set</span>(llama_vocab.keys()).intersection(<span class="bu">set</span>(gpt_4_vocab.keys()))</span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="bu">print</span>(<span class="ss">f"Intersection: </span><span class="sc">{</span><span class="bu">len</span>(intersection)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Intersection: 100256</code></pre>
+<pre><code>128256 100263
+Token mismatch at 100256: ĠÙ != &lt;|endoftext|&gt;
+Token mismatch at 100257: Ø§Ù != &lt;|fim_prefix|&gt;
+Token mismatch at 100258: à¸²à¸ != &lt;|fim_middle|&gt;
+Token mismatch at 100259: ÑŁ != &lt;|fim_suffix|&gt;
+Token mismatch at 100260: ÑŁÑŁ != &lt;|im_start|&gt;
+Token mismatch at 100261: Ġà¸ != &lt;|im_end|&gt;
+Token mismatch at 100262: à¹Ģà¸ != &lt;|endofprompt|&gt;</code></pre>
 </div>
 </div>
 <section id="compare-gpt-4-to-tiktoken" class="level2">
 <h2 class="anchored" data-anchor-id="compare-gpt-4-to-tiktoken">Compare GPT-4 to tiktoken</h2>
-<div id="cell-8" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="im">from</span> datasets <span class="im">import</span> load_dataset</span>
-<span id="cb12-2"><a href="#cb12-2"></a></span>
-<span id="cb12-3"><a href="#cb12-3"></a>split <span class="op">=</span> <span class="st">"train"</span></span>
-<span id="cb12-4"><a href="#cb12-4"></a>english_dataset <span class="op">=</span> load_dataset(<span class="st">"wikitext"</span>, <span class="st">"wikitext-103-raw-v1"</span>, split<span class="op">=</span>split)</span>
-<span id="cb12-5"><a href="#cb12-5"></a>korean_dataset <span class="op">=</span> load_dataset(<span class="st">"lcw99/wikipedia-korean-20221001"</span>, split<span class="op">=</span>split)</span>
-<span id="cb12-6"><a href="#cb12-6"></a>code_dataset <span class="op">=</span> load_dataset(<span class="st">"code_search_net"</span>, <span class="st">"python"</span>, split<span class="op">=</span>split, trust_remote_code<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb12-7"><a href="#cb12-7"></a>code_dataset <span class="op">=</span> code_dataset.rename_column(<span class="st">"whole_func_string"</span>, <span class="st">"text"</span>)  <span class="co"># Rename whole_func_string to text</span></span>
-<span id="cb12-8"><a href="#cb12-8"></a><span class="bu">print</span>(<span class="bu">len</span>(english_dataset), <span class="bu">len</span>(korean_dataset), <span class="bu">len</span>(code_dataset))</span>
-<span id="cb12-9"><a href="#cb12-9"></a><span class="bu">print</span>(<span class="bu">len</span>(english_dataset) <span class="op">+</span> <span class="bu">len</span>(korean_dataset) <span class="op">+</span> <span class="bu">len</span>(code_dataset))</span>
-<span id="cb12-10"><a href="#cb12-10"></a></span>
-<span id="cb12-11"><a href="#cb12-11"></a>n <span class="op">=</span> <span class="dv">100000</span></span>
-<span id="cb12-12"><a href="#cb12-12"></a>final_dataset <span class="op">=</span> (</span>
-<span id="cb12-13"><a href="#cb12-13"></a>    english_dataset.shuffle(<span class="dv">42</span>).select(<span class="bu">range</span>(<span class="bu">min</span>(n, <span class="bu">len</span>(english_dataset))))[<span class="st">"text"</span>] <span class="op">+</span></span>
-<span id="cb12-14"><a href="#cb12-14"></a>    korean_dataset.shuffle(<span class="dv">42</span>).select(<span class="bu">range</span>(<span class="bu">min</span>(n, <span class="bu">len</span>(korean_dataset))))[<span class="st">"text"</span>] <span class="op">+</span></span>
-<span id="cb12-15"><a href="#cb12-15"></a>    code_dataset.shuffle(<span class="dv">42</span>).select(<span class="bu">range</span>(<span class="bu">min</span>(n, <span class="bu">len</span>(code_dataset))))[<span class="st">"text"</span>]</span>
-<span id="cb12-16"><a href="#cb12-16"></a>)</span>
-<span id="cb12-17"><a href="#cb12-17"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(final_dataset)<span class="op">=</span><span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-6" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="im">from</span> datasets <span class="im">import</span> load_dataset</span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a>split <span class="op">=</span> <span class="st">"train"</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>english_dataset <span class="op">=</span> load_dataset(<span class="st">"wikitext"</span>, <span class="st">"wikitext-103-raw-v1"</span>, split<span class="op">=</span>split)</span>
+<span id="cb8-5"><a href="#cb8-5"></a>korean_dataset <span class="op">=</span> load_dataset(<span class="st">"lcw99/wikipedia-korean-20221001"</span>, split<span class="op">=</span>split)</span>
+<span id="cb8-6"><a href="#cb8-6"></a>code_dataset <span class="op">=</span> load_dataset(<span class="st">"code_search_net"</span>, <span class="st">"python"</span>, split<span class="op">=</span>split, trust_remote_code<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-7"><a href="#cb8-7"></a>code_dataset <span class="op">=</span> code_dataset.rename_column(<span class="st">"whole_func_string"</span>, <span class="st">"text"</span>)  <span class="co"># Rename whole_func_string to text</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="bu">print</span>(<span class="bu">len</span>(english_dataset), <span class="bu">len</span>(korean_dataset), <span class="bu">len</span>(code_dataset))</span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="bu">print</span>(<span class="bu">len</span>(english_dataset) <span class="op">+</span> <span class="bu">len</span>(korean_dataset) <span class="op">+</span> <span class="bu">len</span>(code_dataset))</span>
+<span id="cb8-10"><a href="#cb8-10"></a></span>
+<span id="cb8-11"><a href="#cb8-11"></a>n <span class="op">=</span> <span class="dv">100000</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>final_dataset <span class="op">=</span> (</span>
+<span id="cb8-13"><a href="#cb8-13"></a>    english_dataset.shuffle(<span class="dv">42</span>).select(<span class="bu">range</span>(<span class="bu">min</span>(n, <span class="bu">len</span>(english_dataset))))[<span class="st">"text"</span>] <span class="op">+</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>    korean_dataset.shuffle(<span class="dv">42</span>).select(<span class="bu">range</span>(<span class="bu">min</span>(n, <span class="bu">len</span>(korean_dataset))))[<span class="st">"text"</span>] <span class="op">+</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a>    code_dataset.shuffle(<span class="dv">42</span>).select(<span class="bu">range</span>(<span class="bu">min</span>(n, <span class="bu">len</span>(code_dataset))))[<span class="st">"text"</span>]</span>
+<span id="cb8-16"><a href="#cb8-16"></a>)</span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(final_dataset)<span class="op">=</span><span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
 {"model_id":"c4230083593b4d69ac59d1dccea1aa1d","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
@@ -385,27 +363,27 @@ GPT-4 only: 7</code></pre>
 len(final_dataset)=300000</code></pre>
 </div>
 </div>
-<div id="cell-9" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>final_dataset[<span class="bu">min</span>(n, <span class="bu">len</span>(english_dataset))][:<span class="dv">50</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-7" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>final_dataset[<span class="bu">min</span>(n, <span class="bu">len</span>(english_dataset))][:<span class="dv">50</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>'왕종린(, 1961년 ~ )은 미국의 중국계 물리학자로 중국 과학원 외국계 원사이다. 해양'</code></pre>
 </div>
 </div>
-<div id="cell-10" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a>gpt_4_tiktoken_tokenizer <span class="op">=</span> tiktoken.get_encoding(<span class="st">"cl100k_base"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2"></a></span>
-<span id="cb16-3"><a href="#cb16-3"></a></span>
-<span id="cb16-4"><a href="#cb16-4"></a><span class="kw">def</span> check_tokenizers_worker(test_string):</span>
-<span id="cb16-5"><a href="#cb16-5"></a>    hf_output <span class="op">=</span> gpt_4_tokenizer.encode(test_string)</span>
-<span id="cb16-6"><a href="#cb16-6"></a>    tiktoken_output <span class="op">=</span> gpt_4_tiktoken_tokenizer.encode(test_string)</span>
-<span id="cb16-7"><a href="#cb16-7"></a>    <span class="cf">return</span> hf_output <span class="op">==</span> tiktoken_output</span>
-<span id="cb16-8"><a href="#cb16-8"></a></span>
-<span id="cb16-9"><a href="#cb16-9"></a></span>
-<span id="cb16-10"><a href="#cb16-10"></a><span class="cf">with</span> ThreadPoolExecutor(max_workers<span class="op">=</span>NUM_CPUS) <span class="im">as</span> executor:</span>
-<span id="cb16-11"><a href="#cb16-11"></a>    <span class="co"># Apply the function to each item in parallel</span></span>
-<span id="cb16-12"><a href="#cb16-12"></a>    results <span class="op">=</span> <span class="bu">list</span>(executor.<span class="bu">map</span>(check_tokenizers_worker, final_dataset))</span>
-<span id="cb16-13"><a href="#cb16-13"></a></span>
-<span id="cb16-14"><a href="#cb16-14"></a><span class="bu">all</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-8" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>gpt_4_tiktoken_tokenizer <span class="op">=</span> tiktoken.get_encoding(<span class="st">"cl100k_base"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2"></a></span>
+<span id="cb12-3"><a href="#cb12-3"></a></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="kw">def</span> check_tokenizers_worker(test_string):</span>
+<span id="cb12-5"><a href="#cb12-5"></a>    hf_output <span class="op">=</span> gpt_4_tokenizer.encode(test_string)</span>
+<span id="cb12-6"><a href="#cb12-6"></a>    tiktoken_output <span class="op">=</span> gpt_4_tiktoken_tokenizer.encode(test_string)</span>
+<span id="cb12-7"><a href="#cb12-7"></a>    <span class="cf">return</span> hf_output <span class="op">==</span> tiktoken_output</span>
+<span id="cb12-8"><a href="#cb12-8"></a></span>
+<span id="cb12-9"><a href="#cb12-9"></a></span>
+<span id="cb12-10"><a href="#cb12-10"></a><span class="cf">with</span> ThreadPoolExecutor(max_workers<span class="op">=</span>NUM_CPUS) <span class="im">as</span> executor:</span>
+<span id="cb12-11"><a href="#cb12-11"></a>    <span class="co"># Apply the function to each item in parallel</span></span>
+<span id="cb12-12"><a href="#cb12-12"></a>    results <span class="op">=</span> <span class="bu">list</span>(executor.<span class="bu">map</span>(check_tokenizers_worker, final_dataset))</span>
+<span id="cb12-13"><a href="#cb12-13"></a></span>
+<span id="cb12-14"><a href="#cb12-14"></a><span class="bu">all</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>True</code></pre>
 </div>
