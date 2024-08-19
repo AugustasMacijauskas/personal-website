@@ -22,25 +22,13 @@ about:
       target: _blank
 ---
 
-Hello! My name is Augustas Macijauskas and I am a recent master's in machine learning graduate at the University of Cambridge. When not working on LLM interpretability and alignment, I enjoy doing sports and playing a musical instrument.
-
-
-## Education
-
-**University of Cambridge** | Cambridge, United Kingdom
-
-MPhil in Machine Learning | September 2022 - October 2023
-
-**University of Manchester** | Manchester, United Kingdom
-
-BSc Mathematics | September 2019 - June 2022
-
-**Kaunas University of Technology Gymnasium** | Kaunas, Lithuania
-
-High School Diploma | September 2017 - June 2019
-
+Hello! My name is Augustas Macijauskas and I am working as an ML engineer applying LLMs in healthcare. Previously, I did a master's in machine learning at the University of Cambridge. Excited about making ML models efficient, safe and accessible to everyone. 
 
 ## Experience
+
+**<a href="https://www.linkedin.com/company/spike-api/" target="_blank">Spike Technologies</a>** | Palo Alto, California, United States
+
+Machine Learning Engineer | January 2024 - present
 
 **BPTI** | Vilnius, Lithuania
 
@@ -52,6 +40,12 @@ Machine Learning Intern | July 2020 - September 2020
 
 Data Science Intern | July 2021 - September 2021
 
-**backpaqr** |  Vilnius, Lithuania
+## Education
 
-Software Engineering Intern | June 2019 - August 2019
+**University of Cambridge** | Cambridge, United Kingdom
+
+MPhil in Machine Learning | September 2022 - October 2023
+
+**University of Manchester** | Manchester, United Kingdom
+
+BSc Mathematics | September 2019 - June 2022
