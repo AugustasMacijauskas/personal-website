@@ -166,3 +166,4 @@ cython_debug/
 **/hr-data.json
 **/cubic-spline-interpolation-exercise-local.ipynb
 **/.DS_Store
+.vscode

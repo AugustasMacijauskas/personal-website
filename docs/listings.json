@@ -10,6 +10,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/gpu-puzzles/gpu-puzzles.html",
       "/posts/tokenizers-deep-dive/tokenizers-deep-dive.html",
       "/posts/tokenizer-problems/tokenizer-problems.html",
       "/posts/embedding-visualisation/embedding-visualisation.html",
