@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Augustas Macijauskas">
+<meta name="dcterms.date" content="2024-09-09">
+<meta name="description" content="Solutions to a set of puzzles designed to teach GPU programming.">
+
+<title>Augustas Macijauskas - Solution to Sasha Rush’s GPU Puzzles</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../assets/favicon.ico" rel="icon">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-1M6C1LWNHY"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-1M6C1LWNHY', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
+<script type="application/json" class="js-hypothesis-config">
+{
+  "theme": "clean"
+}
+</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Augustas Macijauskas - Solution to Sasha Rush’s GPU Puzzles">
+<meta property="og:description" content="Solutions to a set of puzzles designed to teach GPU programming.">
+<meta property="og:image" content="cuda.png">
+<meta property="og:site_name" content="Augustas Macijauskas's blog">
+<meta name="twitter:title" content="Augustas Macijauskas - Solution to Sasha Rush’s GPU Puzzles">
+<meta name="twitter:description" content="Solutions to a set of puzzles designed to teach GPU programming.">
+<meta name="twitter:image" content="cuda.png">
+<meta name="twitter:creator" content="@augustasmac">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Augustas Macijauskas</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes.html"> 
+<span class="menu-text">Notes</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/AugustasMacijauskas/" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/augustas-macijauskas/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/augustasmac" target="_blank"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Solution to Sasha Rush’s GPU Puzzles</h1>
+                  <div>
+        <div class="description">
+          Solutions to a set of puzzles designed to teach GPU programming.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">deep learning</div>
+                <div class="quarto-category">GPU programming</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Augustas Macijauskas </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">September 9, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#puzzle-1-map" id="toc-puzzle-1-map" class="nav-link active" data-scroll-target="#puzzle-1-map">Puzzle 1: Map</a></li>
+  <li><a href="#puzzle-2---zip" id="toc-puzzle-2---zip" class="nav-link" data-scroll-target="#puzzle-2---zip">Puzzle 2 - Zip</a></li>
+  <li><a href="#puzzle-3---guards" id="toc-puzzle-3---guards" class="nav-link" data-scroll-target="#puzzle-3---guards">Puzzle 3 - Guards</a></li>
+  <li><a href="#puzzle-4---map-2d" id="toc-puzzle-4---map-2d" class="nav-link" data-scroll-target="#puzzle-4---map-2d">Puzzle 4 - Map 2D</a></li>
+  <li><a href="#puzzle-5---broadcast" id="toc-puzzle-5---broadcast" class="nav-link" data-scroll-target="#puzzle-5---broadcast">Puzzle 5 - Broadcast</a></li>
+  <li><a href="#puzzle-6---blocks" id="toc-puzzle-6---blocks" class="nav-link" data-scroll-target="#puzzle-6---blocks">Puzzle 6 - Blocks</a></li>
+  <li><a href="#puzzle-7---blocks-2d" id="toc-puzzle-7---blocks-2d" class="nav-link" data-scroll-target="#puzzle-7---blocks-2d">Puzzle 7 - Blocks 2D</a></li>
+  <li><a href="#puzzle-8---shared" id="toc-puzzle-8---shared" class="nav-link" data-scroll-target="#puzzle-8---shared">Puzzle 8 - Shared</a></li>
+  <li><a href="#puzzle-9---pooling" id="toc-puzzle-9---pooling" class="nav-link" data-scroll-target="#puzzle-9---pooling">Puzzle 9 - Pooling</a></li>
+  <li><a href="#puzzle-10---dot-product" id="toc-puzzle-10---dot-product" class="nav-link" data-scroll-target="#puzzle-10---dot-product">Puzzle 10 - Dot Product</a></li>
+  <li><a href="#puzzle-11---1d-convolution" id="toc-puzzle-11---1d-convolution" class="nav-link" data-scroll-target="#puzzle-11---1d-convolution">Puzzle 11 - 1D Convolution</a></li>
+  <li><a href="#puzzle-12---prefix-sum" id="toc-puzzle-12---prefix-sum" class="nav-link" data-scroll-target="#puzzle-12---prefix-sum">Puzzle 12 - Prefix Sum</a></li>
+  <li><a href="#puzzle-13---axis-sum" id="toc-puzzle-13---axis-sum" class="nav-link" data-scroll-target="#puzzle-13---axis-sum">Puzzle 13 - Axis Sum</a></li>
+  <li><a href="#puzzle-14---matrix-multiply" id="toc-puzzle-14---matrix-multiply" class="nav-link" data-scroll-target="#puzzle-14---matrix-multiply">Puzzle 14 - Matrix Multiply!</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p>These are my solutions to <a href="https://github.com/srush/GPU-Puzzles">GPU Puzzles</a> created by <a href="http://rush-nlp.com">Sasha Rush</a> - <a href="https://twitter.com/srush_nlp">srush_nlp</a></p>
+<hr>
+<p>GPU architectures are critical to machine learning, and seem to be becoming even more important every day. However, you can be an expert in machine learning without ever touching GPU code. It is hard to gain intuition working through abstractions.</p>
+<p>This notebook is an attempt to teach beginner GPU programming in a completely interactive fashion. Instead of providing text with concepts, it throws you right into coding and building GPU kernels. The exercises use NUMBA which directly maps Python code to CUDA kernels. It looks like Python but is basically identical to writing low-level CUDA code. In a few hours, I think you can go from basics to understanding the real algorithms that power 99% of deep learning today. If you do want to read the manual, it is here:</p>
+<p><a href="https://numba.readthedocs.io/en/stable/cuda/index.html">NUMBA CUDA Guide</a></p>
+<p>I recommend doing these in Colab, as it is easy to get started. Be sure to make your own copy, turn on GPU mode in the settings (<code>Runtime / Change runtime type</code>, then set <code>Hardware accelerator</code> to <code>GPU</code>), and then get to coding.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://colab.research.google.com/github/srush/GPU-Puzzles/blob/main/GPU_puzzlers.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" class="img-fluid figure-img" alt="Open In Colab"></a></p>
+<figcaption>Open In Colab</figcaption>
+</figure>
+</div>
+<p>(If you are into this style of puzzle, also check out my <a href="https://github.com/srush/Tensor-Puzzles">Tensor Puzzles</a> for PyTorch.)</p>
+<div id="cell-8" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:13:29.965146Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:13:29.964772Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:01.898584Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:01.897122Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:13:29.965112Z&quot;}" data-outputid="27e65c84-6be7-4ce6-85d2-dcafd6c16f0a" data-trusted="true" data-execution_count="100">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">!</span>pip install <span class="op">-</span>qqq git<span class="op">+</span>https:<span class="op">//</span>github.com<span class="op">/</span>chalk<span class="op">-</span>diagrams<span class="op">/</span>planar git<span class="op">+</span>https:<span class="op">//</span>github.com<span class="op">/</span>danoneata<span class="op">/</span>chalk<span class="op">@</span>srush<span class="op">-</span>patch<span class="op">-</span><span class="dv">1</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="op">!</span>wget <span class="op">-</span>q https:<span class="op">//</span>github.com<span class="op">/</span>srush<span class="op">/</span>GPU<span class="op">-</span>Puzzles<span class="op">/</span>raw<span class="op">/</span>main<span class="op">/</span>robot.png https:<span class="op">//</span>github.com<span class="op">/</span>srush<span class="op">/</span>GPU<span class="op">-</span>Puzzles<span class="op">/</span>raw<span class="op">/</span>main<span class="op">/</span>lib.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-9" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:01.901478Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:01.901070Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:01.906878Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:01.905897Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:01.901440Z&quot;}" data-trusted="true" data-execution_count="101">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">import</span> numba</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="im">import</span> warnings</span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="im">from</span> lib <span class="im">import</span> CudaProblem, Coord</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-10" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:01.908717Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:01.908266Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:01.951101Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:01.950033Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:01.908669Z&quot;}" data-trusted="true" data-execution_count="102">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>warnings.filterwarnings(</span>
+<span id="cb3-2"><a href="#cb3-2"></a>    action<span class="op">=</span><span class="st">"ignore"</span>, category<span class="op">=</span>numba.NumbaPerformanceWarning, module<span class="op">=</span><span class="st">"numba"</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="puzzle-1-map" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-1-map">Puzzle 1: Map</h2>
+<p>Implement a “kernel” (GPU function) that adds 10 to each position of vector <code>a</code> and stores it in vector <code>out</code>. You have 1 thread per position.</p>
+<p><strong>Warning</strong> This code looks like Python but it is really CUDA! You cannot use standard python tools like list comprehensions or ask for Numpy properties like shape or size (if you need the size, it is given as an argument). The puzzles only require doing simple operations, basically +, *, simple array indexing, for loops, and if statements. You are allowed to use local variables. If you get an error it is probably because you did something fancy :).</p>
+<p><em>Tip: Think of the function <code>call</code> as being run 1 time for each thread. The only difference is that <code>cuda.threadIdx.x</code> changes each time.</em></p>
+<div id="cell-14" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:01.953129Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:01.952670Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:02.070451Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:02.069393Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:01.953074Z&quot;}" data-outputid="5dadd98b-e00e-4d9f-e18e-473e2c9d0be9" data-trusted="true" data-execution_count="103">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">def</span> map_spec(a):</span>
+<span id="cb4-2"><a href="#cb4-2"></a>    <span class="cf">return</span> a <span class="op">+</span> <span class="dv">10</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="kw">def</span> map_test(cuda):</span>
+<span id="cb4-6"><a href="#cb4-6"></a>    <span class="kw">def</span> call(out, a) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb4-7"><a href="#cb4-7"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb4-8"><a href="#cb4-8"></a>        out[local_i] <span class="op">=</span> a[local_i] <span class="op">+</span> <span class="dv">10</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a></span>
+<span id="cb4-10"><a href="#cb4-10"></a>    <span class="cf">return</span> call</span>
+<span id="cb4-11"><a href="#cb4-11"></a></span>
+<span id="cb4-12"><a href="#cb4-12"></a></span>
+<span id="cb4-13"><a href="#cb4-13"></a>SIZE <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a>out <span class="op">=</span> np.zeros((SIZE,))</span>
+<span id="cb4-15"><a href="#cb4-15"></a>a <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb4-16"><a href="#cb4-16"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb4-17"><a href="#cb4-17"></a>    <span class="st">"Map"</span>, map_test, [a], out, threadsperblock<span class="op">=</span>Coord(SIZE, <span class="dv">1</span>), spec<span class="op">=</span>map_spec</span>
+<span id="cb4-18"><a href="#cb4-18"></a>)</span>
+<span id="cb4-19"><a href="#cb4-19"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Map
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             0 |             0 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="103">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-5-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-15" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:02.074391Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:02.073927Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:02.151310Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:02.150300Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:02.074342Z&quot;}" data-lines_to_end_of_cell_marker="0" data-outputid="29b8c143-1238-452f-8114-6e78aacb071a" data-trusted="true" data-execution_count="104">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># My comment: here and below we use a semicolon to prevent a dog video from</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co"># being rendered. It's a fun addition by the original author, but I foun it too</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co"># distracting for my liking</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>problem.check()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!</code></pre>
+</div>
+</div>
+</section>
+<section id="puzzle-2---zip" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-2---zip">Puzzle 2 - Zip</h2>
+<p>Implement a kernel that adds together each position of <code>a</code> and <code>b</code> and stores it in <code>out</code>. You have 1 thread per position.</p>
+<div id="cell-17" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:02.153090Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:02.152663Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:03.559346Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:03.558242Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:02.153048Z&quot;}" data-outputid="139f9beb-333e-429a-a215-734ad1ca3279" data-trusted="true" data-execution_count="105">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">def</span> zip_spec(a, b):</span>
+<span id="cb8-2"><a href="#cb8-2"></a>    <span class="cf">return</span> a <span class="op">+</span> b</span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="kw">def</span> zip_test(cuda):</span>
+<span id="cb8-6"><a href="#cb8-6"></a>    <span class="kw">def</span> call(out, a, b) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb8-7"><a href="#cb8-7"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb8-8"><a href="#cb8-8"></a>        out[local_i] <span class="op">=</span> a[local_i] <span class="op">+</span> b[local_i]</span>
+<span id="cb8-9"><a href="#cb8-9"></a></span>
+<span id="cb8-10"><a href="#cb8-10"></a>    <span class="cf">return</span> call</span>
+<span id="cb8-11"><a href="#cb8-11"></a></span>
+<span id="cb8-12"><a href="#cb8-12"></a></span>
+<span id="cb8-13"><a href="#cb8-13"></a>SIZE <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>out <span class="op">=</span> np.zeros((SIZE,))</span>
+<span id="cb8-15"><a href="#cb8-15"></a>a <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb8-16"><a href="#cb8-16"></a>b <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb8-17"><a href="#cb8-17"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb8-18"><a href="#cb8-18"></a>    <span class="st">"Zip"</span>, zip_test, [a, b], out, threadsperblock<span class="op">=</span>Coord(SIZE, <span class="dv">1</span>), spec<span class="op">=</span>zip_spec</span>
+<span id="cb8-19"><a href="#cb8-19"></a>)</span>
+<span id="cb8-20"><a href="#cb8-20"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Zip
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             2 |             1 |             0 |             0 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="105">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-7-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-18" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:03.561770Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:03.560971Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:03.630353Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:03.629324Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:03.561707Z&quot;}" data-lines_to_end_of_cell_marker="0" data-outputid="4c9e0dfd-9d42-47d7-8850-318135fa97aa" data-trusted="true" data-execution_count="106">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>problem.check()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!</code></pre>
+</div>
+</div>
+</section>
+<section id="puzzle-3---guards" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-3---guards">Puzzle 3 - Guards</h2>
+<p>Implement a kernel that adds 10 to each position of <code>a</code> and stores it in <code>out</code>. You have more threads than positions.</p>
+<div id="cell-20" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:03.632485Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:03.632138Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:03.762330Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:03.761396Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:03.632450Z&quot;}" data-outputid="dd354e6c-e1dc-4a35-8214-8c568d9b653e" data-trusted="true" data-execution_count="107">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">def</span> map_guard_test(cuda):</span>
+<span id="cb12-2"><a href="#cb12-2"></a>    <span class="kw">def</span> call(out, a, size) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb12-3"><a href="#cb12-3"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb12-4"><a href="#cb12-4"></a>        <span class="cf">if</span> local_i <span class="op">&lt;</span> size:</span>
+<span id="cb12-5"><a href="#cb12-5"></a>            out[local_i] <span class="op">=</span> a[local_i] <span class="op">+</span> <span class="dv">10</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a></span>
+<span id="cb12-7"><a href="#cb12-7"></a>    <span class="cf">return</span> call</span>
+<span id="cb12-8"><a href="#cb12-8"></a></span>
+<span id="cb12-9"><a href="#cb12-9"></a></span>
+<span id="cb12-10"><a href="#cb12-10"></a><span class="co"># My comment: alternative solution</span></span>
+<span id="cb12-11"><a href="#cb12-11"></a><span class="kw">def</span> map_guard_test_alternative(cuda):</span>
+<span id="cb12-12"><a href="#cb12-12"></a>    <span class="kw">def</span> call(out, a, size) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb12-13"><a href="#cb12-13"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb12-14"><a href="#cb12-14"></a>        <span class="cf">if</span> local_i <span class="op">&gt;=</span> size:</span>
+<span id="cb12-15"><a href="#cb12-15"></a>            <span class="cf">return</span></span>
+<span id="cb12-16"><a href="#cb12-16"></a></span>
+<span id="cb12-17"><a href="#cb12-17"></a>        out[local_i] <span class="op">=</span> a[local_i] <span class="op">+</span> <span class="dv">10</span></span>
+<span id="cb12-18"><a href="#cb12-18"></a></span>
+<span id="cb12-19"><a href="#cb12-19"></a>    <span class="cf">return</span> call</span>
+<span id="cb12-20"><a href="#cb12-20"></a></span>
+<span id="cb12-21"><a href="#cb12-21"></a></span>
+<span id="cb12-22"><a href="#cb12-22"></a>SIZE <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb12-23"><a href="#cb12-23"></a>out <span class="op">=</span> np.zeros((SIZE,))</span>
+<span id="cb12-24"><a href="#cb12-24"></a>a <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb12-25"><a href="#cb12-25"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb12-26"><a href="#cb12-26"></a>    <span class="st">"Guard"</span>,</span>
+<span id="cb12-27"><a href="#cb12-27"></a>    map_guard_test,</span>
+<span id="cb12-28"><a href="#cb12-28"></a>    [a],</span>
+<span id="cb12-29"><a href="#cb12-29"></a>    out,</span>
+<span id="cb12-30"><a href="#cb12-30"></a>    [SIZE],</span>
+<span id="cb12-31"><a href="#cb12-31"></a>    threadsperblock<span class="op">=</span>Coord(<span class="dv">8</span>, <span class="dv">1</span>),</span>
+<span id="cb12-32"><a href="#cb12-32"></a>    spec<span class="op">=</span>map_spec,</span>
+<span id="cb12-33"><a href="#cb12-33"></a>)</span>
+<span id="cb12-34"><a href="#cb12-34"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Guard
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             0 |             0 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="107">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-9-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-21" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:03.764212Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:03.763836Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:03.837551Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:03.836637Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:03.764151Z&quot;}" data-lines_to_end_of_cell_marker="0" data-outputid="21f50ccd-216b-4a9d-fa5b-2908fad1fadb" data-trusted="true" data-execution_count="108">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>problem.check()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!</code></pre>
+</div>
+</div>
+</section>
+<section id="puzzle-4---map-2d" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-4---map-2d">Puzzle 4 - Map 2D</h2>
+<p>Implement a kernel that adds 10 to each position of <code>a</code> and stores it in <code>out</code>. Input <code>a</code> is 2D and square. You have more threads than positions.</p>
+<div id="cell-23" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:03.839525Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:03.839100Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:03.986364Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:03.985394Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:03.839478Z&quot;}" data-outputid="5791600e-364e-4c75-af94-b3de71f61722" data-trusted="true" data-execution_count="109">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">def</span> map_2D_test(cuda):</span>
+<span id="cb16-2"><a href="#cb16-2"></a>    <span class="kw">def</span> call(out, a, size) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb16-3"><a href="#cb16-3"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb16-4"><a href="#cb16-4"></a>        local_j <span class="op">=</span> cuda.threadIdx.y</span>
+<span id="cb16-5"><a href="#cb16-5"></a>        <span class="cf">if</span> local_i <span class="op">&lt;</span> size <span class="kw">and</span> local_j <span class="op">&lt;</span> size:</span>
+<span id="cb16-6"><a href="#cb16-6"></a>            out[local_i, local_j] <span class="op">=</span> a[local_i, local_j] <span class="op">+</span> <span class="dv">10</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a></span>
+<span id="cb16-8"><a href="#cb16-8"></a>    <span class="cf">return</span> call</span>
+<span id="cb16-9"><a href="#cb16-9"></a></span>
+<span id="cb16-10"><a href="#cb16-10"></a></span>
+<span id="cb16-11"><a href="#cb16-11"></a><span class="co"># My comment: alternative solution is to exit early, requires less indentation</span></span>
+<span id="cb16-12"><a href="#cb16-12"></a><span class="kw">def</span> map_2D_test_alternative(cuda):</span>
+<span id="cb16-13"><a href="#cb16-13"></a>    <span class="kw">def</span> call(out, a, size) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb16-14"><a href="#cb16-14"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb16-15"><a href="#cb16-15"></a>        local_j <span class="op">=</span> cuda.threadIdx.y</span>
+<span id="cb16-16"><a href="#cb16-16"></a>        </span>
+<span id="cb16-17"><a href="#cb16-17"></a>        <span class="cf">if</span> local_i <span class="op">&gt;=</span> size <span class="kw">or</span> local_j <span class="op">&gt;=</span> size:</span>
+<span id="cb16-18"><a href="#cb16-18"></a>            <span class="cf">return</span></span>
+<span id="cb16-19"><a href="#cb16-19"></a></span>
+<span id="cb16-20"><a href="#cb16-20"></a>        out[local_i, local_j] <span class="op">=</span> a[local_i, local_j] <span class="op">+</span> <span class="dv">10</span></span>
+<span id="cb16-21"><a href="#cb16-21"></a></span>
+<span id="cb16-22"><a href="#cb16-22"></a>    <span class="cf">return</span> call</span>
+<span id="cb16-23"><a href="#cb16-23"></a></span>
+<span id="cb16-24"><a href="#cb16-24"></a></span>
+<span id="cb16-25"><a href="#cb16-25"></a>SIZE <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb16-26"><a href="#cb16-26"></a>out <span class="op">=</span> np.zeros((SIZE, SIZE))</span>
+<span id="cb16-27"><a href="#cb16-27"></a>a <span class="op">=</span> np.arange(SIZE <span class="op">*</span> SIZE).reshape((SIZE, SIZE))</span>
+<span id="cb16-28"><a href="#cb16-28"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb16-29"><a href="#cb16-29"></a>    <span class="st">"Map 2D"</span>,</span>
+<span id="cb16-30"><a href="#cb16-30"></a>    map_2D_test,</span>
+<span id="cb16-31"><a href="#cb16-31"></a>    [a],</span>
+<span id="cb16-32"><a href="#cb16-32"></a>    out,</span>
+<span id="cb16-33"><a href="#cb16-33"></a>    [SIZE],</span>
+<span id="cb16-34"><a href="#cb16-34"></a>    threadsperblock<span class="op">=</span>Coord(<span class="dv">3</span>, <span class="dv">3</span>),</span>
+<span id="cb16-35"><a href="#cb16-35"></a>    spec<span class="op">=</span>map_spec,</span>
+<span id="cb16-36"><a href="#cb16-36"></a>)</span>
+<span id="cb16-37"><a href="#cb16-37"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Map 2D
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             0 |             0 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="109">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-11-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-24" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:03.987976Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:03.987665Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:04.077587Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:04.076597Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:03.987944Z&quot;}" data-lines_to_end_of_cell_marker="0" data-outputid="67be25a9-938f-4a4a-ddf1-5bc4f9ddbf14" data-trusted="true" data-execution_count="110">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>problem.check()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!</code></pre>
+</div>
+</div>
+</section>
+<section id="puzzle-5---broadcast" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-5---broadcast">Puzzle 5 - Broadcast</h2>
+<p>Implement a kernel that adds <code>a</code> and <code>b</code> and stores it in <code>out</code>. Inputs <code>a</code> and <code>b</code> are vectors. You have more threads than positions.</p>
+<div id="cell-26" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:04.078978Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:04.078676Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:04.259153Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:04.258216Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:04.078946Z&quot;}" data-outputid="99f32fbf-ba91-4703-925e-03ea120dab16" data-trusted="true" data-execution_count="111">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw">def</span> broadcast_test(cuda):</span>
+<span id="cb20-2"><a href="#cb20-2"></a>    <span class="kw">def</span> call(out, a, b, size) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb20-3"><a href="#cb20-3"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb20-4"><a href="#cb20-4"></a>        local_j <span class="op">=</span> cuda.threadIdx.y</span>
+<span id="cb20-5"><a href="#cb20-5"></a>        <span class="cf">if</span> local_i <span class="op">&lt;</span> size <span class="kw">and</span> local_j <span class="op">&lt;</span> size:</span>
+<span id="cb20-6"><a href="#cb20-6"></a>            out[local_i, local_j] <span class="op">=</span> a[local_i, <span class="dv">0</span>] <span class="op">+</span> b[<span class="dv">0</span>, local_j]</span>
+<span id="cb20-7"><a href="#cb20-7"></a></span>
+<span id="cb20-8"><a href="#cb20-8"></a>    <span class="cf">return</span> call</span>
+<span id="cb20-9"><a href="#cb20-9"></a></span>
+<span id="cb20-10"><a href="#cb20-10"></a></span>
+<span id="cb20-11"><a href="#cb20-11"></a>SIZE <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb20-12"><a href="#cb20-12"></a>out <span class="op">=</span> np.zeros((SIZE, SIZE))</span>
+<span id="cb20-13"><a href="#cb20-13"></a>a <span class="op">=</span> np.arange(SIZE).reshape(SIZE, <span class="dv">1</span>)</span>
+<span id="cb20-14"><a href="#cb20-14"></a>b <span class="op">=</span> np.arange(SIZE).reshape(<span class="dv">1</span>, SIZE)</span>
+<span id="cb20-15"><a href="#cb20-15"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb20-16"><a href="#cb20-16"></a>    <span class="st">"Broadcast"</span>,</span>
+<span id="cb20-17"><a href="#cb20-17"></a>    broadcast_test,</span>
+<span id="cb20-18"><a href="#cb20-18"></a>    [a, b],</span>
+<span id="cb20-19"><a href="#cb20-19"></a>    out,</span>
+<span id="cb20-20"><a href="#cb20-20"></a>    [SIZE],</span>
+<span id="cb20-21"><a href="#cb20-21"></a>    threadsperblock<span class="op">=</span>Coord(<span class="dv">3</span>, <span class="dv">3</span>),</span>
+<span id="cb20-22"><a href="#cb20-22"></a>    spec<span class="op">=</span>zip_spec,</span>
+<span id="cb20-23"><a href="#cb20-23"></a>)</span>
+<span id="cb20-24"><a href="#cb20-24"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Broadcast
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             2 |             1 |             0 |             0 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="111">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-13-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-27" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:04.260890Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:04.260572Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:04.358576Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:04.357647Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:04.260858Z&quot;}" data-lines_to_end_of_cell_marker="0" data-outputid="241bbfca-81a6-49fe-c66e-acbf3b62ee4b" data-trusted="true" data-execution_count="112">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a>problem.check()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!</code></pre>
+</div>
+</div>
+</section>
+<section id="puzzle-6---blocks" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-6---blocks">Puzzle 6 - Blocks</h2>
+<p>Implement a kernel that adds 10 to each position of <code>a</code> and stores it in <code>out</code>. You have fewer threads per block than the size of <code>a</code>.</p>
+<p><em>Tip: A block is a group of threads. The number of threads per block is limited, but we can have many different blocks. Variable <code>cuda.blockIdx</code> tells us what block we are in.</em></p>
+<div id="cell-30" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:04.363699Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:04.363360Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:04.661365Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:04.660429Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:04.363664Z&quot;}" data-outputid="de4f2a51-175f-4e9b-ccc9-5049a3aacf21" data-trusted="true" data-execution_count="113">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">def</span> map_block_test(cuda):</span>
+<span id="cb24-2"><a href="#cb24-2"></a>    <span class="kw">def</span> call(out, a, size) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb24-3"><a href="#cb24-3"></a>        i <span class="op">=</span> cuda.blockIdx.x <span class="op">*</span> cuda.blockDim.x <span class="op">+</span> cuda.threadIdx.x</span>
+<span id="cb24-4"><a href="#cb24-4"></a>        </span>
+<span id="cb24-5"><a href="#cb24-5"></a>        <span class="cf">if</span> i <span class="op">&lt;</span> size:</span>
+<span id="cb24-6"><a href="#cb24-6"></a>            out[i] <span class="op">=</span> a[i] <span class="op">+</span> <span class="dv">10</span></span>
+<span id="cb24-7"><a href="#cb24-7"></a></span>
+<span id="cb24-8"><a href="#cb24-8"></a>    <span class="cf">return</span> call</span>
+<span id="cb24-9"><a href="#cb24-9"></a></span>
+<span id="cb24-10"><a href="#cb24-10"></a></span>
+<span id="cb24-11"><a href="#cb24-11"></a>SIZE <span class="op">=</span> <span class="dv">9</span></span>
+<span id="cb24-12"><a href="#cb24-12"></a>out <span class="op">=</span> np.zeros((SIZE,))</span>
+<span id="cb24-13"><a href="#cb24-13"></a>a <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb24-14"><a href="#cb24-14"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb24-15"><a href="#cb24-15"></a>    <span class="st">"Blocks"</span>,</span>
+<span id="cb24-16"><a href="#cb24-16"></a>    map_block_test,</span>
+<span id="cb24-17"><a href="#cb24-17"></a>    [a],</span>
+<span id="cb24-18"><a href="#cb24-18"></a>    out,</span>
+<span id="cb24-19"><a href="#cb24-19"></a>    [SIZE],</span>
+<span id="cb24-20"><a href="#cb24-20"></a>    threadsperblock<span class="op">=</span>Coord(<span class="dv">4</span>, <span class="dv">1</span>),</span>
+<span id="cb24-21"><a href="#cb24-21"></a>    blockspergrid<span class="op">=</span>Coord(<span class="dv">3</span>, <span class="dv">1</span>),</span>
+<span id="cb24-22"><a href="#cb24-22"></a>    spec<span class="op">=</span>map_spec,</span>
+<span id="cb24-23"><a href="#cb24-23"></a>)</span>
+<span id="cb24-24"><a href="#cb24-24"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Blocks
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             0 |             0 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="113">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-15-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-31" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:04.662837Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:04.662532Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:04.741504Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:04.740469Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:04.662804Z&quot;}" data-lines_to_end_of_cell_marker="0" data-outputid="95ddd426-21dc-4750-9485-030dd38c8d82" data-trusted="true" data-execution_count="114">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1"></a>problem.check()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!</code></pre>
+</div>
+</div>
+</section>
+<section id="puzzle-7---blocks-2d" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-7---blocks-2d">Puzzle 7 - Blocks 2D</h2>
+<p>Implement the same kernel in 2D. You have fewer threads per block than the size of <code>a</code> in both directions.</p>
+<div id="cell-33" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:04.743006Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:04.742679Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:05.556616Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:05.555677Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:04.742971Z&quot;}" data-outputid="7a0e02de-ed58-46ac-a55e-7106c5f491c6" data-trusted="true" data-execution_count="115">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1"></a><span class="kw">def</span> map_block2D_test(cuda):</span>
+<span id="cb28-2"><a href="#cb28-2"></a>    <span class="kw">def</span> call(out, a, size) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb28-3"><a href="#cb28-3"></a>        i <span class="op">=</span> cuda.blockIdx.x <span class="op">*</span> cuda.blockDim.x <span class="op">+</span> cuda.threadIdx.x</span>
+<span id="cb28-4"><a href="#cb28-4"></a>        j <span class="op">=</span> cuda.blockIdx.y <span class="op">*</span> cuda.blockDim.y <span class="op">+</span> cuda.threadIdx.y</span>
+<span id="cb28-5"><a href="#cb28-5"></a>        </span>
+<span id="cb28-6"><a href="#cb28-6"></a>        <span class="cf">if</span> i <span class="op">&lt;</span> size <span class="kw">and</span> j <span class="op">&lt;</span> size:</span>
+<span id="cb28-7"><a href="#cb28-7"></a>            out[i, j] <span class="op">=</span> a[i, j] <span class="op">+</span> <span class="dv">10</span></span>
+<span id="cb28-8"><a href="#cb28-8"></a></span>
+<span id="cb28-9"><a href="#cb28-9"></a>    <span class="cf">return</span> call</span>
+<span id="cb28-10"><a href="#cb28-10"></a></span>
+<span id="cb28-11"><a href="#cb28-11"></a></span>
+<span id="cb28-12"><a href="#cb28-12"></a>SIZE <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb28-13"><a href="#cb28-13"></a>out <span class="op">=</span> np.zeros((SIZE, SIZE))</span>
+<span id="cb28-14"><a href="#cb28-14"></a>a <span class="op">=</span> np.ones((SIZE, SIZE))</span>
+<span id="cb28-15"><a href="#cb28-15"></a></span>
+<span id="cb28-16"><a href="#cb28-16"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb28-17"><a href="#cb28-17"></a>    <span class="st">"Blocks 2D"</span>,</span>
+<span id="cb28-18"><a href="#cb28-18"></a>    map_block2D_test,</span>
+<span id="cb28-19"><a href="#cb28-19"></a>    [a],</span>
+<span id="cb28-20"><a href="#cb28-20"></a>    out,</span>
+<span id="cb28-21"><a href="#cb28-21"></a>    [SIZE],</span>
+<span id="cb28-22"><a href="#cb28-22"></a>    threadsperblock<span class="op">=</span>Coord(<span class="dv">3</span>, <span class="dv">3</span>),</span>
+<span id="cb28-23"><a href="#cb28-23"></a>    blockspergrid<span class="op">=</span>Coord(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb28-24"><a href="#cb28-24"></a>    spec<span class="op">=</span>map_spec,</span>
+<span id="cb28-25"><a href="#cb28-25"></a>)</span>
+<span id="cb28-26"><a href="#cb28-26"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Blocks 2D
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             0 |             0 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="115">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-17-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-34" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:05.558123Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:05.557807Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:05.658156Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:05.657228Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:05.558091Z&quot;}" data-outputid="1a6f7434-2fd6-4136-e3d6-0f5bec56a6d8" data-trusted="true" data-execution_count="116">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1"></a>problem.check()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!</code></pre>
+</div>
+</div>
+</section>
+<section id="puzzle-8---shared" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-8---shared">Puzzle 8 - Shared</h2>
+<p>Implement a kernel that adds 10 to each position of <code>a</code> and stores it in <code>out</code>. You have fewer threads per block than the size of <code>a</code>.</p>
+<p><strong>Warning</strong>: Each block can only have a <em>constant</em> amount of shared memory that threads in that block can read and write to. This needs to be a literal python constant not a variable. After writing to shared memory you need to call <code>cuda.syncthreads</code> to ensure that threads do not cross.</p>
+<p>(This example does not really need shared memory or syncthreads, but it is a demo.)</p>
+<div id="cell-38" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:05.660440Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:05.659436Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:06.021836Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:06.020923Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:05.660404Z&quot;}" data-outputid="2619127e-1b02-4766-92ec-0c2f308d6eb4" data-trusted="true" data-execution_count="117">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1"></a>TPB <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb32-2"><a href="#cb32-2"></a><span class="kw">def</span> shared_test(cuda):</span>
+<span id="cb32-3"><a href="#cb32-3"></a>    <span class="kw">def</span> call(out, a, size) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb32-4"><a href="#cb32-4"></a>        shared <span class="op">=</span> cuda.shared.array(TPB, numba.float32)</span>
+<span id="cb32-5"><a href="#cb32-5"></a>        i <span class="op">=</span> cuda.blockIdx.x <span class="op">*</span> cuda.blockDim.x <span class="op">+</span> cuda.threadIdx.x</span>
+<span id="cb32-6"><a href="#cb32-6"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb32-7"><a href="#cb32-7"></a></span>
+<span id="cb32-8"><a href="#cb32-8"></a>        <span class="cf">if</span> i <span class="op">&lt;</span> size:</span>
+<span id="cb32-9"><a href="#cb32-9"></a>            shared[local_i] <span class="op">=</span> a[i]</span>
+<span id="cb32-10"><a href="#cb32-10"></a>            cuda.syncthreads()</span>
+<span id="cb32-11"><a href="#cb32-11"></a>            out[i] <span class="op">=</span> shared[local_i] <span class="op">+</span> <span class="dv">10</span></span>
+<span id="cb32-12"><a href="#cb32-12"></a></span>
+<span id="cb32-13"><a href="#cb32-13"></a>    <span class="cf">return</span> call</span>
+<span id="cb32-14"><a href="#cb32-14"></a></span>
+<span id="cb32-15"><a href="#cb32-15"></a></span>
+<span id="cb32-16"><a href="#cb32-16"></a>SIZE <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb32-17"><a href="#cb32-17"></a>out <span class="op">=</span> np.zeros(SIZE)</span>
+<span id="cb32-18"><a href="#cb32-18"></a>a <span class="op">=</span> np.ones(SIZE)</span>
+<span id="cb32-19"><a href="#cb32-19"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb32-20"><a href="#cb32-20"></a>    <span class="st">"Shared"</span>,</span>
+<span id="cb32-21"><a href="#cb32-21"></a>    shared_test,</span>
+<span id="cb32-22"><a href="#cb32-22"></a>    [a],</span>
+<span id="cb32-23"><a href="#cb32-23"></a>    out,</span>
+<span id="cb32-24"><a href="#cb32-24"></a>    [SIZE],</span>
+<span id="cb32-25"><a href="#cb32-25"></a>    threadsperblock<span class="op">=</span>Coord(TPB, <span class="dv">1</span>),</span>
+<span id="cb32-26"><a href="#cb32-26"></a>    blockspergrid<span class="op">=</span>Coord(<span class="dv">2</span>, <span class="dv">1</span>),</span>
+<span id="cb32-27"><a href="#cb32-27"></a>    spec<span class="op">=</span>map_spec,</span>
+<span id="cb32-28"><a href="#cb32-28"></a>)</span>
+<span id="cb32-29"><a href="#cb32-29"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Shared
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             1 |             1 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="117">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-19-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-39" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:06.023270Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:06.022960Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:06.122629Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:06.121627Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:06.023239Z&quot;}" data-lines_to_end_of_cell_marker="0" data-outputid="ae407128-5cb4-45dc-bfda-72d6218958ba" data-trusted="true" data-execution_count="118">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1"></a>problem.check()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!</code></pre>
+</div>
+</div>
+</section>
+<section id="puzzle-9---pooling" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-9---pooling">Puzzle 9 - Pooling</h2>
+<p>Implement a kernel that sums together the last 3 position of <code>a</code> and stores it in <code>out</code>. You have 1 thread per position. You only need 1 global read and 1 global write per thread.</p>
+<p><em>Tip: Remember to be careful about syncing.</em></p>
+<div id="cell-42" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:06.124115Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:06.123803Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:06.518642Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:06.517697Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:06.124073Z&quot;}" data-outputid="ff3144d8-6d38-4991-ad22-7b84c7122b79" data-trusted="true" data-execution_count="119">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1"></a><span class="kw">def</span> pool_spec(a):</span>
+<span id="cb36-2"><a href="#cb36-2"></a>    out <span class="op">=</span> np.zeros(<span class="op">*</span>a.shape)</span>
+<span id="cb36-3"><a href="#cb36-3"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(a.shape[<span class="dv">0</span>]):</span>
+<span id="cb36-4"><a href="#cb36-4"></a>        out[i] <span class="op">=</span> a[<span class="bu">max</span>(i <span class="op">-</span> <span class="dv">2</span>, <span class="dv">0</span>) : i <span class="op">+</span> <span class="dv">1</span>].<span class="bu">sum</span>()</span>
+<span id="cb36-5"><a href="#cb36-5"></a>    <span class="cf">return</span> out</span>
+<span id="cb36-6"><a href="#cb36-6"></a></span>
+<span id="cb36-7"><a href="#cb36-7"></a></span>
+<span id="cb36-8"><a href="#cb36-8"></a>TPB <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb36-9"><a href="#cb36-9"></a><span class="kw">def</span> pool_test(cuda):</span>
+<span id="cb36-10"><a href="#cb36-10"></a>    <span class="kw">def</span> call(out, a, size) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb36-11"><a href="#cb36-11"></a>        shared <span class="op">=</span> cuda.shared.array(TPB, numba.float32)</span>
+<span id="cb36-12"><a href="#cb36-12"></a>        i <span class="op">=</span> cuda.blockIdx.x <span class="op">*</span> cuda.blockDim.x <span class="op">+</span> cuda.threadIdx.x</span>
+<span id="cb36-13"><a href="#cb36-13"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb36-14"><a href="#cb36-14"></a></span>
+<span id="cb36-15"><a href="#cb36-15"></a>        <span class="co"># My comment: pull into shared memory</span></span>
+<span id="cb36-16"><a href="#cb36-16"></a>        <span class="cf">if</span> i <span class="op">&lt;</span> size:</span>
+<span id="cb36-17"><a href="#cb36-17"></a>            shared[local_i] <span class="op">=</span> a[i]</span>
+<span id="cb36-18"><a href="#cb36-18"></a>            cuda.syncthreads()</span>
+<span id="cb36-19"><a href="#cb36-19"></a></span>
+<span id="cb36-20"><a href="#cb36-20"></a>        <span class="co"># My comment: we need to be careful around boundary, but otherwise we</span></span>
+<span id="cb36-21"><a href="#cb36-21"></a>        <span class="co"># just read from shared memory and sum. Note that this is not very</span></span>
+<span id="cb36-22"><a href="#cb36-22"></a>        <span class="co"># general since the pooling size is fixed and we also do not bother with</span></span>
+<span id="cb36-23"><a href="#cb36-23"></a>        <span class="co"># handling inputs that do not fit into one block</span></span>
+<span id="cb36-24"><a href="#cb36-24"></a>        <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb36-25"><a href="#cb36-25"></a>            out[i] <span class="op">=</span> shared[local_i]</span>
+<span id="cb36-26"><a href="#cb36-26"></a>        <span class="cf">elif</span> i <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb36-27"><a href="#cb36-27"></a>            out[i] <span class="op">=</span> shared[local_i] <span class="op">+</span> shared[local_i <span class="op">-</span> <span class="dv">1</span>]</span>
+<span id="cb36-28"><a href="#cb36-28"></a>        <span class="cf">else</span>:</span>
+<span id="cb36-29"><a href="#cb36-29"></a>            out[i] <span class="op">=</span> shared[local_i] <span class="op">+</span> shared[local_i <span class="op">-</span> <span class="dv">1</span>] <span class="op">+</span> shared[local_i <span class="op">-</span> <span class="dv">2</span>]</span>
+<span id="cb36-30"><a href="#cb36-30"></a></span>
+<span id="cb36-31"><a href="#cb36-31"></a>    <span class="cf">return</span> call</span>
+<span id="cb36-32"><a href="#cb36-32"></a></span>
+<span id="cb36-33"><a href="#cb36-33"></a></span>
+<span id="cb36-34"><a href="#cb36-34"></a>SIZE <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb36-35"><a href="#cb36-35"></a>out <span class="op">=</span> np.zeros(SIZE)</span>
+<span id="cb36-36"><a href="#cb36-36"></a>a <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb36-37"><a href="#cb36-37"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb36-38"><a href="#cb36-38"></a>    <span class="st">"Pooling"</span>,</span>
+<span id="cb36-39"><a href="#cb36-39"></a>    pool_test,</span>
+<span id="cb36-40"><a href="#cb36-40"></a>    [a],</span>
+<span id="cb36-41"><a href="#cb36-41"></a>    out,</span>
+<span id="cb36-42"><a href="#cb36-42"></a>    [SIZE],</span>
+<span id="cb36-43"><a href="#cb36-43"></a>    threadsperblock<span class="op">=</span>Coord(TPB, <span class="dv">1</span>),</span>
+<span id="cb36-44"><a href="#cb36-44"></a>    blockspergrid<span class="op">=</span>Coord(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb36-45"><a href="#cb36-45"></a>    spec<span class="op">=</span>pool_spec,</span>
+<span id="cb36-46"><a href="#cb36-46"></a>)</span>
+<span id="cb36-47"><a href="#cb36-47"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Pooling
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             3 |             1 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="119">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-21-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-43" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:06.520195Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:06.519856Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:06.669891Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:06.668945Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:06.520150Z&quot;}" data-lines_to_end_of_cell_marker="0" data-outputid="da07525b-493c-49ab-b213-b8e3dbc97c70" data-trusted="true" data-execution_count="120">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1"></a>problem.check()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!</code></pre>
+</div>
+</div>
+</section>
+<section id="puzzle-10---dot-product" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-10---dot-product">Puzzle 10 - Dot Product</h2>
+<p>Implement a kernel that computes the dot-product of <code>a</code> and <code>b</code> and stores it in <code>out</code>. You have 1 thread per position. You only need 2 global reads and 1 global write per thread.</p>
+<p><em>Note: For this problem you don’t need to worry about number of shared reads. We will handle that challenge later.</em></p>
+<div id="cell-46" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:06.671488Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:06.671159Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:07.044012Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:07.043108Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:06.671455Z&quot;}" data-outputid="d7f5b0a4-259a-4376-b3f3-fbb99974b50d" data-trusted="true" data-execution_count="121">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1"></a><span class="kw">def</span> dot_spec(a, b):</span>
+<span id="cb40-2"><a href="#cb40-2"></a>    <span class="cf">return</span> a <span class="op">@</span> b</span>
+<span id="cb40-3"><a href="#cb40-3"></a></span>
+<span id="cb40-4"><a href="#cb40-4"></a>TPB <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb40-5"><a href="#cb40-5"></a><span class="kw">def</span> dot_test(cuda):</span>
+<span id="cb40-6"><a href="#cb40-6"></a>    <span class="kw">def</span> call(out, a, b, size) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb40-7"><a href="#cb40-7"></a>        shared <span class="op">=</span> cuda.shared.array(TPB, numba.float32)</span>
+<span id="cb40-8"><a href="#cb40-8"></a></span>
+<span id="cb40-9"><a href="#cb40-9"></a>        i <span class="op">=</span> cuda.blockIdx.x <span class="op">*</span> cuda.blockDim.x <span class="op">+</span> cuda.threadIdx.x</span>
+<span id="cb40-10"><a href="#cb40-10"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb40-11"><a href="#cb40-11"></a>        <span class="co"># FILL ME IN (roughly 9 lines)</span></span>
+<span id="cb40-12"><a href="#cb40-12"></a></span>
+<span id="cb40-13"><a href="#cb40-13"></a>        <span class="cf">if</span> i <span class="op">&lt;</span> size:</span>
+<span id="cb40-14"><a href="#cb40-14"></a>            shared[local_i] <span class="op">=</span> a[i] <span class="op">*</span> b[i]</span>
+<span id="cb40-15"><a href="#cb40-15"></a>            cuda.syncthreads()</span>
+<span id="cb40-16"><a href="#cb40-16"></a></span>
+<span id="cb40-17"><a href="#cb40-17"></a>        <span class="co"># Only the 0th thread will do the summing</span></span>
+<span id="cb40-18"><a href="#cb40-18"></a>        <span class="cf">if</span> local_i <span class="op">&gt;</span> <span class="dv">0</span>: <span class="cf">return</span></span>
+<span id="cb40-19"><a href="#cb40-19"></a></span>
+<span id="cb40-20"><a href="#cb40-20"></a>        acc <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb40-21"><a href="#cb40-21"></a>        <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(size):</span>
+<span id="cb40-22"><a href="#cb40-22"></a>            acc <span class="op">+=</span> shared[k]</span>
+<span id="cb40-23"><a href="#cb40-23"></a></span>
+<span id="cb40-24"><a href="#cb40-24"></a>        out[<span class="dv">0</span>] <span class="op">=</span> acc</span>
+<span id="cb40-25"><a href="#cb40-25"></a></span>
+<span id="cb40-26"><a href="#cb40-26"></a>    <span class="cf">return</span> call</span>
+<span id="cb40-27"><a href="#cb40-27"></a></span>
+<span id="cb40-28"><a href="#cb40-28"></a></span>
+<span id="cb40-29"><a href="#cb40-29"></a>SIZE <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb40-30"><a href="#cb40-30"></a>out <span class="op">=</span> np.zeros(<span class="dv">1</span>)</span>
+<span id="cb40-31"><a href="#cb40-31"></a>a <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb40-32"><a href="#cb40-32"></a>b <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb40-33"><a href="#cb40-33"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb40-34"><a href="#cb40-34"></a>    <span class="st">"Dot"</span>,</span>
+<span id="cb40-35"><a href="#cb40-35"></a>    dot_test,</span>
+<span id="cb40-36"><a href="#cb40-36"></a>    [a, b],</span>
+<span id="cb40-37"><a href="#cb40-37"></a>    out,</span>
+<span id="cb40-38"><a href="#cb40-38"></a>    [SIZE],</span>
+<span id="cb40-39"><a href="#cb40-39"></a>    threadsperblock<span class="op">=</span>Coord(SIZE, <span class="dv">1</span>),</span>
+<span id="cb40-40"><a href="#cb40-40"></a>    blockspergrid<span class="op">=</span>Coord(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb40-41"><a href="#cb40-41"></a>    spec<span class="op">=</span>dot_spec,</span>
+<span id="cb40-42"><a href="#cb40-42"></a>)</span>
+<span id="cb40-43"><a href="#cb40-43"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Dot
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             2 |             1 |             8 |             1 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="121">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-23-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-47" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:07.045704Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:07.045391Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:07.196796Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:07.195837Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:07.045672Z&quot;}" data-outputid="4f827a54-97cc-4844-f4f9-8fe91b63e7fa" data-trusted="true" data-execution_count="122">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1"></a>problem.check()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!</code></pre>
+</div>
+</div>
+</section>
+<section id="puzzle-11---1d-convolution" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-11---1d-convolution">Puzzle 11 - 1D Convolution</h2>
+<p>Implement a kernel that computes a 1D convolution between <code>a</code> and <code>b</code> and stores it in <code>out</code>. You need to handle the general case. You only need 2 global reads and 1 global write per thread.</p>
+<div id="cell-49" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:07.198768Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:07.198365Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:07.969408Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:07.968399Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:07.198720Z&quot;}" data-outputid="d55ff745-47f5-493a-efd3-d0e761f133d0" data-trusted="true" data-execution_count="123">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1"></a><span class="kw">def</span> conv_spec(a, b):</span>
+<span id="cb44-2"><a href="#cb44-2"></a>    out <span class="op">=</span> np.zeros(<span class="op">*</span>a.shape)</span>
+<span id="cb44-3"><a href="#cb44-3"></a>    <span class="bu">len</span> <span class="op">=</span> b.shape[<span class="dv">0</span>]</span>
+<span id="cb44-4"><a href="#cb44-4"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(a.shape[<span class="dv">0</span>]):</span>
+<span id="cb44-5"><a href="#cb44-5"></a>        out[i] <span class="op">=</span> <span class="bu">sum</span>(</span>
+<span id="cb44-6"><a href="#cb44-6"></a>            [a[i <span class="op">+</span> j] <span class="op">*</span> b[j] <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>) <span class="cf">if</span> i <span class="op">+</span> j <span class="op">&lt;</span> a.shape[<span class="dv">0</span>]]</span>
+<span id="cb44-7"><a href="#cb44-7"></a>        )</span>
+<span id="cb44-8"><a href="#cb44-8"></a>    <span class="cf">return</span> out</span>
+<span id="cb44-9"><a href="#cb44-9"></a></span>
+<span id="cb44-10"><a href="#cb44-10"></a></span>
+<span id="cb44-11"><a href="#cb44-11"></a>MAX_CONV <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb44-12"><a href="#cb44-12"></a>TPB <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb44-13"><a href="#cb44-13"></a>TPB_MAX_CONV <span class="op">=</span> TPB <span class="op">+</span> MAX_CONV</span>
+<span id="cb44-14"><a href="#cb44-14"></a><span class="co"># My comment: we add an additional constant for the size of the memory of</span></span>
+<span id="cb44-15"><a href="#cb44-15"></a><span class="co"># shared_a. This is because we only need MAX_CONV - 1 extra slots to store the</span></span>
+<span id="cb44-16"><a href="#cb44-16"></a><span class="co"># boundary values instead of MAX_CONV since one value will come from the last</span></span>
+<span id="cb44-17"><a href="#cb44-17"></a><span class="co"># position in the block itself</span></span>
+<span id="cb44-18"><a href="#cb44-18"></a>SHARED_A_SIZE <span class="op">=</span> TPB <span class="op">+</span> MAX_CONV <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb44-19"><a href="#cb44-19"></a><span class="kw">def</span> conv_test(cuda):</span>
+<span id="cb44-20"><a href="#cb44-20"></a>    <span class="kw">def</span> call(out, a, b, a_size, b_size) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb44-21"><a href="#cb44-21"></a>        i <span class="op">=</span> cuda.blockIdx.x <span class="op">*</span> cuda.blockDim.x <span class="op">+</span> cuda.threadIdx.x</span>
+<span id="cb44-22"><a href="#cb44-22"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb44-23"><a href="#cb44-23"></a></span>
+<span id="cb44-24"><a href="#cb44-24"></a>        <span class="co"># My comment: create shared memory. Note we allocate memory of size</span></span>
+<span id="cb44-25"><a href="#cb44-25"></a>        <span class="co"># `TPB + MAX_CONV - 1` to store `a` to handle the boundary between</span></span>
+<span id="cb44-26"><a href="#cb44-26"></a>        <span class="co"># blocks correctly (see comment next to where `SHARED_A_SIZE` is defined)</span></span>
+<span id="cb44-27"><a href="#cb44-27"></a>        shared_a <span class="op">=</span> cuda.shared.array(SHARED_A_SIZE, numba.float32)</span>
+<span id="cb44-28"><a href="#cb44-28"></a>        shared_b <span class="op">=</span> cuda.shared.array(MAX_CONV, numba.float32)</span>
+<span id="cb44-29"><a href="#cb44-29"></a></span>
+<span id="cb44-30"><a href="#cb44-30"></a>        <span class="co"># My comment: pull data to shared memory</span></span>
+<span id="cb44-31"><a href="#cb44-31"></a>        <span class="cf">if</span> i <span class="op">&lt;</span> a_size:</span>
+<span id="cb44-32"><a href="#cb44-32"></a>            shared_a[local_i] <span class="op">=</span> a[i]</span>
+<span id="cb44-33"><a href="#cb44-33"></a>        <span class="co"># My comment: the first b_size threads will pull `b` to shared memory</span></span>
+<span id="cb44-34"><a href="#cb44-34"></a>        <span class="cf">if</span> local_i <span class="op">&lt;</span> b_size:</span>
+<span id="cb44-35"><a href="#cb44-35"></a>            shared_b[local_i] <span class="op">=</span> b[local_i]</span>
+<span id="cb44-36"><a href="#cb44-36"></a>        <span class="cf">elif</span> local_i <span class="op">&lt;</span> <span class="dv">2</span> <span class="op">*</span> b_size <span class="op">-</span> <span class="dv">1</span> <span class="kw">and</span> TPB <span class="op">+</span> i <span class="op">-</span> b_size <span class="op">&lt;</span> a_size:</span>
+<span id="cb44-37"><a href="#cb44-37"></a>            <span class="co"># My comment: the next `b_size - 1` threads after`b_size` can be</span></span>
+<span id="cb44-38"><a href="#cb44-38"></a>            <span class="co"># used to pull the `b_size - 1` values of `a` that go after the</span></span>
+<span id="cb44-39"><a href="#cb44-39"></a>            <span class="co"># block since we need to them to compute the convolution correcly.</span></span>
+<span id="cb44-40"><a href="#cb44-40"></a>            <span class="co"># This explains the check for `local_i`, and the check for `i`</span></span>
+<span id="cb44-41"><a href="#cb44-41"></a>            <span class="co"># checks that we read the correct part of the memory part and that</span></span>
+<span id="cb44-42"><a href="#cb44-42"></a>            <span class="co"># that part is still withing `a`. It is easier to understand if you</span></span>
+<span id="cb44-43"><a href="#cb44-43"></a>            <span class="co"># consider that `TPB + i` just shifts to the same position in the</span></span>
+<span id="cb44-44"><a href="#cb44-44"></a>            <span class="co"># next block, and then we need to shift back by `b_size` because of</span></span>
+<span id="cb44-45"><a href="#cb44-45"></a>            <span class="co"># which thread is performing the reading and writing.</span></span>
+<span id="cb44-46"><a href="#cb44-46"></a>            <span class="co"># Note that we implicitly asumme and do not check that `TPB` is at</span></span>
+<span id="cb44-47"><a href="#cb44-47"></a>            <span class="co"># least `2 x MAX_CONV - 1` as otherwise we would not have enough</span></span>
+<span id="cb44-48"><a href="#cb44-48"></a>            <span class="co"># threads to read the vector `a` (or at least we'd need to do more</span></span>
+<span id="cb44-49"><a href="#cb44-49"></a>            <span class="co"># than 2 global reads in one of the threads).</span></span>
+<span id="cb44-50"><a href="#cb44-50"></a>            shared_a[TPB <span class="op">+</span> local_i <span class="op">-</span> b_size] <span class="op">=</span> a[TPB <span class="op">+</span> i <span class="op">-</span> b_size]</span>
+<span id="cb44-51"><a href="#cb44-51"></a></span>
+<span id="cb44-52"><a href="#cb44-52"></a>        <span class="co"># My comment: an alternative solution (and the one proposed by the</span></span>
+<span id="cb44-53"><a href="#cb44-53"></a>        <span class="co"># original author) is the one below. It is essentially the same, but</span></span>
+<span id="cb44-54"><a href="#cb44-54"></a>        <span class="co"># shifting is performed explicitly, and also one too many values is</span></span>
+<span id="cb44-55"><a href="#cb44-55"></a>        <span class="co"># copied. The code should go in an `else` branch instead of the `elif`:</span></span>
+<span id="cb44-56"><a href="#cb44-56"></a>        <span class="co"># -----</span></span>
+<span id="cb44-57"><a href="#cb44-57"></a>        <span class="co"># i2 = i - b_size</span></span>
+<span id="cb44-58"><a href="#cb44-58"></a>        <span class="co"># local_i2 = local_i - b_size</span></span>
+<span id="cb44-59"><a href="#cb44-59"></a>              </span>
+<span id="cb44-60"><a href="#cb44-60"></a>        <span class="co"># if local_i2 &lt; b_size - 1 and i2 + TPB &lt; a_size:</span></span>
+<span id="cb44-61"><a href="#cb44-61"></a>        <span class="co">#    shared_a[TPB + local_i2] = a[i2 + TPB]</span></span>
+<span id="cb44-62"><a href="#cb44-62"></a>        <span class="co"># -----</span></span>
+<span id="cb44-63"><a href="#cb44-63"></a></span>
+<span id="cb44-64"><a href="#cb44-64"></a>        <span class="co"># My comment: do not forget to sync threads!</span></span>
+<span id="cb44-65"><a href="#cb44-65"></a>        cuda.syncthreads()</span>
+<span id="cb44-66"><a href="#cb44-66"></a></span>
+<span id="cb44-67"><a href="#cb44-67"></a>        <span class="co"># Compute the actual convolution</span></span>
+<span id="cb44-68"><a href="#cb44-68"></a>        acc <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb44-69"><a href="#cb44-69"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(b_size):</span>
+<span id="cb44-70"><a href="#cb44-70"></a>            <span class="co"># We only need to check that we do not go over the size of `a` as</span></span>
+<span id="cb44-71"><a href="#cb44-71"></a>            <span class="co"># using `local_i + j` and `j` for the respective reads will be</span></span>
+<span id="cb44-72"><a href="#cb44-72"></a>            <span class="co"># valid by design</span></span>
+<span id="cb44-73"><a href="#cb44-73"></a>            <span class="cf">if</span> i <span class="op">+</span> j <span class="op">&lt;</span> a_size:</span>
+<span id="cb44-74"><a href="#cb44-74"></a>                acc <span class="op">+=</span> shared_a[local_i <span class="op">+</span> j] <span class="op">*</span> shared_b[j]</span>
+<span id="cb44-75"><a href="#cb44-75"></a></span>
+<span id="cb44-76"><a href="#cb44-76"></a>        <span class="cf">if</span> i <span class="op">&lt;</span> a_size:</span>
+<span id="cb44-77"><a href="#cb44-77"></a>            out[i] <span class="op">=</span> acc</span>
+<span id="cb44-78"><a href="#cb44-78"></a></span>
+<span id="cb44-79"><a href="#cb44-79"></a>    <span class="cf">return</span> call</span>
+<span id="cb44-80"><a href="#cb44-80"></a></span>
+<span id="cb44-81"><a href="#cb44-81"></a></span>
+<span id="cb44-82"><a href="#cb44-82"></a><span class="co"># Test 1</span></span>
+<span id="cb44-83"><a href="#cb44-83"></a></span>
+<span id="cb44-84"><a href="#cb44-84"></a>SIZE <span class="op">=</span> <span class="dv">6</span></span>
+<span id="cb44-85"><a href="#cb44-85"></a>CONV <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb44-86"><a href="#cb44-86"></a>out <span class="op">=</span> np.zeros(SIZE)</span>
+<span id="cb44-87"><a href="#cb44-87"></a>a <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb44-88"><a href="#cb44-88"></a>b <span class="op">=</span> np.arange(CONV)</span>
+<span id="cb44-89"><a href="#cb44-89"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb44-90"><a href="#cb44-90"></a>    <span class="st">"1D Conv (Simple)"</span>,</span>
+<span id="cb44-91"><a href="#cb44-91"></a>    conv_test,</span>
+<span id="cb44-92"><a href="#cb44-92"></a>    [a, b],</span>
+<span id="cb44-93"><a href="#cb44-93"></a>    out,</span>
+<span id="cb44-94"><a href="#cb44-94"></a>    [SIZE, CONV],</span>
+<span id="cb44-95"><a href="#cb44-95"></a>    Coord(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb44-96"><a href="#cb44-96"></a>    Coord(TPB, <span class="dv">1</span>),</span>
+<span id="cb44-97"><a href="#cb44-97"></a>    spec<span class="op">=</span>conv_spec,</span>
+<span id="cb44-98"><a href="#cb44-98"></a>)</span>
+<span id="cb44-99"><a href="#cb44-99"></a>problem.check()</span>
+<span id="cb44-100"><a href="#cb44-100"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!
+# 1D Conv (Simple)
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             2 |             1 |             6 |             2 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="123">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-25-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-50" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:07.971469Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:07.970872Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:09.772028Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:09.771150Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:07.971425Z&quot;}" data-outputid="c961a509-8b43-4448-e4db-738062583247" data-trusted="true" data-execution_count="124">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1"></a>out <span class="op">=</span> np.zeros(<span class="dv">15</span>)</span>
+<span id="cb46-2"><a href="#cb46-2"></a>a <span class="op">=</span> np.arange(<span class="dv">15</span>)</span>
+<span id="cb46-3"><a href="#cb46-3"></a>b <span class="op">=</span> np.arange(<span class="dv">4</span>)</span>
+<span id="cb46-4"><a href="#cb46-4"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb46-5"><a href="#cb46-5"></a>    <span class="st">"1D Conv (Full)"</span>,</span>
+<span id="cb46-6"><a href="#cb46-6"></a>    conv_test,</span>
+<span id="cb46-7"><a href="#cb46-7"></a>    [a, b],</span>
+<span id="cb46-8"><a href="#cb46-8"></a>    out,</span>
+<span id="cb46-9"><a href="#cb46-9"></a>    [<span class="dv">15</span>, <span class="dv">4</span>],</span>
+<span id="cb46-10"><a href="#cb46-10"></a>    Coord(<span class="dv">2</span>, <span class="dv">1</span>),</span>
+<span id="cb46-11"><a href="#cb46-11"></a>    Coord(TPB, <span class="dv">1</span>),</span>
+<span id="cb46-12"><a href="#cb46-12"></a>    spec<span class="op">=</span>conv_spec,</span>
+<span id="cb46-13"><a href="#cb46-13"></a>)</span>
+<span id="cb46-14"><a href="#cb46-14"></a>problem.check()</span>
+<span id="cb46-15"><a href="#cb46-15"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!
+# 1D Conv (Full)
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             2 |             1 |             8 |             2 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="124">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-26-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-51" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:09.773611Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:09.773308Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:12.332368Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:12.331428Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:09.773580Z&quot;}" data-trusted="true" data-execution_count="125">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1"></a><span class="co"># My comment: let's create an additional text to check that it works for too</span></span>
+<span id="cb48-2"><a href="#cb48-2"></a>out <span class="op">=</span> np.zeros(<span class="dv">21</span>)</span>
+<span id="cb48-3"><a href="#cb48-3"></a>a <span class="op">=</span> np.arange(<span class="dv">21</span>)</span>
+<span id="cb48-4"><a href="#cb48-4"></a>b <span class="op">=</span> np.arange(<span class="dv">4</span>)</span>
+<span id="cb48-5"><a href="#cb48-5"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb48-6"><a href="#cb48-6"></a>    <span class="st">"1D Conv (Full)"</span>,</span>
+<span id="cb48-7"><a href="#cb48-7"></a>    conv_test,</span>
+<span id="cb48-8"><a href="#cb48-8"></a>    [a, b],</span>
+<span id="cb48-9"><a href="#cb48-9"></a>    out,</span>
+<span id="cb48-10"><a href="#cb48-10"></a>    [<span class="dv">21</span>, <span class="dv">4</span>],</span>
+<span id="cb48-11"><a href="#cb48-11"></a>    Coord(<span class="dv">3</span>, <span class="dv">1</span>),</span>
+<span id="cb48-12"><a href="#cb48-12"></a>    Coord(TPB, <span class="dv">1</span>),</span>
+<span id="cb48-13"><a href="#cb48-13"></a>    spec<span class="op">=</span>conv_spec,</span>
+<span id="cb48-14"><a href="#cb48-14"></a>)</span>
+<span id="cb48-15"><a href="#cb48-15"></a>problem.check()</span>
+<span id="cb48-16"><a href="#cb48-16"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!
+# 1D Conv (Full)
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             2 |             1 |             8 |             2 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="125">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-27-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="puzzle-12---prefix-sum" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-12---prefix-sum">Puzzle 12 - Prefix Sum</h2>
+<p>Implement a kernel that computes a sum over <code>a</code> and stores it in <code>out</code>. If the size of <code>a</code> is greater than the block size, only store the sum of each block.</p>
+<p>We will do this using the <a href="https://en.wikipedia.org/wiki/Prefix_sum">parallel prefix sum</a> algorithm in shared memory. That is, each step of the algorithm should sum together half the remaining numbers. Follow this diagram:</p>
+<p><img src="https://user-images.githubusercontent.com/35882/178757889-1c269623-93af-4a2e-a7e9-22cd55a42e38.png" class="img-fluid"></p>
+<div id="cell-55" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:12.334489Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:12.334099Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:12.949902Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:12.949002Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:12.334449Z&quot;}" data-trusted="true" data-execution_count="126">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1"></a><span class="kw">def</span> sum_spec(a):</span>
+<span id="cb50-2"><a href="#cb50-2"></a>    out <span class="op">=</span> np.zeros((a.shape[<span class="dv">0</span>] <span class="op">+</span> TPB <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> TPB)</span>
+<span id="cb50-3"><a href="#cb50-3"></a>    <span class="cf">for</span> j, i <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">range</span>(<span class="dv">0</span>, a.shape[<span class="op">-</span><span class="dv">1</span>], TPB)):</span>
+<span id="cb50-4"><a href="#cb50-4"></a>        out[j] <span class="op">=</span> a[i : i <span class="op">+</span> TPB].<span class="bu">sum</span>()</span>
+<span id="cb50-5"><a href="#cb50-5"></a>    <span class="cf">return</span> out</span>
+<span id="cb50-6"><a href="#cb50-6"></a></span>
+<span id="cb50-7"><a href="#cb50-7"></a></span>
+<span id="cb50-8"><a href="#cb50-8"></a>TPB <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb50-9"><a href="#cb50-9"></a><span class="kw">def</span> sum_test(cuda):</span>
+<span id="cb50-10"><a href="#cb50-10"></a>    <span class="kw">def</span> call(out, a, size: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb50-11"><a href="#cb50-11"></a>        cache <span class="op">=</span> cuda.shared.array(TPB, numba.float32)</span>
+<span id="cb50-12"><a href="#cb50-12"></a>        i <span class="op">=</span> cuda.blockIdx.x <span class="op">*</span> cuda.blockDim.x <span class="op">+</span> cuda.threadIdx.x</span>
+<span id="cb50-13"><a href="#cb50-13"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb50-14"><a href="#cb50-14"></a></span>
+<span id="cb50-15"><a href="#cb50-15"></a>        <span class="co"># My comment: this is the original code</span></span>
+<span id="cb50-16"><a href="#cb50-16"></a>        <span class="co"># -----</span></span>
+<span id="cb50-17"><a href="#cb50-17"></a>        <span class="co"># if i &lt; size:</span></span>
+<span id="cb50-18"><a href="#cb50-18"></a>        <span class="co">#     cache[local_i] = a[i]</span></span>
+<span id="cb50-19"><a href="#cb50-19"></a>        <span class="co">#     cuda.syncthreads()</span></span>
+<span id="cb50-20"><a href="#cb50-20"></a></span>
+<span id="cb50-21"><a href="#cb50-21"></a>        <span class="co">#     for p in range(3):</span></span>
+<span id="cb50-22"><a href="#cb50-22"></a>        <span class="co">#         two_to_power_p = 2**p</span></span>
+<span id="cb50-23"><a href="#cb50-23"></a></span>
+<span id="cb50-24"><a href="#cb50-24"></a>        <span class="co">#         if (</span></span>
+<span id="cb50-25"><a href="#cb50-25"></a>        <span class="co">#             local_i % (two_to_power_p * 2) == 0</span></span>
+<span id="cb50-26"><a href="#cb50-26"></a>        <span class="co">#             and i + two_to_power_p &lt; size</span></span>
+<span id="cb50-27"><a href="#cb50-27"></a>        <span class="co">#         ):</span></span>
+<span id="cb50-28"><a href="#cb50-28"></a>        <span class="co">#             cache[local_i] = (</span></span>
+<span id="cb50-29"><a href="#cb50-29"></a>        <span class="co">#                 cache[local_i] + cache[local_i + two_to_power_p]</span></span>
+<span id="cb50-30"><a href="#cb50-30"></a>        <span class="co">#             )</span></span>
+<span id="cb50-31"><a href="#cb50-31"></a></span>
+<span id="cb50-32"><a href="#cb50-32"></a>        <span class="co">#         # Sync threads at the end of the loop</span></span>
+<span id="cb50-33"><a href="#cb50-33"></a>        <span class="co">#         cuda.syncthreads()</span></span>
+<span id="cb50-34"><a href="#cb50-34"></a></span>
+<span id="cb50-35"><a href="#cb50-35"></a>        <span class="co">#     if local_i == 0:</span></span>
+<span id="cb50-36"><a href="#cb50-36"></a>        <span class="co">#         out[cuda.blockIdx.x] = cache[0]</span></span>
+<span id="cb50-37"><a href="#cb50-37"></a>        <span class="co"># -----</span></span>
+<span id="cb50-38"><a href="#cb50-38"></a></span>
+<span id="cb50-39"><a href="#cb50-39"></a>        <span class="co"># My comment: this is my code which reduces the amount of</span></span>
+<span id="cb50-40"><a href="#cb50-40"></a>        <span class="co"># indentation and produces a more complete (and therefore</span></span>
+<span id="cb50-41"><a href="#cb50-41"></a>        <span class="co"># more intuitive!) visualisation</span></span>
+<span id="cb50-42"><a href="#cb50-42"></a>        <span class="cf">if</span> i <span class="op">&gt;=</span> size:</span>
+<span id="cb50-43"><a href="#cb50-43"></a>            <span class="cf">return</span></span>
+<span id="cb50-44"><a href="#cb50-44"></a></span>
+<span id="cb50-45"><a href="#cb50-45"></a>        cache[local_i] <span class="op">=</span> a[i]</span>
+<span id="cb50-46"><a href="#cb50-46"></a>        cuda.syncthreads()</span>
+<span id="cb50-47"><a href="#cb50-47"></a></span>
+<span id="cb50-48"><a href="#cb50-48"></a>        <span class="cf">for</span> p <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</span>
+<span id="cb50-49"><a href="#cb50-49"></a>            two_to_power_p <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>p</span>
+<span id="cb50-50"><a href="#cb50-50"></a></span>
+<span id="cb50-51"><a href="#cb50-51"></a>            <span class="cf">if</span> (</span>
+<span id="cb50-52"><a href="#cb50-52"></a>                local_i <span class="op">%</span> (two_to_power_p <span class="op">*</span> <span class="dv">2</span>) <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb50-53"><a href="#cb50-53"></a>                <span class="kw">and</span> i <span class="op">+</span> two_to_power_p <span class="op">&lt;</span> size</span>
+<span id="cb50-54"><a href="#cb50-54"></a>            ):</span>
+<span id="cb50-55"><a href="#cb50-55"></a>                cache[local_i] <span class="op">=</span> (</span>
+<span id="cb50-56"><a href="#cb50-56"></a>                    cache[local_i] <span class="op">+</span> cache[local_i <span class="op">+</span> two_to_power_p]</span>
+<span id="cb50-57"><a href="#cb50-57"></a>                )</span>
+<span id="cb50-58"><a href="#cb50-58"></a>            <span class="cf">elif</span> local_i <span class="op">%</span> (two_to_power_p <span class="op">*</span> <span class="dv">2</span>) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb50-59"><a href="#cb50-59"></a>                <span class="co"># My comment: this else statement is what makes</span></span>
+<span id="cb50-60"><a href="#cb50-60"></a>                <span class="co"># the visualisation nicer</span></span>
+<span id="cb50-61"><a href="#cb50-61"></a>                cache[local_i] <span class="op">=</span> cache[local_i]</span>
+<span id="cb50-62"><a href="#cb50-62"></a></span>
+<span id="cb50-63"><a href="#cb50-63"></a>            <span class="co"># Sync threads at the end of the loop</span></span>
+<span id="cb50-64"><a href="#cb50-64"></a>            cuda.syncthreads()</span>
+<span id="cb50-65"><a href="#cb50-65"></a></span>
+<span id="cb50-66"><a href="#cb50-66"></a>        <span class="cf">if</span> local_i <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb50-67"><a href="#cb50-67"></a>            out[cuda.blockIdx.x] <span class="op">=</span> cache[<span class="dv">0</span>]</span>
+<span id="cb50-68"><a href="#cb50-68"></a></span>
+<span id="cb50-69"><a href="#cb50-69"></a>    <span class="cf">return</span> call</span>
+<span id="cb50-70"><a href="#cb50-70"></a></span>
+<span id="cb50-71"><a href="#cb50-71"></a></span>
+<span id="cb50-72"><a href="#cb50-72"></a><span class="co"># Test 1</span></span>
+<span id="cb50-73"><a href="#cb50-73"></a>SIZE <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb50-74"><a href="#cb50-74"></a>out <span class="op">=</span> np.zeros((SIZE <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> TPB <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb50-75"><a href="#cb50-75"></a>inp <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb50-76"><a href="#cb50-76"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb50-77"><a href="#cb50-77"></a>    <span class="st">"Sum (Simple)"</span>,</span>
+<span id="cb50-78"><a href="#cb50-78"></a>    sum_test,</span>
+<span id="cb50-79"><a href="#cb50-79"></a>    [inp],</span>
+<span id="cb50-80"><a href="#cb50-80"></a>    out,</span>
+<span id="cb50-81"><a href="#cb50-81"></a>    [SIZE],</span>
+<span id="cb50-82"><a href="#cb50-82"></a>    Coord((SIZE <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> TPB <span class="op">+</span> <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb50-83"><a href="#cb50-83"></a>    Coord(TPB, <span class="dv">1</span>),</span>
+<span id="cb50-84"><a href="#cb50-84"></a>    spec<span class="op">=</span>sum_spec,</span>
+<span id="cb50-85"><a href="#cb50-85"></a>)</span>
+<span id="cb50-86"><a href="#cb50-86"></a>problem.check()</span>
+<span id="cb50-87"><a href="#cb50-87"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!
+# Sum (Simple)
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             7 |             4 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="126">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-28-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-56" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:12.952086Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:12.951284Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:13.930108Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:13.929175Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:12.952042Z&quot;}" data-trusted="true" data-execution_count="127">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1"></a>SIZE <span class="op">=</span> <span class="dv">15</span></span>
+<span id="cb52-2"><a href="#cb52-2"></a>out <span class="op">=</span> np.zeros((SIZE <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> TPB <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb52-3"><a href="#cb52-3"></a>inp <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb52-4"><a href="#cb52-4"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb52-5"><a href="#cb52-5"></a>    <span class="st">"Sum (Full)"</span>,</span>
+<span id="cb52-6"><a href="#cb52-6"></a>    sum_test,</span>
+<span id="cb52-7"><a href="#cb52-7"></a>    [inp],</span>
+<span id="cb52-8"><a href="#cb52-8"></a>    out,</span>
+<span id="cb52-9"><a href="#cb52-9"></a>    [SIZE],</span>
+<span id="cb52-10"><a href="#cb52-10"></a>    Coord((SIZE <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> TPB <span class="op">+</span> <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb52-11"><a href="#cb52-11"></a>    Coord(TPB, <span class="dv">1</span>),</span>
+<span id="cb52-12"><a href="#cb52-12"></a>    spec<span class="op">=</span>sum_spec,</span>
+<span id="cb52-13"><a href="#cb52-13"></a>)</span>
+<span id="cb52-14"><a href="#cb52-14"></a>problem.check()</span>
+<span id="cb52-15"><a href="#cb52-15"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!
+# Sum (Full)
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             7 |             4 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="127">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-29-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-57" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:13.931535Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:13.931238Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:14.874101Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:14.873115Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:13.931503Z&quot;}" data-trusted="true" data-execution_count="128">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1"></a><span class="co"># My comment: additional test to check the visualisation</span></span>
+<span id="cb54-2"><a href="#cb54-2"></a>SIZE <span class="op">=</span> <span class="dv">14</span></span>
+<span id="cb54-3"><a href="#cb54-3"></a>out <span class="op">=</span> np.zeros((SIZE <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> TPB <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb54-4"><a href="#cb54-4"></a>inp <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb54-5"><a href="#cb54-5"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb54-6"><a href="#cb54-6"></a>    <span class="st">"Sum (Full)"</span>,</span>
+<span id="cb54-7"><a href="#cb54-7"></a>    sum_test,</span>
+<span id="cb54-8"><a href="#cb54-8"></a>    [inp],</span>
+<span id="cb54-9"><a href="#cb54-9"></a>    out,</span>
+<span id="cb54-10"><a href="#cb54-10"></a>    [SIZE],</span>
+<span id="cb54-11"><a href="#cb54-11"></a>    Coord((SIZE <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> TPB <span class="op">+</span> <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb54-12"><a href="#cb54-12"></a>    Coord(TPB, <span class="dv">1</span>),</span>
+<span id="cb54-13"><a href="#cb54-13"></a>    spec<span class="op">=</span>sum_spec,</span>
+<span id="cb54-14"><a href="#cb54-14"></a>)</span>
+<span id="cb54-15"><a href="#cb54-15"></a>problem.check()</span>
+<span id="cb54-16"><a href="#cb54-16"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!
+# Sum (Full)
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             7 |             4 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="128">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-30-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-58" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:14.875738Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:14.875431Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:16.286079Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:16.285172Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:14.875706Z&quot;}" data-trusted="true" data-execution_count="129">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1"></a><span class="co"># My comment: additional test to check that the code generalizes to</span></span>
+<span id="cb56-2"><a href="#cb56-2"></a><span class="co"># 3 blocks or more</span></span>
+<span id="cb56-3"><a href="#cb56-3"></a>SIZE <span class="op">=</span> <span class="dv">23</span></span>
+<span id="cb56-4"><a href="#cb56-4"></a>out <span class="op">=</span> np.zeros((SIZE <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> TPB <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb56-5"><a href="#cb56-5"></a>inp <span class="op">=</span> np.arange(SIZE)</span>
+<span id="cb56-6"><a href="#cb56-6"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb56-7"><a href="#cb56-7"></a>    <span class="st">"Sum (Full)"</span>,</span>
+<span id="cb56-8"><a href="#cb56-8"></a>    sum_test,</span>
+<span id="cb56-9"><a href="#cb56-9"></a>    [inp],</span>
+<span id="cb56-10"><a href="#cb56-10"></a>    out,</span>
+<span id="cb56-11"><a href="#cb56-11"></a>    [SIZE],</span>
+<span id="cb56-12"><a href="#cb56-12"></a>    Coord((SIZE <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> TPB <span class="op">+</span> <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb56-13"><a href="#cb56-13"></a>    Coord(TPB, <span class="dv">1</span>),</span>
+<span id="cb56-14"><a href="#cb56-14"></a>    spec<span class="op">=</span>sum_spec,</span>
+<span id="cb56-15"><a href="#cb56-15"></a>)</span>
+<span id="cb56-16"><a href="#cb56-16"></a>problem.check()</span>
+<span id="cb56-17"><a href="#cb56-17"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!
+# Sum (Full)
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             7 |             4 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="129">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-31-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="puzzle-13---axis-sum" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-13---axis-sum">Puzzle 13 - Axis Sum</h2>
+<p>Implement a kernel that computes a sum over each column of <code>a</code> and stores it in <code>out</code>.</p>
+<div id="cell-60" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:14:16.288077Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:14:16.287763Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:14:18.078569Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:14:18.077607Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:14:16.288043Z&quot;}" data-trusted="true" data-execution_count="130">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1"></a><span class="kw">def</span> sum_spec(a):</span>
+<span id="cb58-2"><a href="#cb58-2"></a>    out <span class="op">=</span> np.zeros((a.shape[<span class="dv">0</span>], (a.shape[<span class="dv">1</span>] <span class="op">+</span> TPB <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> TPB))</span>
+<span id="cb58-3"><a href="#cb58-3"></a>    <span class="cf">for</span> j, i <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">range</span>(<span class="dv">0</span>, a.shape[<span class="op">-</span><span class="dv">1</span>], TPB)):</span>
+<span id="cb58-4"><a href="#cb58-4"></a>        out[..., j] <span class="op">=</span> a[..., i : i <span class="op">+</span> TPB].<span class="bu">sum</span>(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb58-5"><a href="#cb58-5"></a>    <span class="cf">return</span> out</span>
+<span id="cb58-6"><a href="#cb58-6"></a></span>
+<span id="cb58-7"><a href="#cb58-7"></a></span>
+<span id="cb58-8"><a href="#cb58-8"></a>TPB <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb58-9"><a href="#cb58-9"></a><span class="kw">def</span> axis_sum_test(cuda):</span>
+<span id="cb58-10"><a href="#cb58-10"></a>    <span class="kw">def</span> call(out, a, size: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb58-11"><a href="#cb58-11"></a>        cache <span class="op">=</span> cuda.shared.array(TPB, numba.float32)</span>
+<span id="cb58-12"><a href="#cb58-12"></a>        i <span class="op">=</span> cuda.blockIdx.x <span class="op">*</span> cuda.blockDim.x <span class="op">+</span> cuda.threadIdx.x</span>
+<span id="cb58-13"><a href="#cb58-13"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb58-14"><a href="#cb58-14"></a>        batch <span class="op">=</span> cuda.blockIdx.y</span>
+<span id="cb58-15"><a href="#cb58-15"></a></span>
+<span id="cb58-16"><a href="#cb58-16"></a>        <span class="co"># My comment: since I came up with my own implementation of prefix sums,</span></span>
+<span id="cb58-17"><a href="#cb58-17"></a>        <span class="co"># this solution is a bit different as well</span></span>
+<span id="cb58-18"><a href="#cb58-18"></a>        <span class="cf">if</span> i <span class="op">&gt;=</span> size:</span>
+<span id="cb58-19"><a href="#cb58-19"></a>            <span class="cf">return</span></span>
+<span id="cb58-20"><a href="#cb58-20"></a></span>
+<span id="cb58-21"><a href="#cb58-21"></a>        cache[local_i] <span class="op">=</span> a[batch, i]</span>
+<span id="cb58-22"><a href="#cb58-22"></a>        cuda.syncthreads()</span>
+<span id="cb58-23"><a href="#cb58-23"></a></span>
+<span id="cb58-24"><a href="#cb58-24"></a>        <span class="cf">for</span> p <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</span>
+<span id="cb58-25"><a href="#cb58-25"></a>            two_to_power_p <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>p</span>
+<span id="cb58-26"><a href="#cb58-26"></a></span>
+<span id="cb58-27"><a href="#cb58-27"></a>            <span class="cf">if</span> (</span>
+<span id="cb58-28"><a href="#cb58-28"></a>                local_i <span class="op">%</span> (two_to_power_p <span class="op">*</span> <span class="dv">2</span>) <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb58-29"><a href="#cb58-29"></a>                <span class="kw">and</span> i <span class="op">+</span> two_to_power_p <span class="op">&lt;</span> size</span>
+<span id="cb58-30"><a href="#cb58-30"></a>            ):</span>
+<span id="cb58-31"><a href="#cb58-31"></a>                cache[local_i] <span class="op">=</span> (</span>
+<span id="cb58-32"><a href="#cb58-32"></a>                    cache[local_i] <span class="op">+</span> cache[local_i <span class="op">+</span> two_to_power_p]</span>
+<span id="cb58-33"><a href="#cb58-33"></a>                )</span>
+<span id="cb58-34"><a href="#cb58-34"></a>            <span class="cf">elif</span> local_i <span class="op">%</span> (two_to_power_p <span class="op">*</span> <span class="dv">2</span>) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb58-35"><a href="#cb58-35"></a>                cache[local_i] <span class="op">=</span> cache[local_i]</span>
+<span id="cb58-36"><a href="#cb58-36"></a></span>
+<span id="cb58-37"><a href="#cb58-37"></a>            <span class="co"># Sync threads at the end of the loop</span></span>
+<span id="cb58-38"><a href="#cb58-38"></a>            cuda.syncthreads()</span>
+<span id="cb58-39"><a href="#cb58-39"></a></span>
+<span id="cb58-40"><a href="#cb58-40"></a>        <span class="cf">if</span> local_i <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb58-41"><a href="#cb58-41"></a>            out[batch, <span class="dv">0</span>] <span class="op">=</span> cache[<span class="dv">0</span>]</span>
+<span id="cb58-42"><a href="#cb58-42"></a></span>
+<span id="cb58-43"><a href="#cb58-43"></a>    <span class="cf">return</span> call</span>
+<span id="cb58-44"><a href="#cb58-44"></a></span>
+<span id="cb58-45"><a href="#cb58-45"></a></span>
+<span id="cb58-46"><a href="#cb58-46"></a>BATCH <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb58-47"><a href="#cb58-47"></a>SIZE <span class="op">=</span> <span class="dv">7</span></span>
+<span id="cb58-48"><a href="#cb58-48"></a>out <span class="op">=</span> np.zeros((BATCH, <span class="dv">1</span>))</span>
+<span id="cb58-49"><a href="#cb58-49"></a>inp <span class="op">=</span> np.arange(BATCH <span class="op">*</span> SIZE).reshape((BATCH, SIZE))</span>
+<span id="cb58-50"><a href="#cb58-50"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb58-51"><a href="#cb58-51"></a>    <span class="st">"Axis Sum"</span>,</span>
+<span id="cb58-52"><a href="#cb58-52"></a>    axis_sum_test,</span>
+<span id="cb58-53"><a href="#cb58-53"></a>    [inp],</span>
+<span id="cb58-54"><a href="#cb58-54"></a>    out,</span>
+<span id="cb58-55"><a href="#cb58-55"></a>    [SIZE],</span>
+<span id="cb58-56"><a href="#cb58-56"></a>    Coord(<span class="dv">1</span>, BATCH),</span>
+<span id="cb58-57"><a href="#cb58-57"></a>    Coord(TPB, <span class="dv">1</span>),</span>
+<span id="cb58-58"><a href="#cb58-58"></a>    spec<span class="op">=</span>sum_spec,</span>
+<span id="cb58-59"><a href="#cb58-59"></a>)</span>
+<span id="cb58-60"><a href="#cb58-60"></a>problem.check()</span>
+<span id="cb58-61"><a href="#cb58-61"></a>problem.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!
+# Axis Sum
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             1 |             1 |             7 |             4 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="130">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-32-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="puzzle-14---matrix-multiply" class="level2">
+<h2 class="anchored" data-anchor-id="puzzle-14---matrix-multiply">Puzzle 14 - Matrix Multiply!</h2>
+<p>Implement a kernel that multiplies square matrices <code>a</code> and <code>b</code> and stores the result in <code>out</code>.</p>
+<p><em>Tip: The most efficient algorithm here will copy a block into shared memory before computing each of the individual row-column dot products. This is easy to do if the matrix fits in shared memory. Do that case first. Then update your code to compute a partial dot-product and iteratively move the part you copied into shared memory.</em> You should be able to do the hard case in 6 global reads.</p>
+<div id="cell-62" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:18:07.334715Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:18:07.334017Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:18:08.034466Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:18:08.033413Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:18:07.334677Z&quot;}" data-trusted="true" data-execution_count="134">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1"></a><span class="kw">def</span> matmul_spec(a, b):</span>
+<span id="cb60-2"><a href="#cb60-2"></a>    <span class="cf">return</span> a <span class="op">@</span> b</span>
+<span id="cb60-3"><a href="#cb60-3"></a></span>
+<span id="cb60-4"><a href="#cb60-4"></a></span>
+<span id="cb60-5"><a href="#cb60-5"></a>TPB <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb60-6"><a href="#cb60-6"></a><span class="kw">def</span> mm_oneblock_test(cuda):</span>
+<span id="cb60-7"><a href="#cb60-7"></a>    <span class="kw">def</span> call(out, a, b, size: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb60-8"><a href="#cb60-8"></a>        a_shared <span class="op">=</span> cuda.shared.array((TPB, TPB), numba.float32)</span>
+<span id="cb60-9"><a href="#cb60-9"></a>        b_shared <span class="op">=</span> cuda.shared.array((TPB, TPB), numba.float32)</span>
+<span id="cb60-10"><a href="#cb60-10"></a></span>
+<span id="cb60-11"><a href="#cb60-11"></a>        i <span class="op">=</span> cuda.blockIdx.x <span class="op">*</span> cuda.blockDim.x <span class="op">+</span> cuda.threadIdx.x</span>
+<span id="cb60-12"><a href="#cb60-12"></a>        j <span class="op">=</span> cuda.blockIdx.y <span class="op">*</span> cuda.blockDim.y <span class="op">+</span> cuda.threadIdx.y</span>
+<span id="cb60-13"><a href="#cb60-13"></a>        local_i <span class="op">=</span> cuda.threadIdx.x</span>
+<span id="cb60-14"><a href="#cb60-14"></a>        local_j <span class="op">=</span> cuda.threadIdx.y</span>
+<span id="cb60-15"><a href="#cb60-15"></a></span>
+<span id="cb60-16"><a href="#cb60-16"></a>        <span class="co"># My comment: for each output position, we need to accumulate</span></span>
+<span id="cb60-17"><a href="#cb60-17"></a>        <span class="co"># over the whole row and whole column, so accumulated value is</span></span>
+<span id="cb60-18"><a href="#cb60-18"></a>        <span class="co"># defined here and then we iteratively go over blocks of size</span></span>
+<span id="cb60-19"><a href="#cb60-19"></a>        <span class="co"># `TPB x TPB` until we cover the full row and column.</span></span>
+<span id="cb60-20"><a href="#cb60-20"></a>        acc <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb60-21"><a href="#cb60-21"></a>        <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, size, TPB):</span>
+<span id="cb60-22"><a href="#cb60-22"></a>            <span class="co"># My comment: use guards to make sure we pull only</span></span>
+<span id="cb60-23"><a href="#cb60-23"></a>            <span class="co"># from valid positions</span></span>
+<span id="cb60-24"><a href="#cb60-24"></a>            <span class="cf">if</span> i <span class="op">&lt;</span> size <span class="kw">and</span> k <span class="op">+</span> local_j <span class="op">&lt;</span> size:</span>
+<span id="cb60-25"><a href="#cb60-25"></a>                a_shared[local_i, local_j] <span class="op">=</span> a[i, k <span class="op">+</span> local_j]</span>
+<span id="cb60-26"><a href="#cb60-26"></a>            <span class="cf">if</span> k <span class="op">+</span> local_i <span class="op">&lt;</span> size <span class="kw">and</span> j <span class="op">&lt;</span> size:</span>
+<span id="cb60-27"><a href="#cb60-27"></a>                b_shared[local_i, local_j] <span class="op">=</span> b[k <span class="op">+</span> local_i, j]</span>
+<span id="cb60-28"><a href="#cb60-28"></a></span>
+<span id="cb60-29"><a href="#cb60-29"></a>            <span class="co"># My comment: sync threads after pulling is over</span></span>
+<span id="cb60-30"><a href="#cb60-30"></a>            cuda.syncthreads()</span>
+<span id="cb60-31"><a href="#cb60-31"></a></span>
+<span id="cb60-32"><a href="#cb60-32"></a>            <span class="co"># My comment: each thread goes over its respective row and</span></span>
+<span id="cb60-33"><a href="#cb60-33"></a>            <span class="co"># column of the shared memory</span></span>
+<span id="cb60-34"><a href="#cb60-34"></a>            <span class="cf">for</span> local_k <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">min</span>(TPB, size <span class="op">-</span> k)):</span>
+<span id="cb60-35"><a href="#cb60-35"></a>                acc <span class="op">+=</span> a_shared[local_i, local_k] <span class="op">*</span> b_shared[local_k, local_j]</span>
+<span id="cb60-36"><a href="#cb60-36"></a></span>
+<span id="cb60-37"><a href="#cb60-37"></a>        <span class="co"># My comment: finally, write out the final output</span></span>
+<span id="cb60-38"><a href="#cb60-38"></a>        <span class="cf">if</span> i <span class="op">&lt;</span> size <span class="kw">and</span> j <span class="op">&lt;</span> size:</span>
+<span id="cb60-39"><a href="#cb60-39"></a>            out[i, j] <span class="op">=</span> acc</span>
+<span id="cb60-40"><a href="#cb60-40"></a></span>
+<span id="cb60-41"><a href="#cb60-41"></a>    <span class="cf">return</span> call</span>
+<span id="cb60-42"><a href="#cb60-42"></a></span>
+<span id="cb60-43"><a href="#cb60-43"></a><span class="co"># Test 1</span></span>
+<span id="cb60-44"><a href="#cb60-44"></a></span>
+<span id="cb60-45"><a href="#cb60-45"></a>SIZE <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb60-46"><a href="#cb60-46"></a>out <span class="op">=</span> np.zeros((SIZE, SIZE))</span>
+<span id="cb60-47"><a href="#cb60-47"></a>inp1 <span class="op">=</span> np.arange(SIZE <span class="op">*</span> SIZE).reshape((SIZE, SIZE))</span>
+<span id="cb60-48"><a href="#cb60-48"></a>inp2 <span class="op">=</span> np.arange(SIZE <span class="op">*</span> SIZE).reshape((SIZE, SIZE)).T</span>
+<span id="cb60-49"><a href="#cb60-49"></a></span>
+<span id="cb60-50"><a href="#cb60-50"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb60-51"><a href="#cb60-51"></a>    <span class="st">"Matmul (Simple)"</span>,</span>
+<span id="cb60-52"><a href="#cb60-52"></a>    mm_oneblock_test,</span>
+<span id="cb60-53"><a href="#cb60-53"></a>    [inp1, inp2],</span>
+<span id="cb60-54"><a href="#cb60-54"></a>    out,</span>
+<span id="cb60-55"><a href="#cb60-55"></a>    [SIZE],</span>
+<span id="cb60-56"><a href="#cb60-56"></a>    Coord(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb60-57"><a href="#cb60-57"></a>    Coord(TPB, TPB),</span>
+<span id="cb60-58"><a href="#cb60-58"></a>    spec<span class="op">=</span>matmul_spec,</span>
+<span id="cb60-59"><a href="#cb60-59"></a>)</span>
+<span id="cb60-60"><a href="#cb60-60"></a>problem.check()</span>
+<span id="cb60-61"><a href="#cb60-61"></a>problem.show(sparse<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!
+# Matmul (Simple)
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             2 |             1 |             4 |             2 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="134">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-33-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-63" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2024-09-07T12:18:08.036569Z&quot;,&quot;iopub.status.busy&quot;:&quot;2024-09-07T12:18:08.036258Z&quot;,&quot;iopub.status.idle&quot;:&quot;2024-09-07T12:18:22.358536Z&quot;,&quot;shell.execute_reply&quot;:&quot;2024-09-07T12:18:22.357073Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2024-09-07T12:18:08.036538Z&quot;}" data-trusted="true" data-execution_count="135">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1"></a>SIZE <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb62-2"><a href="#cb62-2"></a>out <span class="op">=</span> np.zeros((SIZE, SIZE))</span>
+<span id="cb62-3"><a href="#cb62-3"></a>inp1 <span class="op">=</span> np.arange(SIZE <span class="op">*</span> SIZE).reshape((SIZE, SIZE))</span>
+<span id="cb62-4"><a href="#cb62-4"></a>inp2 <span class="op">=</span> np.arange(SIZE <span class="op">*</span> SIZE).reshape((SIZE, SIZE)).T</span>
+<span id="cb62-5"><a href="#cb62-5"></a></span>
+<span id="cb62-6"><a href="#cb62-6"></a>problem <span class="op">=</span> CudaProblem(</span>
+<span id="cb62-7"><a href="#cb62-7"></a>    <span class="st">"Matmul (Full)"</span>,</span>
+<span id="cb62-8"><a href="#cb62-8"></a>    mm_oneblock_test,</span>
+<span id="cb62-9"><a href="#cb62-9"></a>    [inp1, inp2],</span>
+<span id="cb62-10"><a href="#cb62-10"></a>    out,</span>
+<span id="cb62-11"><a href="#cb62-11"></a>    [SIZE],</span>
+<span id="cb62-12"><a href="#cb62-12"></a>    Coord(<span class="dv">3</span>, <span class="dv">3</span>),</span>
+<span id="cb62-13"><a href="#cb62-13"></a>    Coord(TPB, TPB),</span>
+<span id="cb62-14"><a href="#cb62-14"></a>    spec<span class="op">=</span>matmul_spec,</span>
+<span id="cb62-15"><a href="#cb62-15"></a>)</span>
+<span id="cb62-16"><a href="#cb62-16"></a>problem.check()</span>
+<span id="cb62-17"><a href="#cb62-17"></a>problem.show(sparse<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Passed Tests!
+# Matmul (Full)
+ 
+   Score (Max Per Thread):
+   |  Global Reads | Global Writes |  Shared Reads | Shared Writes |
+   |             6 |             1 |            16 |             6 | 
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="135">
+<div>
+<figure class="figure">
+<p><img src="gpu-puzzles_files/figure-html/cell-34-output-2.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
